@@ -1,7 +1,7 @@
-# 單元 1：使用現成的 MCP Server（Postgres MCP Pro）
+# 5-1：使用現成的 MCP Server（Postgres MCP Pro）
 
-> **本單元目標**：先安裝**別人寫好的** MCP Server，體驗「AI 直接查詢資料庫」是什麼感覺，並學會在 Claude Desktop 設定 MCP Server。
-> 你的角色是**使用者**。
+> **本單元目標**：安裝**別人寫好的** MCP Server，體驗「AI 直接查詢資料庫」是什麼感覺，並學會在 Claude Desktop 設定 MCP Server。
+> 你的角色是**使用者**。　[← 回第 5 章](../)
 
 [Postgres MCP Pro](https://github.com/crystaldba/postgres-mcp) 是一個開源的 PostgreSQL MCP Server,除了讓 AI 執行 SQL 之外,還提供查詢計畫分析、索引建議、資料庫健康檢查等功能。
 
@@ -33,8 +33,10 @@ docker pull crystaldba/postgres-mcp
 可以先在終端機測試是否能執行:
 
 ```bash
-uvx postgres-mcp --help
+uvx --with "mcp<2" postgres-mcp --help
 ```
+
+> ⚠️ **一定要加上 `--with "mcp<2"`**:Postgres MCP Pro 使用 MCP Python SDK 1.x 版的寫法,uvx 預設會安裝最新的 2.x 版,啟動時會出現 `No module named 'mcp.server.fastmcp'` 的錯誤。
 
 ## 3. 連線字串(DATABASE_URI)
 
@@ -93,6 +95,8 @@ postgresql://postgres:yourpassword@localhost:5432/practice
     "postgres": {
       "command": "uvx",
       "args": [
+        "--with",
+        "mcp<2",
         "postgres-mcp",
         "--access-mode=restricted"
       ],
@@ -293,10 +297,10 @@ Supabase 也有自己的 [官方 MCP Server](https://supabase.com/docs/guides/ge
 | 找不到 `uvx` 或 `docker` 指令 | 在 `"command"` 使用完整路徑(`which uvx`、`which docker`) |
 | 想看錯誤訊息 | macOS 的 log 位於 `~/Library/Logs/Claude/mcp*.log`;Windows 位於 `%APPDATA%\Claude\logs` |
 | AI 說無法修改資料 | 目前是 `restricted` 模式,這是正常的;需要寫入時改成 `unrestricted` |
+| 出現 `No module named 'mcp.server.fastmcp'` | 使用 uvx 時要加上 `--with mcp<2`(見[方法二](#方法二使用-uvpython)) |
 | Supabase 連線逾時 | 改用 Session pooler(IPv4);免費專案一段時間沒使用會被暫停,請先到 Supabase 後台恢復專案 |
 | Supabase 帳號密碼錯誤 | 使用者名稱要用 `postgres.[PROJECT-REF]`;密碼中的特殊字元要 URL 編碼 |
 
 ## 下一步
 
-Postgres MCP Pro 讓 AI 可以執行**任何** SQL,適合工程師使用。
-企業要開放給一般員工時,通常只開放**設計好的查詢** 👉 [單元 2:用 AI 建立自己的 MCP Server](../2_用AI建立MCP_server/)
+👉 [5-2:用 MCP 實作 SQL 語法](../2_用MCP實作SQL語法/):切換成 `unrestricted` 模式,請 AI 依照你學過的 SQL 語法建立資料表、新增、修改、查詢資料,並由你檢查 AI 寫的 SQL。

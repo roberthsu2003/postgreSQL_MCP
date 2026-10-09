@@ -1,4 +1,4 @@
-DROP TABLE student;
+DROP TABLE IF EXISTS student;
 CREATE TABLE student(
 	student_id SERIAL,
 	name VARCHAR(20),
@@ -21,73 +21,58 @@ SELECT name FROM student;
 /*取得name,major欄位*/
 SELECT name,major FROM student;
 
-/*排序預設為ascend*/
+/*排序預設為ASC(由小到大)*/
 SELECT *
 FROM student
-ORDER BY score
+ORDER BY score;
 
 /*排序由高至低*/
 SELECT *
 FROM student
-ORDER BY score DESC
+ORDER BY score DESC;
 
 /*order by也可以多個欄位*/
 SELECT *
 FROM student
-ORDER BY score,student_id
+ORDER BY score,student_id;
 
 /*limit限制筆數*/
 SELECT *
 FROM student
-LIMIT 3
+LIMIT 3;
 
 /*limit和order by整合*/
 SELECT *
 FROM student
 ORDER BY score
-LIMIT 3
+LIMIT 3;
 
 /*limit和order by整合*/
 SELECT *
 FROM student
 ORDER BY score DESC
-LIMIT 3
+LIMIT 3;
 
 /*過濾WHERE*/
 SELECT *
 FROM student
-WHERE major = '英語'
+WHERE major = '英語';
 
 /*過濾WHERE*/
 SELECT *
 FROM student
-WHERE major = '英語' AND student_id=1
+WHERE major = '英語' AND student_id=1;
 
 /*過濾WHERE*/
 SELECT *
 FROM student
-WHERE major = '英語'  OR score > 60
+WHERE major = '英語'  OR score > 60;
 
 /*過濾WHERE,使用IN,等同於使用OR*/
 SELECT *
 FROM student
-WHERE major = '英語'  OR major='生物' OR major='歷史'
+WHERE major = '英語'  OR major='生物' OR major='歷史';
 
 SELECT *
 FROM student
-WHERE major in('英語','生物','歷史')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+WHERE major in('英語','生物','歷史');

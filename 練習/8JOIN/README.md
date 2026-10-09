@@ -44,20 +44,18 @@ FROM 左表 LEFT JOIN 右表 ON 連接條件
 ```sql
 SELECT * 
 FROM gate_count LEFT JOIN stations ON 站點編號 = 編號
-
-/*取出指定欄位*/
 ```
 
 
 
-### 做用JOIN取出指定欄位
+### 使用JOIN取出指定欄位
 
 ```sql
 SELECT 日期,進站人數,出站人數,名稱,地名,地址,youbike
 FROM gate_count LEFT JOIN stations ON 站點編號 = 編號
 ```
 
-### 取出基隆市有那些火車站
+### 取出基隆市有哪些火車站
 
 ```sql
 SELECT DISTINCT 名稱

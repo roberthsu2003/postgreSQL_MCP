@@ -126,7 +126,25 @@ ON CONFLICT (conflict_column)
 DO NOTHING | DO UPDATE SET column1 = value1, column2 = value2, ...;
 ```
 
-## 有衝突後,更改欄位資料
+## 有衝突後,更改欄位資料
+
+先建立練習用的資料表：
+
+```sql
+CREATE TABLE inventory (
+  id INT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  quantity INT NOT NULL
+);
+
+INSERT INTO inventory (id, name, price, quantity)
+VALUES (1, 'A', 15.99, 100),
+       (2, 'B', 25.49, 50),
+       (3, 'C', 19.95, 75);
+```
+
+`id = 1` 已經存在，所以會發生衝突，改成更新 price 和 quantity（`EXCLUDED` 代表這次想新增的值）：
 
 ```sql
 INSERT INTO inventory (id, name, price, quantity)
@@ -143,8 +161,8 @@ DO UPDATE SET
 ```sql
 INSERT INTO inventory (id, name, price, quantity)
 VALUES (1, 'A', 16.99, 120)
-ON CONFLICT
-DO NOTHING
+ON CONFLICT (id)
+DO NOTHING;
 ```
 
 

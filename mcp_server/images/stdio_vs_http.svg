@@ -11,7 +11,7 @@
   <!-- 左:本機 -->
   <rect x="30" y="60" width="430" height="320" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
   <text x="50" y="92" font-size="18" font-weight="700" fill="#334155">本機 stdio</text>
-  <text x="440" y="92" text-anchor="end" font-size="14" fill="#64748b">單元 1、2</text>
+  <text x="440" y="92" text-anchor="end" font-size="14" fill="#64748b">第 5 章、單元 1</text>
 
   <rect x="50" y="108" width="250" height="180" rx="10" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 4"/>
   <text x="62" y="128" font-size="13" fill="#64748b">你的電腦</text>
@@ -37,7 +37,7 @@
   <!-- 右:遠端 -->
   <rect x="490" y="60" width="440" height="320" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
   <text x="510" y="92" font-size="18" font-weight="700" fill="#1e3a8a">遠端 Streamable HTTP</text>
-  <text x="910" y="92" text-anchor="end" font-size="14" fill="#64748b">單元 3</text>
+  <text x="910" y="92" text-anchor="end" font-size="14" fill="#64748b">單元 2</text>
 
   <g>
     <rect x="510" y="110" width="140" height="44" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>

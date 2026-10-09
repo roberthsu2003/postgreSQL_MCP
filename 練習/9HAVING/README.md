@@ -90,7 +90,7 @@ SELECT DATE_TRUNC('month',日期) AS 月份,SUM(進站人數) AS 進站人數
 FROM gate_count LEFT JOIN stations ON 站點編號 = 編號
 WHERE 名稱 = '基隆' AND 日期 BETWEEN '2020-01-01' AND '2020-12-31'
 GROUP BY 月份
-ORDER BY 進站人數
+ORDER BY 月份
 ```
 
 ### 基隆火車站2020年,每月份進站人數,由多至少
@@ -126,6 +126,8 @@ ORDER BY 進站人數 DESC
 ---
 
 ## 練習題目
+
+> 💡 資料中的站名使用「**臺**」，例如 `臺北`、`臺中`、`臺南`，寫成「台北」會查不到資料。
 
 **練習 1：** 查詢 2021 年全省各站點進站總人數，並按進站人數由高至低排序
 
@@ -163,7 +165,7 @@ ORDER BY 進站人數 DESC
 -- 請寫出 SQL 語法
 ```
 
-**練習 7：** 查詢 2021 年每月份全省進站總人數，並找出進站人數超過 5000 萬人的月份
+**練習 7：** 查詢 2021 年每月份全省進站總人數，並找出進站人數超過 1500 萬人的月份
 
 ```sql
 -- 請寫出 SQL 語法
@@ -212,7 +214,7 @@ ORDER BY 進站人數 DESC
 ```sql
 SELECT DATE_PART('year',日期) AS 年份,SUM(進站人數) AS 進站人數
 FROM gate_count LEFT JOIN stations ON 站點編號 = 編號
-WHERE 名稱 = '台中' AND 日期 BETWEEN '2020-01-01' AND '2022-12-31'
+WHERE 名稱 = '臺中' AND 日期 BETWEEN '2020-01-01' AND '2022-12-31'
 GROUP BY 年份
 ORDER BY 年份
 ```
@@ -240,7 +242,7 @@ LIMIT 10
 ```sql
 SELECT DATE_PART('year',日期) AS 年份,名稱,SUM(進站人數) AS 進站人數
 FROM gate_count LEFT JOIN stations ON 站點編號 = 編號
-WHERE 名稱 IN ('台北','桃園','新竹') AND 日期 BETWEEN '2022-01-01' AND '2022-12-31'
+WHERE 名稱 IN ('臺北','桃園','新竹') AND 日期 BETWEEN '2022-01-01' AND '2022-12-31'
 GROUP BY 年份,名稱
 ORDER BY 名稱
 ```
@@ -251,9 +253,11 @@ SELECT DATE_TRUNC('month',日期) AS 月份,SUM(進站人數) AS 進站人數
 FROM gate_count LEFT JOIN stations ON 站點編號 = 編號
 WHERE 日期 BETWEEN '2021-01-01' AND '2021-12-31'
 GROUP BY 月份
-HAVING SUM(進站人數) > 50000000
+HAVING SUM(進站人數) > 15000000
 ORDER BY 月份
 ```
+
+> 2021 年 5～9 月因為疫情三級警戒，進站人數明顯減少，所以不會出現在結果中。
 
 **練習 8 解答：**
 ```sql
@@ -278,7 +282,20 @@ ORDER BY 平均每日進站人數 DESC
 ```sql
 SELECT DATE_PART('year',日期) AS 年份,名稱,SUM(進站人數) AS 進站人數
 FROM gate_count LEFT JOIN stations ON 站點編號 = 編號
-WHERE 名稱 IN ('台南','高雄') AND 日期 BETWEEN '2020-01-01' AND '2022-12-31'
+WHERE 名稱 IN ('臺南','高雄') AND 日期 BETWEEN '2020-01-01' AND '2022-12-31'
 GROUP BY 年份,名稱
 ORDER BY 年份,名稱
+```
+
+計算兩站每年的人數差距（用 `FILTER` 分別加總兩個站）：
+
+```sql
+SELECT DATE_PART('year',日期) AS 年份,
+       SUM(進站人數) FILTER (WHERE 名稱 = '臺南') AS 臺南,
+       SUM(進站人數) FILTER (WHERE 名稱 = '高雄') AS 高雄,
+       SUM(進站人數) FILTER (WHERE 名稱 = '臺南') - SUM(進站人數) FILTER (WHERE 名稱 = '高雄') AS 差距
+FROM gate_count LEFT JOIN stations ON 站點編號 = 編號
+WHERE 名稱 IN ('臺南','高雄') AND 日期 BETWEEN '2020-01-01' AND '2022-12-31'
+GROUP BY 年份
+ORDER BY 年份
 ```

@@ -1,6 +1,7 @@
 /*新增公司資料*/
-/*foregin有出錯,沒有對應的部門id*/
-INSERT INTO employee VALUES (206, '小黃', '1998-10-08', 'F', 50000, 1, NULL);
+/*示範錯誤:foreign key 出錯,因為 branch 還沒有部門 id=1 的資料*/
+/*執行整個檔案時,這行會讓後面全部失敗,所以先註解起來,上課時再單獨執行*/
+/*INSERT INTO employee VALUES (206, '小黃', '1998-10-08', 'F', 50000, 1, NULL);*/
 
 
 /*先新增部門資料,manager_id先設為NULL*/

@@ -24,9 +24,9 @@ def getData(country:list[str],min,max):
             '''
             cursor.execute(sql,(country,min,max))
             all_data = cursor.fetchall()
-            return all_data
-    
-    conn.close()
+
+    conn.close() #with conn 不會關閉連線,要自己關閉(要在 return 之前)
+    return all_data
 
 @st.cache_data
 def get_country():
@@ -39,9 +39,9 @@ def get_country():
             '''
             cursor.execute(sql)
             all_country = cursor.fetchall()
-            return all_country
-    
-    conn.close()
+
+    conn.close() #with conn 不會關閉連線,要自己關閉(要在 return 之前)
+    return all_country
 
 @st.cache_data
 def get_max_min_Date():
@@ -54,9 +54,9 @@ def get_max_min_Date():
             '''
             cursor.execute(sql)
             date = cursor.fetchone()
-            return date
-    
-    conn.close()
+
+    conn.close() #with conn 不會關閉連線,要自己關閉(要在 return 之前)
+    return date
 
 
 
@@ -72,6 +72,10 @@ if "appointment" not in st.session_state:
      st.session_state["appointment"] = [min_date, max_date]
 
 
+if not options:
+    st.info("請至少選擇一個市場")
+    st.stop() #沒有選擇時 IN () 會造成 SQL 語法錯誤
+
 all_data = getData(tuple(options),st.session_state["appointment"][0],  st.session_state["appointment"][1]) #傳入必需使用tuple
 dataFrame = pd.DataFrame(all_data,columns=['日期','收盤','成交量','代號','國家'])
 dataFrame['收盤'] = dataFrame['收盤'].astype('int')
@@ -79,8 +83,9 @@ dataFrame['收盤'] = dataFrame['收盤'].astype('int')
 st.line_chart(data=dataFrame,x='日期',y='收盤',color='國家')
 
 
+#預設值已經放在 session_state["appointment"],這裡不要再設定 value,否則會出現警告
 appointment = st.slider("請選擇一段時間:",
-                        value=(min_date,max_date),key="appointment")
+                        min_value=min_date, max_value=max_date, key="appointment")
 
 #st.write("your're scheduled for:",appointment)
 #print(st.session_state["markets"])

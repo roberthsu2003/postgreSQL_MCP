@@ -2,7 +2,7 @@
 
 ### 安裝
 
-```
+```bash
 pip install -U pip
 pip install psycopg2-binary
 ```
@@ -11,6 +11,8 @@ pip install psycopg2-binary
 ### 使用
 
 ```python
+import psycopg2
+
 # 連線postgres DB
 conn = psycopg2.connect("dbname=test user=postgres")
 
@@ -22,4 +24,8 @@ cur.execute("SELECT * FROM my_data")
 
 # 取出結果
 records = cur.fetchall()
+
+# 用完要關閉
+cur.close()
+conn.close()
 ```

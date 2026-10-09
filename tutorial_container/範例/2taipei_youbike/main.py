@@ -9,7 +9,7 @@ def get_sarea():
 
     with conn:
         with conn.cursor() as cursor:
-            #取出最新日期各站點資料
+            #取出所有行政區
             sql = '''
                 SELECT 行政區
                 FROM 站點資訊
@@ -17,9 +17,9 @@ def get_sarea():
             '''
             cursor.execute(sql)
             allData = cursor.fetchall()
-            return allData
 
-    conn.close()
+    conn.close() #with conn 不會關閉連線,要自己關閉(要在 return 之前)
+    return allData
 
 def info_sarea(sarea):
     conn = psycopg2.connect(host="localhost",database='postgres',user=os.environ["POSTGRES_USER"],password=os.environ["POSTGRES_PASSWORD"])
@@ -38,9 +38,10 @@ def info_sarea(sarea):
             ) AND 行政區 = %s;
             '''
             cursor.execute(sql,(sarea,))
-            return cursor.fetchall()
+            allData = cursor.fetchall()
 
     conn.close()
+    return allData
 
 col1, col2 = st.columns([1,2])
 

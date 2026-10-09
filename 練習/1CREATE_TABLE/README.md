@@ -1,5 +1,7 @@
 ## 練習建立資料表
 
+> 💡 資料表多了 `id` 欄位時，在 pgAdmin 匯入畫面的 **Columns** 取消勾選 `id`，或在 CSV 中有 id 欄位時直接對應。
+
 - 使用city.csv檔
 - 使用employees.csv檔
 - 使用invoices.csv檔
@@ -60,7 +62,7 @@ CREATE TABLE IF NOT EXISTS invoices(
 ---
 
 ### 建立employees資料表
-- 匯入invoices.csv
+- 匯入employees.csv
 
 ```sql
 CREATE TABLE IF NOT EXISTS employees(

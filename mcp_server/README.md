@@ -1,4 +1,6 @@
-# AI 連接資料庫：MCP Server
+# 第 8 章：自訂 MCP Server（企業導入）
+
+> 📌 **先修**：[第 5 章 用 AI 操作資料庫（MCP）](../MCP操作資料庫/)，了解 MCP 是什麼、會設定 Claude Desktop。
 
 公司的資料都在資料庫裡，但大部分員工不會寫 SQL。
 **企業只要導入 MCP Server，員工就能在 Claude Desktop 這類 AI 桌面應用程式裡，直接用中文問問題，AI 會自己去資料庫查資料。**
@@ -47,27 +49,30 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    U1["<b>單元 1</b><br/>使用現成的 MCP<br/><i>使用者</i>"]
-    U2["<b>單元 2</b><br/>用 AI 建立 MCP Server<br/><i>需求設計者・驗收者</i>"]
-    U3["<b>單元 3</b><br/>遠端 MCP + token<br/><i>系統導入者</i>"]
-    U4["<b>單元 4</b><br/>範例集<br/><i>5 個部門的 AI 助理</i>"]
-    U5["<b>期末專題</b><br/>為一間公司<br/>打造 MCP Server"]
-    U1 -->|"想只開放<br/>特定查詢"| U2 -->|"想讓全公司<br/>都能使用"| U3 -->|"看更多<br/>實際案例"| U4 --> U5
+    P["<b>第 5 章</b><br/>使用現成的 MCP<br/><i>先修</i>"]
+    U1["<b>單元 1</b><br/>用 AI 建立 MCP Server<br/><i>需求設計者・驗收者</i>"]
+    U2["<b>單元 2</b><br/>遠端 MCP + token<br/><i>系統導入者</i>"]
+    U3["<b>單元 3</b><br/>範例集<br/><i>5 個部門的 AI 助理</i>"]
+    U4["<b>單元 4</b><br/>會寫入資料的<br/>MCP Server"]
+    F["<b>期末專題</b><br/>為一間公司<br/>打造 MCP Server"]
+    P -->|"只開放<br/>特定查詢"| U1 -->|"讓全公司<br/>都能使用"| U2 --> U3 -->|"開放<br/>新增、修改"| U4 --> F
 
+    classDef pre fill:#f8fafc,stroke:#94a3b8,color:#334155
     classDef local fill:#fff7ed,stroke:#ea580c,color:#7c2d12
     classDef remote fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
     classDef final fill:#f0fdf4,stroke:#16a34a,color:#14532d
-    class U1,U2 local
-    class U3,U4 remote
-    class U5 final
+    class P pre
+    class U1,U4 local
+    class U2,U3 remote
+    class F final
 ```
 
 | 單元 | 你的角色 | 內容 | 連線方式 |
 |:---:|---|---|---|
-| [1. 使用現成的 MCP Server](./1_postgres_mcp_pro/) | 使用者 | 安裝別人寫好的 Postgres MCP Pro，體驗用自然語言查詢資料庫 | 本機 |
-| [2. 用 AI 建立自己的 MCP Server](./2_用AI建立MCP_server/) ⭐ | 需求設計者、驗收者 | 規劃工具 → 請 AI 寫程式 → 測試 → 接上 Claude Desktop | 本機 |
-| [3. 企業導入：遠端 MCP 與 token](./3_企業導入_遠端MCP與token/) ⭐ | 系統導入者 | 把 MCP Server 架在伺服器上，員工帶 token 連線，並留下稽核紀錄 | 遠端 + token |
-| [4. 範例集](./4_範例集/) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理 | 本機或遠端 |
+| [1. 用 AI 建立自己的 MCP Server](./1_用AI建立MCP_server/) ⭐ | 需求設計者、驗收者 | 規劃工具 → 請 AI 寫程式 → 測試 → 接上 Claude Desktop | 本機 |
+| [2. 企業導入：遠端 MCP 與 token](./2_企業導入_遠端MCP與token/) ⭐ | 系統導入者 | 把 MCP Server 架在伺服器上，員工帶 token 連線，並留下稽核紀錄 | 遠端 + token |
+| [3. 範例集](./3_範例集/) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理 | 本機或遠端 |
+| [4. 會寫入資料的 MCP Server](./4_寫入型MCP_server/) | 需求設計者、驗收者 | 圖書館借還書：只開放特定寫入、檢查寫在程式裡、交易與稽核 | 本機 |
 | [期末專題](#期末專題) | 全部 | 用 AI 為一間「公司」打造專屬的 MCP Server | 遠端 + token |
 
 ---
@@ -84,7 +89,7 @@ flowchart LR
 | 把資料表結構和需求清楚地告訴 AI | 修正錯誤 |
 | 測試、驗收，檢查 AI 有沒有做到安全規定 | 依照你的回饋修改 |
 
-AI 寫的程式不一定正確，所以你仍然要**看得懂關鍵的 5 個地方**，才能判斷能不能交給公司使用 👉 [檢查清單](./2_用AI建立MCP_server/#步驟-3看懂-ai-寫的程式)
+AI 寫的程式不一定正確，所以你仍然要**看得懂關鍵的 5 個地方**，才能判斷能不能交給公司使用 👉 [檢查清單](./1_用AI建立MCP_server/#步驟-3看懂-ai-寫的程式)
 
 ---
 
@@ -96,8 +101,8 @@ AI 寫的程式不一定正確，所以你仍然要**看得懂關鍵的 5 個地
 | **MCP Client** | AI 這一端，例如 Claude Desktop、Claude Code、VS Code |
 | **MCP Server** | 提供工具給 AI 呼叫的程式，例如「查詢銷售統計」「列出缺貨商品」 |
 | **Tool（工具）** | MCP Server 裡的一個功能，AI 會依照工具的說明決定要不要呼叫 |
-| **stdio（本機）** | MCP Server 在自己的電腦上執行，只有自己能用（單元 1、2） |
-| **Streamable HTTP（遠端）** | MCP Server 架在伺服器上，用網址連線，多人共用（單元 3） |
+| **stdio（本機）** | MCP Server 在自己的電腦上執行，只有自己能用（第 5 章、單元 1） |
+| **Streamable HTTP（遠端）** | MCP Server 架在伺服器上，用網址連線，多人共用（單元 2） |
 | **Token** | 一串很長的亂數密碼，就像公司的門禁卡，連線時要出示 |
 | **Bearer Token** | 把 token 放在 HTTP 標頭 `Authorization: Bearer <token>` 傳給伺服器的方式 |
 
@@ -105,18 +110,19 @@ AI 寫的程式不一定正確，所以你仍然要**看得懂關鍵的 5 個地
 
 ## 期末專題
 
-以小組為單位，扮演一間公司的 IT 部門，**用 AI 建立一個遠端 MCP Server**，讓「員工」用 Claude Desktop 帶 token 連線查詢。
+以小組為單位，扮演一間公司的 IT 部門，**用 AI 建立一個遠端 MCP Server**，讓「員工」用 Claude Desktop 帶 token 連線查詢（也可以加上寫入功能）。
 
 **資料庫（擇一）**：課程中任何一個範例資料庫（[中文範例資料庫](../範例資料庫/中文範例資料庫/)、台鐵、YouBike、股市）
 
-> ⚠️ [範例集](./4_範例集/)已經有的「使用者角色」不能直接沿用。請換一個角色，例如：
+> ⚠️ [範例集](./3_範例集/)已經有的「使用者角色」不能直接沿用。請換一個角色，例如：
 > 學校選課 → **學生自己**、**系主任**；圖書館 → **讀者**、**採購人員**；網路商店 → **倉管人員**、**行銷人員**
 
 | 項目 | 要求 |
 |---|---|
 | 情境 | 說明使用者是誰，以及他們常問的 5 個問題 |
-| 工具 | 至少 3 個範例集沒有的工具，附上[工具規劃表](./2_用AI建立MCP_server/#步驟-1規劃工具) |
-| 安全 | 通過[檢查清單](./2_用AI建立MCP_server/#步驟-3看懂-ai-寫的程式)：唯讀、參數化查詢、限制回傳筆數 |
+| 工具 | 至少 3 個範例集沒有的工具，附上[工具規劃表](./1_用AI建立MCP_server/#步驟-1規劃工具) |
+| 安全 | 通過[檢查清單](./1_用AI建立MCP_server/#步驟-3看懂-ai-寫的程式)：唯讀、參數化查詢、限制回傳筆數 |
+| 寫入（加分） | 至少 1 個寫入工具，符合[單元 4 的 6 個設計原則](./4_寫入型MCP_server/#寫入工具的-6-個設計原則)，並展示「攻擊」被擋下 |
 | token | 每位組員一組 token，展示錯誤 token 被拒絕、稽核紀錄看得到每個人查了什麼 |
 | 展示 | 現場用 Claude Desktop 問 5 個問題，並說明 AI 呼叫了哪個工具 |
 | 繳交 | 工具規劃表、給 AI 的提示詞、最後的程式、展示截圖 |

@@ -1,4 +1,4 @@
-# 單元 2：用 AI 建立自己的 MCP Server
+# 單元 1：用 AI 建立自己的 MCP Server
 
 > **本單元目標**：不用自己寫程式，**請 AI 寫出**一個查詢台鐵進出站資料的 MCP Server，並接上 Claude Desktop。
 > 你的角色是**需求設計者**和**驗收者**。
@@ -43,7 +43,7 @@ flowchart LR
 
 ## 為什麼要自己建立 MCP Server？
 
-[單元 1 的 Postgres MCP Pro](../1_postgres_mcp_pro/) 把**整個資料庫**交給 AI，AI 可以自己寫任何 SQL。
+[第 5 章的 Postgres MCP Pro](../../MCP操作資料庫/1_postgres_mcp_pro/) 把**整個資料庫**交給 AI，AI 可以自己寫任何 SQL。
 自己建立的 MCP Server 則只提供**你設計好的幾個工具**，AI 只能呼叫這些工具。
 
 | | Postgres MCP Pro（別人寫的） | 自建 MCP Server |
@@ -108,7 +108,7 @@ AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（�
 
 - 直接使用 [建立進出站的ddl.sql](../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/建立進出站的ddl.sql)
 - 在 pgAdmin 對資料表按右鍵 → **Scripts → CREATE Script**
-- 用[單元 1](../1_postgres_mcp_pro/) 的 Postgres MCP Pro 問 Claude：「列出台鐵車站資訊、每日各站進出站人數兩張資料表的欄位與型別」
+- 用[第 5 章](../../MCP操作資料庫/1_postgres_mcp_pro/) 的 Postgres MCP Pro 問 Claude：「列出台鐵車站資訊、每日各站進出站人數兩張資料表的欄位與型別」
 
 ---
 
@@ -288,7 +288,7 @@ uv run mcp dev server.py
 
 ## 步驟 5：接上 Claude Desktop
 
-編輯 `claude_desktop_config.json`（位置請參考[單元 1](../1_postgres_mcp_pro/#4-設定-claude-desktop)），在 `mcpServers` 中加入：
+編輯 `claude_desktop_config.json`（位置請參考[第 5 章](../../MCP操作資料庫/1_postgres_mcp_pro/#4-設定-claude-desktop)），在 `mcpServers` 中加入：
 
 ```json
 {
@@ -301,7 +301,7 @@ uv run mcp dev server.py
         "mcp[cli]",
         "--with",
         "psycopg2-binary",
-        "/完整路徑/mcp_server/2_用AI建立MCP_server/server.py"
+        "/完整路徑/mcp_server/1_用AI建立MCP_server/server.py"
       ],
       "env": {
         "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/postgres"
@@ -359,11 +359,11 @@ uv run mcp dev server.py
 
 用[中文範例資料庫](../../範例資料庫/中文範例資料庫/)的**圖書館借閱** `library.sql`，從步驟 1 的工具規劃表開始，請 AI 建立一個「圖書館館員助理」MCP Server。
 
-> 🤔 **思考**：如果要讓 AI **新增**資料（例如登記借書），工具要怎麼設計才安全？
+> 🤔 **思考**：如果要讓 AI **新增**資料（例如登記借書），工具要怎麼設計才安全？👉 答案在[單元 4：會寫入資料的 MCP Server](../4_寫入型MCP_server/)
 
 ---
 
 ## 下一步
 
 目前的 MCP Server 只在**自己的電腦**上執行，只有自己能用。
-企業要讓全公司的員工都能使用，就要把它架在伺服器上，並且用 token 管控誰可以連線 👉 [單元 3：企業導入：遠端 MCP 與 token](../3_企業導入_遠端MCP與token/)
+企業要讓全公司的員工都能使用，就要把它架在伺服器上，並且用 token 管控誰可以連線 👉 [單元 2：企業導入：遠端 MCP 與 token](../2_企業導入_遠端MCP與token/)

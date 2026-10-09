@@ -8,7 +8,7 @@ SELECT * FROM employee;
 
 SELECT * FROM client;
 
-/*3. 按薪小低到高取得員工資料*/
+/*3. 按薪水由低到高取得員工資料*/
 
 SELECT * 
 FROM employee
@@ -26,7 +26,7 @@ LIMIT 3;
 SELECT name
 FROM employee;
 
-/*6. 取得所有姓別(不重覆)*/
+/*6. 取得所有性別(不重覆)*/
 
 SELECT DISTINCT sex
 FROM employee;

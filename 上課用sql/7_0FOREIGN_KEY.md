@@ -1,20 +1,23 @@
 ## Foreign Key
 ### Foreign Key 是一個Constraint(限制)
-- 有Foreign Key的table稱為reference table
-- 被參考的稱為parent table
-### Foreign的主要目地
-- 驗証被參考的parent table,一定有這個值
-- 保持reference table和 parent table的一致性
+- 有Foreign Key的table稱為child table(子資料表,也稱為referencing table)
+- 被參考的稱為parent table(父資料表,也稱為referenced table)
+### Foreign Key的主要目的
+- 驗證被參考的parent table,一定有這個值
+- 保持child table和 parent table的一致性
 - 還有加上ON DELETE ACTION ,和 ON UPDATE ACTION的功能
-	- 代表的是parent table的資料如果被刪除或更新時,refernece table該如何處理foreign key的資料
+	- 代表的是parent table的資料如果被刪除或更新時,child table該如何處理foreign key的資料
 ### 也可以不設foreign key,但就無法保證資料的一致性
 
 ### ACTION 支援的語法:
-- SET NULL
-- SET DEFAULT
-- RESTRICT
-- NO ACTION
-- CASCADE
+
+| ACTION | parent 資料被刪除（或更新）時，child 的資料 |
+|---|---|
+| NO ACTION（預設） | 不允許刪除，出現錯誤 |
+| RESTRICT | 不允許刪除，出現錯誤（和 NO ACTION 幾乎相同，差別在檢查的時間點） |
+| SET NULL | foreign key 欄位設為 NULL |
+| SET DEFAULT | foreign key 欄位設為預設值 |
+| CASCADE | 一起被刪除（或一起更新） |
 
 ### 語法:
 
@@ -34,8 +37,9 @@ REFERENCES parent_table(parent_key_columns)
 	- 自動產生或手動加入
 
 ```sql
-DROP TABLE IF EXISTS customers;
+/*先刪除 child table,再刪除 parent table*/
 DROP TABLE IF EXISTS contacts;
+DROP TABLE IF EXISTS customers;
 
 CREATE TABLE customers(
 	customer_id INT GENERATED ALWAYS AS IDENTITY,
@@ -66,13 +70,15 @@ VALUES(1,'John Doe','(408)-111-1234','john.doe@bluebird.dev'),
 	  
 /*沒有設定ON DELETE和ON UPDATE*/
 /*DEFAULT NO ACTION*/
-/*下面所以違反限定,出現錯誤*/
+/*下面因為違反限制,會出現錯誤*/
 DELETE FROM customers
-WHERE customer_id = 1
+WHERE customer_id = 1;
 ```
 
+**錯誤訊息**: `ERROR: update or delete on table "customers" violates foreign key constraint "fk_customer" on table "contacts"`
+
 ### 範例SET NULL設定:
-- reference table 的 foreign key 值被設為NULL
+- child table 的 foreign key 值被設為NULL
 
 ```sql
 DROP TABLE IF EXISTS contacts;
@@ -110,7 +116,7 @@ VALUES(1,'John Doe','(408)-111-1234','john.doe@bluebird.dev'),
 	  
 
 /*ON DELETE SET NULL*/
-/*parent table被刪除,所有refernece 資料被設為NULL*/
+/*parent table的資料被刪除,child table對應的foreign key被設為NULL*/
 DELETE FROM customers
 WHERE customer_id = 1;
 
@@ -118,8 +124,8 @@ SELECT * FROM contacts;
 
 ```
 
-### 範例SET CASCADE設定:
-- parent table的資料被刪除,reference table 也被刪除
+### 範例CASCADE設定:
+- parent table的資料被刪除,child table 對應的資料也被刪除
 
 ```sql
 DROP TABLE IF EXISTS contacts;
@@ -157,7 +163,7 @@ VALUES(1,'John Doe','(408)-111-1234','john.doe@bluebird.dev'),
 	  
 
 /*ON DELETE CASCADE*/
-/*parent table被刪除,所有refernece 資料也被刪除*/
+/*parent table的資料被刪除,child table對應的資料也被刪除*/
 DELETE FROM customers
 WHERE customer_id = 1;
 

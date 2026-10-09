@@ -1,12 +1,12 @@
 # PostgreSQL 匯入 CSV 檔案教學
 
-## 1. 匯入城市資料 - 使用 SQLite 建立的城市.sql
+## 1. 匯入城市資料 - 使用 SQLite 建立的 city.sql
 
 ### 步驟說明
-1. 將 `城市.csv` 透過 DB Browser 匯入
-2. 透過 DB Browser 匯出 `城市.sql`
-3. [下載城市.sql檔案](../範例資料庫/其它範例csv/city.sql)
-4. 使用 pgAdmin4 開啟城市.sql，並執行
+1. 將 `city.csv` 透過 DB Browser for SQLite 匯入
+2. 透過 DB Browser for SQLite 匯出 `city.sql`
+3. [下載 city.sql 檔案](../範例資料庫/其它範例csv/city.sql)
+4. 使用 pgAdmin4 開啟 city.sql，並執行
 
 ## 2. 匯入目前天氣資料
 
@@ -18,8 +18,8 @@
 /* 建立目前天氣資料表 */
 CREATE TABLE IF NOT EXISTS 目前天氣(
     城市 VARCHAR(10),
-    啟始時間 DATE,
-    結束時間 DATE,
+    啟始時間 TIMESTAMPTZ,  /* 資料含時間與時區,例如 2023-07-22T12:00:00+08:00 */
+    結束時間 TIMESTAMPTZ,
     最高溫度 REAL,
     最低溫度 REAL,
     感覺 VARCHAR,
@@ -42,6 +42,16 @@ CREATE TABLE IF NOT EXISTS 目前天氣(
 
 ### 建立關聯式資料表
 
+> 💡 欄位名稱沒有加雙引號時，PostgreSQL 會自動轉成小寫，例如 `stationCode` 實際上是 `stationcode`。
+
+#### 先刪除舊的資料表（如果需要重新建立）
+
+```sql
+-- 有 foreign key 時,要先刪除 child table,再刪除 parent table
+DROP TABLE IF EXISTS station_in_out;
+DROP TABLE IF EXISTS stations;
+```
+
 #### 車站資料表
 ```sql
 CREATE TABLE IF NOT EXISTS stations(
@@ -52,15 +62,14 @@ CREATE TABLE IF NOT EXISTS stations(
     stationAddrTw VARCHAR(50),
     stationTel VARCHAR(20),
     gps VARCHAR(30),
-    haveBike BOOLEAN
+    haveBike BOOLEAN   /* CSV 中的 Y/N 會自動轉成 true/false */
 );
-
--- 刪除資料表（如果需要重新建立）
-DROP TABLE IF EXISTS stations;
 
 -- 查詢資料
 SELECT * FROM stations;
 ```
+
+> 匯入 `台鐵車站資訊.csv` 時，因為資料表多了 `id` 欄位，請在 pgAdmin 匯入畫面的 **Columns** 取消勾選 `id`。
 
 #### 車站進出資料表
 ```sql
@@ -75,9 +84,6 @@ CREATE TABLE IF NOT EXISTS station_in_out(
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-
--- 刪除資料表（如果需要重新建立）
-DROP TABLE IF EXISTS station_in_out;
 ```
 
 ### 查詢範例

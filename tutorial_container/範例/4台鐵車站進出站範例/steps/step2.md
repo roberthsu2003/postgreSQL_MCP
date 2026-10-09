@@ -19,16 +19,19 @@
 這是一個簡單的命令列介面程式，用於查詢台鐵車站資訊和進出站人數
 """
 
-import psycopg2
+import os
 import sys
 
-# 資料庫連線設定
+import psycopg2
+
+# 資料庫連線設定(從環境變數讀取,沒有設定時使用預設值)
+# 在 Dev Container 內連到電腦上的 PostgreSQL 時,DB_HOST 要設為 host.docker.internal
 DB_CONFIG = {
-    "dbname": "postgres",
-    "user": "postgres",
-    "password": "raspberry",
-    "host": "host.docker.internal",
-    "port": "5432"
+    "dbname": os.environ.get("DB_NAME", "postgres"),
+    "user": os.environ.get("DB_USER", "postgres"),
+    "password": os.environ.get("DB_PASSWORD", ""),
+    "host": os.environ.get("DB_HOST", "localhost"),
+    "port": os.environ.get("DB_PORT", "5432"),
 }
 
 def connect_to_database():

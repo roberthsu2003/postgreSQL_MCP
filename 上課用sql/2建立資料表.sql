@@ -1,7 +1,7 @@
 /*create table*/
 CREATE DATABASE sql_tutorial;
 /*
-不需要使用這個指令,這個sql檔是由那一個Query tools打開的,如上方的描素
+不需要使用這個指令,這個sql檔是由那一個Query tools打開的,如上方的描述
 USE sql_tutorial;
 */
 
@@ -12,7 +12,7 @@ postgre 的基本資料類型
 整數數值 -> SMALLINT, INT, SERIAL  #SERIAL可以自動有的AUTOINCREMENT功能
 浮點數型別 -> real, numeric(p,s)
 時間型別 -> DATE,TIME,TIMESTAMP
-UUID型別,比SERIAL更好,值不會重覆
+UUID型別,全世界唯一的值,適合多台主機產生資料(分散式系統)
 */
 
 /*建立表格*/
@@ -27,15 +27,14 @@ CREATE TABLE student(
 DESCRIBE student;
 */
 
-/*刪除表格*/
-DROP TABLE student;
-
 /*修改表格-> 增加欄位*/
-ALTER TABLE student ADD gpa numeric(3,2)
-
+ALTER TABLE student ADD gpa numeric(3,2);
 
 /*修改表格 -> 刪除欄位*/
-ALTER TABLE student DROP gpa
+ALTER TABLE student DROP gpa;
+
+/*刪除表格*/
+DROP TABLE student;
 
 
 /*建立表格 primary key的另一種寫法*/

@@ -28,10 +28,13 @@ def list_all_stations(conn):
         print(f"\n共有 {len(stations)} 個車站")
         cursor.close()
     except Exception as e:
+        conn.rollback()  # 發生錯誤後要 rollback,這個連線才能繼續查詢
         print(f"查詢錯誤: {e}")
 
 def list_stations_by_area(conn, area):
     """列出特定地區的車站"""
+    # 地址中使用「臺」(例如 臺北市),使用者輸入「台」時也要找得到
+    area = area.replace("台", "臺")
     try:
         cursor = conn.cursor()
         cursor.execute('SELECT "stationCode", "stationName", "stationAddrTw" FROM "台鐵車站資訊" WHERE "stationAddrTw" LIKE %s ORDER BY "stationCode"', (f'%{area}%',))
@@ -47,6 +50,7 @@ def list_stations_by_area(conn, area):
         print(f"\n共有 {len(stations)} 個車站")
         cursor.close()
     except Exception as e:
+        conn.rollback()  # 發生錯誤後要 rollback,這個連線才能繼續查詢
         print(f"查詢錯誤: {e}")
 ```
 
@@ -70,7 +74,7 @@ def main():
         elif choice == '1':
             list_all_stations(conn)
         elif choice == '2':
-            area = input("請輸入地區名稱 (例如: 基隆、台北): ")
+            area = input("請輸入地區名稱 (例如: 基隆、臺北): ")
             list_stations_by_area(conn, area)
         elif choice == '3':
             print("功能 3: 查詢車站進出站人數 (尚未實現)")
@@ -96,6 +100,7 @@ def main():
    - 與 `list_all_stations()` 類似，但加入了 WHERE 條件
    - 使用參數化查詢 (`%s`) 防止 SQL 注入攻擊
    - 使用 LIKE 運算符進行模糊匹配，搜尋地址中包含特定地區名稱的車站
+   - 地址寫的是「臺北市」，使用者常打「台北」，所以先把「台」換成「臺」
 
 3. **參數化查詢**：
    - 使用 `%s` 作為參數佔位符
@@ -105,6 +110,10 @@ def main():
 4. **格式化輸出**：
    - 使用 f-string 和 `:<數字>` 語法控制輸出寬度
    - 創建表頭和分隔線，使輸出更易讀
+
+5. **錯誤處理**：
+   - 查詢發生錯誤後，連線會進入「交易失敗」狀態，後面的查詢都會失敗
+   - 所以在 `except` 中要先執行 `conn.rollback()`
 
 ## 執行結果
 
@@ -119,13 +128,13 @@ def main():
 920       八堵          基隆市暖暖區八南里八堵路 142 號
 ...
 
-共有 241 個車站
+共有 243 個車站
 ```
 
 查詢特定地區車站的輸出示例：
 
 ```
-請輸入地區名稱 (例如: 基隆、台北): 基隆
+請輸入地區名稱 (例如: 基隆、臺北): 基隆
 
 === 基隆地區車站列表 ===
 車站代碼   車站名稱        地址

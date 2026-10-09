@@ -17,7 +17,7 @@ UNION
 SELECT branch_name
 FROM branch;
 
-/*出錯,欄位數要樣,資料類型必需一樣*/
+/*出錯:UNION 的每個 SELECT,欄位數量要一樣,資料類型也要相容*/
 SELECT name,sex
 FROM employee
 UNION

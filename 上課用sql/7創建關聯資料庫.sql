@@ -15,7 +15,7 @@ CREATE TABLE employee(
 	sup_id INT,
  	PRIMARY KEY(emp_id)
 );
-/*參考語法網址 https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-foreign-key*/
+/*參考語法網址 https://neon.com/postgresql/tutorial/foreign-key */
 /*創立部門表格*/
 CREATE TABLE branch(
 	branch_id INT,
@@ -43,7 +43,7 @@ CREATE TABLE client(
 	PRIMARY KEY(client_id)
 );
 
-/*創建work_with表格*/
+/*創建works_with表格*/
 CREATE TABLE works_with(
 	emp_id INT,
 	client_id INT,

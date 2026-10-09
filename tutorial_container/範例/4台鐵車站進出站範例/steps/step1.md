@@ -31,16 +31,19 @@ pip install psycopg2-binary
 這是一個簡單的命令列介面程式，用於查詢台鐵車站資訊和進出站人數
 """
 
-import psycopg2
+import os
 import sys
 
-# 資料庫連線設定
+import psycopg2
+
+# 資料庫連線設定(從環境變數讀取,沒有設定時使用預設值)
+# 在 Dev Container 內連到電腦上的 PostgreSQL 時,DB_HOST 要設為 host.docker.internal
 DB_CONFIG = {
-    "dbname": "postgres",
-    "user": "postgres",
-    "password": "raspberry",
-    "host": "host.docker.internal",
-    "port": "5432"
+    "dbname": os.environ.get("DB_NAME", "postgres"),
+    "user": os.environ.get("DB_USER", "postgres"),
+    "password": os.environ.get("DB_PASSWORD", ""),
+    "host": os.environ.get("DB_HOST", "localhost"),
+    "port": os.environ.get("DB_PORT", "5432"),
 }
 
 def connect_to_database():
@@ -80,11 +83,22 @@ if __name__ == "__main__":
 
 1. **引入必要的套件**：
    - `psycopg2`：用於連接 PostgreSQL 資料庫
+   - `os`：讀取環境變數
    - `sys`：用於系統相關操作，如程式退出
 
 2. **資料庫連線設定**：
    - 使用字典儲存資料庫連線參數
    - 包含資料庫名稱、使用者名稱、密碼、主機和連接埠
+   - 密碼從環境變數讀取，**不要寫死在程式裡**（程式會分享給別人、放上 GitHub）
+
+   執行前先設定環境變數：
+
+   ```bash
+   # macOS / Linux
+   export DB_PASSWORD="你的密碼"
+   # Windows PowerShell
+   $env:DB_PASSWORD="你的密碼"
+   ```
 
 3. **連接資料庫函數**：
    - `connect_to_database()` 函數嘗試連接到資料庫

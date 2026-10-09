@@ -16,7 +16,7 @@ sudo apt install postgresql
 
 #### 1.3. 建立postgres user
 
-##### 1.3.1 以root user設定postgres
+##### 1.3.1 切換成 postgres 系統帳號（安裝時自動建立的資料庫管理員）
 
 ```bash
 sudo su postgres
@@ -56,15 +56,14 @@ exit
 sudo vim /etc/postgresql/版本號碼/main/postgresql.conf
 ```
 
-#### 2.2-1 將listen_addresses由'localhost'更改為'*'
-
-#### 2.2-2 將max_connections更改為1000
+#### 2.2 將listen_addresses由'localhost'更改為'*'
 
 ```
-#postgresql.conf
-listen_addresses '*'
-max_connections 1000
+# postgresql.conf
+listen_addresses = '*'
 ```
+
+> `max_connections` 預設是 100，教室使用通常足夠。每個連線都會占用記憶體，Raspberry Pi 記憶體有限，不建議調到 1000。
 
 #### 2.3 更改pg_hba.conf
 
@@ -72,9 +71,20 @@ max_connections 1000
 sudo vim /etc/postgresql/版本號碼/main/pg_hba.conf
 ```
 
-#### 2.4 將IPv4由127.0.0.1/32 更改為 0.0.0.0/0
-#### 2.5 將IPv6由::1/128 更改為 ::/0
-#### 2.6 重啟服務
+#### 2.4 在檔案最後加入允許外部連線的設定
+
+建議**新增**以下兩行，而不是修改原本 `127.0.0.1/32`、`::1/128` 那兩行：
+
+```
+# pg_hba.conf
+# TYPE  DATABASE  USER  ADDRESS      METHOD
+host    all       all   0.0.0.0/0    scram-sha-256
+host    all       all   ::/0         scram-sha-256
+```
+
+> ⚠️ `0.0.0.0/0` 代表**任何 IP** 都可以嘗試連線。只在教室或家中的區網使用；如果只開放給區網，可以改成 `192.168.1.0/24` 這類網段。舊版 PostgreSQL（13 以前）的 METHOD 請改用 `md5`。
+
+#### 2.5 重啟服務
 
 ```bash
 sudo service postgresql restart
@@ -108,7 +118,7 @@ psql -U pi -d postgres -h localhost
 - **4.2.1 psql語法**
 
 ```
-postgres-# \du
+postgres=# \du
 ```
 
 - **4.2.2 sql語法**
@@ -118,33 +128,34 @@ SELECT * FROM pg_roles;
 ```
 
 #### 4.3 新增使用者
-**沒有建立資料表的權限**
+**新使用者沒有建立資料庫的權限**（PostgreSQL 15 起，預設也無法在 `public` schema 建立資料表）
 
-```
-#sql-新增使用者
+```sql
+-- 新增使用者
 CREATE USER new_user WITH PASSWORD 'password';
 ```
 
 **增加使用者建立資料庫的權限**
 
-```
-#sql
-ALTER USER user WITH CREATEDB;
+```sql
+-- user 是 SQL 的保留字,不能當作使用者名稱,這裡用 new_user
+ALTER USER new_user WITH CREATEDB;
 ```
 
-**新增使用者,並同時給予建立資庫的權利**
+**新增使用者,並同時給予建立資料庫的權限**
 
-```
+```sql
 CREATE ROLE your_username WITH LOGIN PASSWORD 'your_password' CREATEDB;
 ```
 
 #### 4.4 刪除使用者
 
-```
-#sql
+```sql
 DROP USER IF EXISTS user_1;
-DROP USER IF EXISTS user_1,user_2...,user_n; 
+DROP USER IF EXISTS user_1, user_2, user_3;  -- 一次刪除多個
 ```
 
-#### 4.3 使用者可以透過pgAdmin4連線至postgres server
+#### 4.5 使用者可以透過pgAdmin4連線至postgres server
+
+依照[第 3 節](#3-pgadmin4設定)的方式，用新使用者的帳號密碼建立連線。
 

@@ -1,4 +1,8 @@
+# 引導式 CLI 專案：子查詢查詢工具
+
 Python Command Line 專案，結合 SQL 查詢功能，並且採用**函數框架先行**的教學方式。
+
+> 使用[練習/7Foreign_key](../../../練習/7Foreign_key/) 建立的 `stations`、`gate_count` 資料表。範例 3 的 `sales`、`products` 資料表需要學生自己設計（也可以改用[中文範例資料庫](../../../範例資料庫/中文範例資料庫/)的 shop.sql）。
 
 ## 專案架構建議
 

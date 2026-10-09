@@ -39,7 +39,7 @@ WHERE b IS NULL;
 SELECT a, fruit_a, b, fruit_b
 FROM basket_a RIGHT JOIN basket_b ON fruit_a = fruit_b;
 
-/*RIGHT JOIN with WHERE Cause*/
+/*RIGHT JOIN with WHERE Clause*/
 SELECT a, fruit_a, b, fruit_b
 FROM basket_a RIGHT JOIN basket_b ON fruit_a = fruit_b
 WHERE a IS NULL;

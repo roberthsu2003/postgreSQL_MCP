@@ -10,7 +10,7 @@ WHERE emp_id=(
 	WHERE branch_name = '研發'
 );
 
-/*2找出對單一位客戶錯售金額超過50000的員工名字*/
+/*2找出對單一位客戶銷售金額達到50000以上的員工名字*/
 /*子查詢有多筆資料,必需使用IN(),相同於OR*/
 SELECT name
 FROM employee

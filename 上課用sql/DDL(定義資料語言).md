@@ -23,5 +23,6 @@ DDL主要用於**定義與管理資料庫結構**，包括：
 ### 補充說明
 
 - DDL指令會直接影響資料庫的結構，與資料內容的增刪改查（如INSERT、UPDATE、DELETE）不同，後者屬於DML（資料操作語言）。
-- DDL操作通常會自動提交（auto-commit），無法回復。
+- 在 MySQL、Oracle 等資料庫中，DDL 會自動提交（auto-commit），無法回復。
+- **PostgreSQL 不一樣**：DDL 也可以放在交易（`BEGIN` … `ROLLBACK`）中，執行錯了還能回復（`CREATE DATABASE`、`DROP DATABASE` 除外）。
 

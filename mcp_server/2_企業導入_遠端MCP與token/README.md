@@ -1,4 +1,4 @@
-# 單元 3：企業導入：遠端 MCP Server 與 token
+# 單元 2：企業導入：遠端 MCP Server 與 token
 
 > **本單元目標**：把 MCP Server 架在伺服器上，讓多位員工用 Claude Desktop **帶著自己的 token** 連線，並記錄每個人查了什麼。
 
@@ -17,7 +17,7 @@
 
 ## 1. 從「自己用」到「全公司用」
 
-| | 單元 1、2：本機（stdio） | 單元 3：遠端（Streamable HTTP） |
+| | 第 5 章、單元 1：本機（stdio） | 單元 2：遠端（Streamable HTTP） |
 |---|---|---|
 | MCP Server 在哪裡執行 | 自己的電腦，由 Claude Desktop 啟動 | 公司的伺服器，一直開著 |
 | 誰可以用 | 只有自己 | 所有拿到 token 的員工 |
@@ -65,7 +65,7 @@ token 就像**員工的門禁卡**：
 | `low_stock_products` | 需要補貨的商品 | 「哪些商品缺貨了？」 |
 | `top_customers` | 年度消費金額最高的會員（最多 50 筆） | 「2025 年前 10 名的 VIP 會員」 |
 
-和單元 2 比較，多了兩個部分：
+和單元 1 比較，多了兩個部分：
 
 ```python
 class TokenCheck:
@@ -90,7 +90,7 @@ def audit(tool, **params):
 ### 4.2 安裝套件
 
 ```bash
-cd mcp_server/3_企業導入_遠端MCP與token
+cd mcp_server/2_企業導入_遠端MCP與token
 uv venv
 uv pip install -r requirements.txt
 ```
@@ -199,7 +199,7 @@ sequenceDiagram
     end
 ```
 
-編輯 `claude_desktop_config.json`（位置請參考[單元 1](../1_postgres_mcp_pro/#4-設定-claude-desktop)）：
+編輯 `claude_desktop_config.json`（位置請參考[第 5 章](../../MCP操作資料庫/1_postgres_mcp_pro/#4-設定-claude-desktop)）：
 
 ```json
 {
@@ -357,7 +357,7 @@ flowchart LR
 
 ## 7. 請 AI 把你的 MCP Server 改成遠端版
 
-把單元 2 做好的 MCP Server 交給 AI，加上遠端連線和 token：
+把單元 1 做好的 MCP Server 交給 AI，加上遠端連線和 token：
 
 ````markdown
 請把這份 MCP Server(server.py)改成可以讓多人遠端連線的版本:
@@ -402,6 +402,6 @@ flowchart LR
 
 ## 下一步
 
-👉 [單元 4：範例集](../4_範例集/)：5 個部門的 AI 助理，每個都可以用本機或遠端 + token 執行
+👉 [單元 3：範例集](../3_範例集/)：5 個部門的 AI 助理，每個都可以用本機或遠端 + token 執行
 
 👉 [期末專題](../#期末專題)：用 AI 為一間「公司」打造需要 token 的 MCP Server

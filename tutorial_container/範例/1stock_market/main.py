@@ -22,9 +22,9 @@ def getData(country:list[str]):
             '''
             cursor.execute(sql,(country,)) #必需使用tuple
             all_data = cursor.fetchall()
-            return all_data
-    
-    conn.close()
+
+    conn.close() #with conn 不會關閉連線,要自己關閉(要在 return 之前)
+    return all_data
 
 @st.cache_data
 def get_country():
@@ -37,9 +37,9 @@ def get_country():
             '''
             cursor.execute(sql)
             all_country = cursor.fetchall()
-            return all_country
-    
-    conn.close()
+
+    conn.close() #with conn 不會關閉連線,要自己關閉(要在 return 之前)
+    return all_country
 
 
 
@@ -48,7 +48,10 @@ with st.sidebar:
     st.title("請選擇股票市場:")
     input_dict = dict(get_country()) #將list(tuple)轉為dict
     options:list[str] = st.multiselect("請選擇",input_dict.values(),default='台灣',placeholder="請選擇市場",label_visibility="hidden")
-    print(options)
+
+if not options:
+    st.info("請至少選擇一個市場")
+    st.stop() #沒有選擇時 IN () 會造成 SQL 語法錯誤
 
 all_data = getData(tuple(options)) #傳入必需使用tuple
 dataFrame = pd.DataFrame(all_data,columns=['日期','收盤','成交量','代號','國家'])

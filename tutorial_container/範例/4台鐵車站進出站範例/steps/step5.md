@@ -3,7 +3,7 @@
 ## 學習重點
 - 進階 SQL 查詢
 - 資料分組與聚合
-- 子查詢與複雜條件
+- 多資料表 JOIN 與聚合
 - 資料分析與解釋
 
 ## 程式碼說明
@@ -46,35 +46,30 @@ def show_statistics(conn):
             status = "提供" if have_bike == 'Y' else "不提供"
             print(f"{status}自行車服務的車站: {count} 個")
 
-        # 3. 進出站人數最多的前 5 個車站 (如果有進出站人數資料)
-        try:
-            print("\n=== 進出站人數最多的前 5 個車站 ===")
-            cursor.execute("""
-                SELECT
-                    s."stationName",
-                    SUM(p."進站人數") as total_in,
-                    SUM(p."出站人數") as total_out,
-                    SUM(p."進站人數" + p."出站人數") as total
-                FROM "每日各站進出站人數" p
-                JOIN "台鐵車站資訊" s ON p."車站代碼" = s."stationCode"
-                GROUP BY s."stationName"
-                ORDER BY total DESC
-                LIMIT 5
-            """)
+        # 3. 進出站人數最多的前 5 個車站
+        print("\n=== 進出站人數最多的前 5 個車站 ===")
+        cursor.execute("""
+            SELECT
+                s."stationName",
+                SUM(p."進站人數") as total_in,
+                SUM(p."出站人數") as total_out,
+                SUM(p."進站人數" + p."出站人數") as total
+            FROM "每日各站進出站人數" p
+            JOIN "台鐵車站資訊" s ON p."車站代碼" = s."stationCode"
+            GROUP BY s."stationName"
+            ORDER BY total DESC
+            LIMIT 5
+        """)
 
-            top_stations = cursor.fetchall()
-            if top_stations:
-                print(f"{'車站名稱':<10}{'進站總人數':<15}{'出站總人數':<15}{'總人數':<15}")
-                print("-" * 55)
-                for station, in_count, out_count, total in top_stations:
-                    print(f"{station:<10}{in_count:<15}{out_count:<15}{total:<15}")
-            else:
-                print("沒有進出站人數資料")
-        except Exception as e:
-            print(f"進出站人數統計錯誤: {e}")
+        top_stations = cursor.fetchall()
+        print(f"{'車站名稱':<10}{'進站總人數':<15}{'出站總人數':<15}{'總人數':<15}")
+        print("-" * 55)
+        for station, in_count, out_count, total in top_stations:
+            print(f"{station:<10}{in_count:<15}{out_count:<15}{total:<15}")
 
         cursor.close()
     except Exception as e:
+        conn.rollback()
         print(f"統計分析錯誤: {e}")
 ```
 
@@ -98,7 +93,7 @@ def main():
         elif choice == '1':
             list_all_stations(conn)
         elif choice == '2':
-            area = input("請輸入地區名稱 (例如: 基隆、台北): ")
+            area = input("請輸入地區名稱 (例如: 基隆、臺北): ")
             list_stations_by_area(conn, area)
         elif choice == '3':
             station = input("請輸入車站名稱: ")
@@ -128,9 +123,8 @@ def main():
    - 使用 `JOIN` 連接「台鐵車站資訊」和「每日各站進出站人數」表
    - 根據車站代碼建立關聯
 
-4. **巢狀錯誤處理**：
-   - 使用巢狀的 `try-except` 結構
-   - 即使某個統計分析失敗，其他分析仍然可以繼續執行
+4. **錯誤處理**：
+   - 發生錯誤時執行 `conn.rollback()`，讓連線恢復正常，回到選單後還能繼續使用其它功能
 
 ## 執行結果
 
@@ -138,39 +132,41 @@ def main():
 
 ```
 === 各縣市車站數量統計 ===
-台北市    : 15 個車站
-新北市    : 24 個車站
-基隆市    : 7 個車站
-桃園市    : 11 個車站
-新竹市    : 3 個車站
-新竹縣    : 8 個車站
-苗栗縣    : 15 個車站
-台中市    : 18 個車站
-彰化縣    : 14 個車站
-南投縣    : 6 個車站
-雲林縣    : 11 個車站
-嘉義市    : 2 個車站
-嘉義縣    : 14 個車站
-台南市    : 17 個車站
-高雄市    : 23 個車站
-屏東縣    : 24 個車站
-宜蘭縣    : 16 個車站
-花蓮縣    : 17 個車站
-台東縣    : 16 個車站
+花蓮縣       : 25 個車站
+新北市       : 24 個車站
+臺中市       : 23 個車站
+宜蘭縣       : 22 個車站
+屏東縣       : 20 個車站
+高雄市       : 18 個車站
+臺南市       : 17 個車站
+苗栗縣       : 16 個車站
+臺東縣       : 14 個車站
+新竹縣       : 14 個車站
+彰化縣       : 9 個車站
+基隆市       : 7 個車站
+桃園市       : 7 個車站
+新竹市       : 6 個車站
+臺北市       : 5 個車站
+雲林縣       : 5 個車站
+南投縣       : 5 個車站
+嘉義縣       : 4 個車站
+嘉義市       : 2 個車站
 
 === 自行車服務統計 ===
-提供自行車服務的車站: 165 個
-不提供自行車服務的車站: 76 個
+提供自行車服務的車站: 131 個
+不提供自行車服務的車站: 112 個
 
 === 進出站人數最多的前 5 個車站 ===
-車站名稱    進站總人數       出站總人數       總人數
+車站名稱      進站總人數          出站總人數          總人數            
 -------------------------------------------------------
-台北      12345678        12234567        24580245
-板橋      8765432         8654321         17419753
-高雄      7654321         7543210         15197531
-台中      6543210         6432109         12975319
-新竹      5432109         5321098         10753207
+臺北        88421749       87261561       175683310      
+桃園        40453667       41594793       82048460       
+臺南        37454585       38168096       75622681       
+中壢        37395534       37896114       75291648       
+臺中        36872010       36827889       73699899       
 ```
+
+> 以上是使用[台鐵車站進出資訊_全部整合](../../../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/)（2020～2023 年）的實際執行結果。
 
 ## 練習
 

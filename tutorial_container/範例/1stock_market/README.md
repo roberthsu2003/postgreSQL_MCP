@@ -5,7 +5,6 @@
 ```
 psycopg2
 pandas
-pandas-datareader
 Pyarrow
 yfinance
 streamlit

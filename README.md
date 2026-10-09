@@ -1,6 +1,6 @@
 # PostgreSQL 學習指南
 
-從安裝、SQL 語法、Python 串接，到實戰專案與 AI（MCP）應用的 PostgreSQL 完整課程。
+從安裝、SQL 語法、用 AI 操作資料庫，到 Python 串接、實戰專案與自訂 MCP Server 的 PostgreSQL 完整課程。
 
 ## 學習路線
 
@@ -10,9 +10,19 @@
 | 2 | [範例資料庫](#2-範例資料庫) | 匯入練習用的資料 |
 | 3 | [SQL 語法](#3-sql-語法) | DDL 建立結構、DML 操作資料、關聯資料庫 |
 | 4 | [SQL 練習](#4-sql-練習) | 用範例資料庫動手寫查詢 |
-| 5 | [Python 串接](#5-python-串接psycopg2) | 用 psycopg2 從 Python 存取資料庫 |
-| 6 | [實戰專案](#6-實戰專案) | CLI 與 Streamlit 資料應用 |
-| 7 | [AI 查詢資料庫](#7-ai-查詢資料庫mcp) | 用 AI 建立 MCP Server，讓企業員工用 Claude Desktop + token 查詢資料庫 |
+| 5 | [用 AI 操作資料庫（MCP）](#5-用-ai-操作資料庫mcp) | 用中文請 AI 透過 MCP 執行 SQL，並檢查 AI 寫的 SQL |
+| 6 | [Python 串接](#6-python-串接psycopg2) | 用 psycopg2 從 Python 存取資料庫 |
+| 7 | [實戰專案](#7-實戰專案) | CLI 與 Streamlit 資料應用 |
+| 8 | [自訂 MCP Server](#8-自訂-mcp-server企業導入) | 用 AI 建立 MCP Server，讓企業員工用 Claude Desktop + token 查詢資料庫 |
+
+```mermaid
+flowchart LR
+    A["1-2<br/>環境與資料"] --> B["3-4<br/>SQL 語法與練習"] --> C["5<br/>用 AI 操作資料庫<br/>（現成的 MCP）"]
+    C --> D["6-7<br/>Python 與實戰專案"] --> E["8<br/>自訂 MCP Server<br/>（企業導入）"]
+
+    classDef mcp fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
+    class C,E mcp
+```
 
 📖 [參考文件](#參考文件)
 
@@ -129,7 +139,18 @@ Password : 使用者密碼
 
 ---
 
-## 5. Python 串接（psycopg2）
+## 5. 用 AI 操作資料庫（MCP）
+
+學完 SQL 之後，改成**用中文請 AI 透過 MCP 執行 SQL**，你負責檢查 AI 寫的 SQL 對不對。 👉 [章節總覽](./MCP操作資料庫/)
+
+| 單元 | 你的角色 | 內容 |
+|:---:|---|---|
+| [5-1 使用現成的 MCP Server](./MCP操作資料庫/1_postgres_mcp_pro/) | 使用者 | 安裝 Postgres MCP Pro、設定 Claude Desktop，用中文查詢資料庫 |
+| [5-2 用 MCP 實作 SQL 語法](./MCP操作資料庫/2_用MCP實作SQL語法/) ⭐ | 下指令、檢查 SQL | 依照第 3 章的順序，請 AI 建表、新增、查詢、修改、刪除、JOIN、GROUP BY、子查詢、JSON |
+
+---
+
+## 6. Python 串接（psycopg2）
 
 | # | 單元 | 內容 |
 |:---:|---|---|
@@ -142,7 +163,7 @@ Password : 使用者密碼
 
 ---
 
-## 6. 實戰專案
+## 7. 實戰專案
 
 | 專案 | 介面 | 說明 |
 |---|---|---|
@@ -153,16 +174,16 @@ Password : 使用者密碼
 
 ---
 
-## 7. AI 查詢資料庫（MCP）
+## 8. 自訂 MCP Server（企業導入）
 
-企業導入 MCP Server 後，員工就能在 Claude Desktop 等 AI 桌面應用程式中，**用中文直接查詢公司資料庫**，連線時必須使用 token 驗證身分。 👉 [章節總覽](./mcp_server/)
+企業導入 MCP Server 後，員工就能在 Claude Desktop 等 AI 桌面應用程式中，**用中文直接查詢公司資料庫**，連線時必須使用 token 驗證身分。程式都**請 AI 撰寫**，你負責規劃與驗收。 👉 [章節總覽](./mcp_server/)
 
 | 單元 | 你的角色 | 內容 |
 |:---:|---|---|
-| [1. 使用現成的 MCP Server](./mcp_server/1_postgres_mcp_pro/) | 使用者 | 安裝 Postgres MCP Pro，體驗用自然語言查詢資料庫 |
-| [2. 用 AI 建立自己的 MCP Server](./mcp_server/2_用AI建立MCP_server/) ⭐ | 需求設計者、驗收者 | 規劃工具 → 請 AI 寫程式 → 測試 → 接上 Claude Desktop |
-| [3. 企業導入：遠端 MCP 與 token](./mcp_server/3_企業導入_遠端MCP與token/) ⭐ | 系統導入者 | 架設遠端 MCP Server，員工帶 token 連線，留下稽核紀錄 |
-| [4. 範例集](./mcp_server/4_範例集/) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理 |
+| [1. 用 AI 建立自己的 MCP Server](./mcp_server/1_用AI建立MCP_server/) ⭐ | 需求設計者、驗收者 | 規劃工具 → 請 AI 寫程式 → 測試 → 接上 Claude Desktop |
+| [2. 企業導入：遠端 MCP 與 token](./mcp_server/2_企業導入_遠端MCP與token/) ⭐ | 系統導入者 | 架設遠端 MCP Server，員工帶 token 連線，留下稽核紀錄 |
+| [3. 範例集](./mcp_server/3_範例集/) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理 |
+| [4. 會寫入資料的 MCP Server](./mcp_server/4_寫入型MCP_server/) | 需求設計者、驗收者 | 圖書館借還書：只開放特定寫入、檢查寫在程式裡、交易與稽核 |
 | [期末專題](./mcp_server/#期末專題) | 全部 | 用 AI 為一間「公司」打造專屬的 MCP Server |
 
 ---

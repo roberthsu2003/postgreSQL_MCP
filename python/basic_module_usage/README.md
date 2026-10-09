@@ -13,7 +13,7 @@ cur = conn.cursor()
 cur.execute("CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);")
 
 # 加入資料
-# 傳遞資料進立SQL
+# 傳遞資料進入SQL(使用 %s,不要自己組字串)
 cur.execute("INSERT INTO test (num, data) VALUES (%s, %s)",
 		      (100, "abc'def"))
 

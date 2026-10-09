@@ -1,21 +1,21 @@
 /*constraints*/
-DROP TABLE student;
+DROP TABLE IF EXISTS student;
 CREATE TABLE student(
 	student_id SERIAL,
 	name VARCHAR(20) NOT NULL,/*不可以是NULL*/
 	major VARCHAR(20) UNIQUE,/*不可以重覆*/
 	PRIMARY KEY(student_id)
 );
-SELECT * FROM student
+SELECT * FROM student;
 
 /*出錯 NOT NULL*/
-INSERT INTO student VALUES(1, NULL, '英語')
+INSERT INTO student VALUES(1, NULL, '英語');
 
-/*出錯 major UNIQUE*/
-INSERT INTO student VALUES(1, '小白', '英語')
-INSERT INTO student VALUES(1, '小黑', '英語')
+/*出錯 major UNIQUE(student_id 要不同,才會看到 UNIQUE 的錯誤)*/
+INSERT INTO student VALUES(1, '小白', '英語');
+INSERT INTO student VALUES(2, '小黑', '英語');
 
-DROP TABLE student;
+DROP TABLE IF EXISTS student;
 CREATE TABLE student(
 	student_id SERIAL,
 	name VARCHAR(20),
@@ -23,11 +23,11 @@ CREATE TABLE student(
 	PRIMARY KEY(student_id)
 );
 /*可以,因為有預設值*/
-INSERT INTO student VALUES(1, '小黑')
+INSERT INTO student VALUES(1, '小黑');
 
 
 
-DROP TABLE student;
+DROP TABLE IF EXISTS student;
 CREATE TABLE student(
 	student_id SERIAL,
 	name VARCHAR(20),
@@ -38,7 +38,4 @@ CREATE TABLE student(
 /*使用SERIAL會自動遞增*/
 INSERT INTO student(name,major) VALUES('小黑', '英語');
 INSERT INTO student(name,major) VALUES('小白', '歷史');
-SELECT * FROM student
-
-
-
+SELECT * FROM student;

@@ -4,25 +4,25 @@ SELECT *
 FROM client
 WHERE phone LIKE '%335';
 
-/*1. 取得電話號碼開頭是254的客戶 */
+/*2. 取得電話號碼開頭是254的客戶 */
 SELECT * 
 FROM client
 WHERE phone LIKE '254%';
 
-/*1. 取得電話號碼中有354的客戶 */
+/*3. 取得電話號碼中有354的客戶 */
 
 SELECT * 
 FROM client
 WHERE phone LIKE '%354%';
 
-/*2. 取得姓艾的客戶 */
+/*4. 取得姓艾的客戶 */
 
 SELECT * 
 FROM client
 WHERE client_name LIKE '艾%';
 
-/*3. 取得生日在12月的員工*/
+/*5. 取得生日在12月的員工*/
 /*date操作https://www.commandprompt.com/education/how-to-query-date-and-time-in-postgresql*/
 SELECT *
 FROM employee
-WHERE DATE_PART('MONTH',birth_date) = 12 
+WHERE DATE_PART('MONTH',birth_date) = 12;

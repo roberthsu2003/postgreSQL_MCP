@@ -1,5 +1,5 @@
 /*修改和刪除*/
-DROP TABLE student;
+DROP TABLE IF EXISTS student;
 CREATE TABLE student(
 	student_id SERIAL,
 	name VARCHAR(20),
@@ -58,5 +58,5 @@ DELETE FROM student
 WHERE score <> 80;
 
 /*刪除所有資料*/
-DELETE FROM student
+DELETE FROM student;
 

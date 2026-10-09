@@ -45,17 +45,29 @@
 
 ## 資料庫設定
 
-本專案使用 MCP 的 vscode_postgres server 連接到 PostgreSQL 資料庫。資料庫連線設定如下：
+### 1. 匯入資料
 
-```python
-DB_CONFIG = {
-    "dbname": "postgres",
-    "user": "postgres",
-    "password": "raspberry",
-    "host": "host.docker.internal",
-    "port": "5432"
-}
+使用[台鐵車站進出資訊_全部整合](../../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/)：先執行 `建立進出站的ddl.sql`，再依序匯入「台鐵車站資訊」和「每日各站進出站人數」兩個 CSV。
+
+### 2. 設定連線
+
+程式使用 psycopg2 連線，連線資訊從**環境變數**讀取，沒有設定時使用預設值：
+
+| 環境變數 | 預設值 | 說明 |
+|---|---|---|
+| `DB_NAME` | `postgres` | 資料庫名稱 |
+| `DB_USER` | `postgres` | 使用者 |
+| `DB_PASSWORD` | （空白） | 密碼 |
+| `DB_HOST` | `localhost` | 在 Dev Container 內連到電腦上的 PostgreSQL 時，改成 `host.docker.internal` |
+| `DB_PORT` | `5432` | 連接埠 |
+
+```bash
+# macOS / Linux
+export DB_PASSWORD="你的密碼"
+python main.py
 ```
+
+> 💡 開發這個專案時，可以搭配 [MCP Server](../../../mcp_server/) 讓 AI 直接查看資料表結構，再請 AI 協助撰寫程式。
 
 ## 資料表結構
 
@@ -69,16 +81,16 @@ DB_CONFIG = {
 | stationAddrTw | VARCHAR | 車站地址 |
 | stationTel | VARCHAR | 車站電話 |
 | gps | VARCHAR | GPS 座標 |
-| haveBike | CHAR(1) | 是否提供自行車服務 (Y/N) |
+| haveBike | VARCHAR | 是否提供自行車服務 (Y/N) |
 
 ### 每日各站進出站人數
 
-此表的結構需要根據實際資料調整，但預期包含以下欄位：
-
-- 車站代碼
-- 日期
-- 進站人數
-- 出站人數
+| 欄位名稱 | 資料類型 | 說明 |
+|---------|---------|------|
+| 日期 | DATE | 日期 |
+| 車站代碼 | INTEGER | 對應「台鐵車站資訊」的 stationCode（foreign key） |
+| 進站人數 | INTEGER | 當天進站人數 |
+| 出站人數 | INTEGER | 當天出站人數 |
 
 ## 學習資源
 
