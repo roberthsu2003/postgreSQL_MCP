@@ -1,4 +1,7 @@
-# 使用 Postgres MCP Pro
+# 單元 1：使用現成的 MCP Server（Postgres MCP Pro）
+
+> **本單元目標**：先安裝**別人寫好的** MCP Server，體驗「AI 直接查詢資料庫」是什麼感覺，並學會在 Claude Desktop 設定 MCP Server。
+> 你的角色是**使用者**。
 
 [Postgres MCP Pro](https://github.com/crystaldba/postgres-mcp) 是一個開源的 PostgreSQL MCP Server,除了讓 AI 執行 SQL 之外,還提供查詢計畫分析、索引建議、資料庫健康檢查等功能。
 
@@ -114,6 +117,20 @@ postgresql://postgres:yourpassword@localhost:5432/practice
 | 受限模式 | `--access-mode=restricted` | 只能執行唯讀交易,並限制執行時間 | 上課練習、正式環境 |
 | 不受限模式 | `--access-mode=unrestricted` | 可以新增、修改、刪除資料與資料表 | 開發環境 |
 
+```mermaid
+flowchart LR
+    Q["AI 產生的 SQL"] --> M{"access mode"}
+    M -->|restricted| R["只允許 SELECT 等唯讀指令<br/>並限制執行時間"]
+    M -->|unrestricted| U["INSERT、UPDATE、DELETE、<br/>DROP TABLE 都可以執行"]
+    R --> OK["✔ 適合上課、正式環境"]
+    U --> WARN["⚠ 只在開發環境使用"]
+
+    classDef safe fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    classDef danger fill:#fef2f2,stroke:#dc2626,color:#7f1d1d
+    class R,OK safe
+    class U,WARN danger
+```
+
 > **建議**:上課時先使用 `restricted`,避免 AI 誤刪資料。需要讓 AI 幫忙建立資料表或新增資料時,再改成 `unrestricted`。
 
 ## 6. Postgres MCP Pro 提供的工具
@@ -131,6 +148,30 @@ postgresql://postgres:yourpassword@localhost:5432/practice
 | `analyze_db_health` | 資料庫健康檢查(快取命中率、連線、索引、vacuum 等) |
 
 > 你不需要記住這些工具名稱,只要用自然語言提問,Claude 會自己決定要呼叫哪一個工具。
+
+例如問「列出 2025 年銷售數量最多的前 10 項商品」，Claude 通常會這樣使用工具：
+
+```mermaid
+sequenceDiagram
+    actor 你
+    participant AI as Claude Desktop
+    participant MCP as Postgres MCP Pro
+    participant DB as PostgreSQL
+
+    你->>AI: 列出 2025 年銷售數量最多的前 10 項商品
+    AI->>MCP: list_objects（有哪些資料表？）
+    MCP-->>AI: categories, products, orders, order_items…
+    AI->>MCP: get_object_details（products、order_items 有哪些欄位？）
+    MCP-->>AI: 欄位名稱、型別、外來鍵
+    Note over AI: 依照欄位<b>自己寫出 SQL</b>
+    AI->>MCP: execute_sql（SELECT … JOIN … GROUP BY …）
+    MCP->>DB: 執行 SQL
+    DB-->>MCP: 查詢結果
+    MCP-->>AI: 查詢結果
+    AI-->>你: 整理成表格回答
+```
+
+> 💡 注意：這裡的 SQL 是 **AI 自己寫的**，可能寫錯。下一個單元會改成「公司寫好 SQL，AI 只挑選工具」。
 
 ## 7. 實作練習
 
@@ -257,4 +298,5 @@ Supabase 也有自己的 [官方 MCP Server](https://supabase.com/docs/guides/ge
 
 ## 下一步
 
-[自己建立一個 MCP Server](../2_自建MCP_server/)
+Postgres MCP Pro 讓 AI 可以執行**任何** SQL,適合工程師使用。
+企業要開放給一般員工時,通常只開放**設計好的查詢** 👉 [單元 2:用 AI 建立自己的 MCP Server](../2_用AI建立MCP_server/)

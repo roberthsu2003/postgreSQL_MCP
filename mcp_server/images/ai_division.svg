@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="370" viewBox="0 0 900 370" font-family="'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="898" height="368" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="450" y="40" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">不會寫程式，也能建立 MCP Server</text>
+
+  <!-- 你 -->
+  <rect x="40" y="70" width="260" height="230" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="170" y="104" text-anchor="middle" font-size="20" font-weight="700" fill="#115e59">你</text>
+  <text x="170" y="128" text-anchor="middle" font-size="14" fill="#475569">需求設計者・驗收者</text>
+  <g font-size="15" fill="#1e293b">
+    <text x="66" y="170">✔ 想清楚使用者會問什麼</text>
+    <text x="66" y="203">✔ 規劃要提供哪些工具</text>
+    <text x="66" y="236">✔ 測試每一個工具</text>
+    <text x="66" y="269">✔ 判斷能不能上線</text>
+  </g>
+
+  <!-- AI -->
+  <rect x="600" y="70" width="260" height="230" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+  <text x="730" y="104" text-anchor="middle" font-size="20" font-weight="700" fill="#5b21b6">AI</text>
+  <text x="730" y="128" text-anchor="middle" font-size="14" fill="#475569">工程師（Claude Code 等）</text>
+  <g font-size="15" fill="#1e293b">
+    <text x="626" y="170">✔ 寫程式</text>
+    <text x="626" y="203">✔ 修正錯誤</text>
+    <text x="626" y="236">✔ 依照回饋修改</text>
+    <text x="626" y="269">✔ 解釋程式在做什麼</text>
+  </g>
+
+  <!-- 往來 -->
+  <g stroke="#475569" stroke-width="2">
+    <line x1="302" y1="150" x2="596" y2="150" marker-end="url(#a)"/>
+    <line x1="596" y1="210" x2="302" y2="210" marker-end="url(#a)"/>
+    <line x1="302" y1="270" x2="596" y2="270" marker-end="url(#a)"/>
+  </g>
+  <g font-size="14" text-anchor="middle">
+    <rect x="335" y="125" width="230" height="22" rx="4" fill="#ffffff"/>
+    <text x="450" y="141" fill="#0f766e" font-weight="700">① 工具規劃表、資料表結構、提示詞</text>
+    <rect x="365" y="185" width="170" height="22" rx="4" fill="#ffffff"/>
+    <text x="450" y="201" fill="#7c3aed" font-weight="700">② 產生程式 server.py</text>
+    <rect x="355" y="245" width="190" height="22" rx="4" fill="#ffffff"/>
+    <text x="450" y="261" fill="#0f766e" font-weight="700">③ 錯誤訊息、修改需求</text>
+  </g>
+
+  <rect x="210" y="318" width="480" height="34" rx="17" fill="#fef9c3" stroke="#ca8a04"/>
+  <text x="450" y="341" text-anchor="middle" font-size="15" font-weight="700" fill="#713f12">你不用會寫，但要看得懂「5 項驗收檢查清單」</text>
+</svg>

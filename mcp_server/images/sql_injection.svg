@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" font-family="'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="898" height="418" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">SQL Injection：同一個惡意輸入，兩種寫法的結果</text>
+
+  <!-- 共同輸入 -->
+  <rect x="235" y="58" width="430" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="250" y="83" font-size="14" fill="#475569">AI 傳入的站名：</text>
+  <text x="358" y="83" font-size="15" font-family="Menlo,Consolas,'PingFang TC',monospace" font-weight="700" fill="#b91c1c">臺北'; DROP TABLE 車站; --</text>
+  <line x1="350" y1="98" x2="230" y2="128" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="550" y1="98" x2="670" y2="128" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- 左:正確 -->
+  <rect x="30" y="132" width="405" height="268" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="52" y="164" font-size="18" font-weight="700" fill="#166534">✔ 參數化查詢（%s）</text>
+  <rect x="52" y="178" width="361" height="66" rx="8" fill="#ffffff" stroke="#86efac"/>
+  <g font-family="Menlo,Consolas,'PingFang TC',monospace" font-size="15" fill="#0f172a">
+    <text x="68" y="205">SELECT * FROM 車站</text>
+    <text x="68" y="230">WHERE 站名 = <tspan fill="#15803d" font-weight="700">%s</tspan></text>
+  </g>
+  <text x="52" y="272" font-size="14" fill="#334155">值和 SQL <tspan font-weight="700">分開傳送</tspan>，整串輸入只會被當成「文字」</text>
+  <line x1="232" y1="284" x2="232" y2="308" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="52" y="314" width="361" height="68" rx="8" fill="#dcfce7"/>
+  <text x="232" y="342" text-anchor="middle" font-size="15" font-weight="700" fill="#166534">找不到名稱是這串文字的車站</text>
+  <text x="232" y="366" text-anchor="middle" font-size="14" fill="#166534">→ 回傳空結果，資料安全</text>
+
+  <!-- 右:危險 -->
+  <rect x="465" y="132" width="405" height="268" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="487" y="164" font-size="18" font-weight="700" fill="#b91c1c">✘ 直接把字串接進 SQL</text>
+  <rect x="487" y="178" width="361" height="66" rx="8" fill="#ffffff" stroke="#fca5a5"/>
+  <g font-family="Menlo,Consolas,'PingFang TC',monospace" font-size="15" fill="#0f172a">
+    <text x="503" y="205">WHERE 站名 = '臺北';</text>
+    <text x="503" y="230" fill="#b91c1c" font-weight="700">DROP TABLE 車站; --'</text>
+  </g>
+  <text x="487" y="272" font-size="14" fill="#334155">輸入和 SQL <tspan font-weight="700">混在一起</tspan>，多出了一道刪除指令</text>
+  <line x1="667" y1="284" x2="667" y2="308" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="487" y="314" width="361" height="68" rx="8" fill="#fee2e2"/>
+  <text x="667" y="342" text-anchor="middle" font-size="15" font-weight="700" fill="#b91c1c">資料表被刪除！</text>
+  <text x="667" y="366" text-anchor="middle" font-size="14" fill="#b91c1c">（唯讀連線是最後一道防線）</text>
+</svg>

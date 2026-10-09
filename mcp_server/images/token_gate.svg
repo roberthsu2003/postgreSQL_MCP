@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" font-family="'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif">
+  <defs>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="898" height="358" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">token 就像公司的門禁卡</text>
+
+  <!-- 請求 -->
+  <g>
+    <rect x="30" y="75" width="300" height="56" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+    <text x="46" y="99" font-size="15" font-weight="700" fill="#9a3412">林美玲（業務部）</text>
+    <text x="46" y="121" font-size="13" font-family="Menlo,Consolas,monospace" fill="#334155">Authorization: Bearer kV3x…</text>
+
+    <rect x="30" y="160" width="300" height="56" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+    <text x="46" y="184" font-size="15" font-weight="700" fill="#334155">陌生人</text>
+    <text x="46" y="206" font-size="13" fill="#64748b">沒有帶 token</text>
+
+    <rect x="30" y="245" width="300" height="56" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+    <text x="46" y="269" font-size="15" font-weight="700" fill="#334155">已離職的員工</text>
+    <text x="46" y="291" font-size="13" fill="#64748b">token 已從 tokens.json 刪除</text>
+  </g>
+
+  <g stroke="#475569" stroke-width="2">
+    <line x1="330" y1="103" x2="386" y2="103" marker-end="url(#n)"/>
+    <line x1="330" y1="188" x2="386" y2="188" marker-end="url(#n)"/>
+    <line x1="330" y1="273" x2="386" y2="273" marker-end="url(#n)"/>
+  </g>
+
+  <!-- 門禁 -->
+  <rect x="390" y="65" width="140" height="246" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="2.5"/>
+  <text x="460" y="160" text-anchor="middle" font-size="18" font-weight="700" fill="#92400e">門禁</text>
+  <text x="460" y="184" text-anchor="middle" font-size="13" fill="#78350f">TokenCheck</text>
+  <text x="460" y="214" text-anchor="middle" font-size="13" fill="#78350f">比對</text>
+  <text x="460" y="232" text-anchor="middle" font-size="13" fill="#78350f">tokens.json</text>
+
+  <!-- 結果 -->
+  <line x1="530" y1="103" x2="586" y2="103" stroke="#16a34a" stroke-width="2.5" marker-end="url(#g)"/>
+  <rect x="590" y="75" width="280" height="56" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="606" y="99" font-size="15" font-weight="700" fill="#166534">✔ 允許連線，執行工具</text>
+  <text x="606" y="121" font-size="13" fill="#334155">稽核紀錄：林美玲 呼叫 sales_summary</text>
+
+  <line x1="530" y1="188" x2="586" y2="188" stroke="#dc2626" stroke-width="2.5" marker-end="url(#r)"/>
+  <rect x="590" y="160" width="280" height="56" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="606" y="184" font-size="15" font-weight="700" fill="#b91c1c">✘ 401 未授權</text>
+  <text x="606" y="206" font-size="13" fill="#334155">任何知道網址的人都會被擋下</text>
+
+  <line x1="530" y1="273" x2="586" y2="273" stroke="#dc2626" stroke-width="2.5" marker-end="url(#r)"/>
+  <rect x="590" y="245" width="280" height="56" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="606" y="269" font-size="15" font-weight="700" fill="#b91c1c">✘ 401 未授權</text>
+  <text x="606" y="291" font-size="13" fill="#334155">刪除 token，立刻停用</text>
+
+  <text x="450" y="340" text-anchor="middle" font-size="14" fill="#475569">一人一組 token・不放進程式和 git・正式環境一定要用 HTTPS</text>
+</svg>

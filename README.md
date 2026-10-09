@@ -12,7 +12,7 @@
 | 4 | [SQL 練習](#4-sql-練習) | 用範例資料庫動手寫查詢 |
 | 5 | [Python 串接](#5-python-串接psycopg2) | 用 psycopg2 從 Python 存取資料庫 |
 | 6 | [實戰專案](#6-實戰專案) | CLI 與 Streamlit 資料應用 |
-| 7 | [AI 查詢資料庫](#7-ai-查詢資料庫mcp) | 讓 Claude 透過 MCP 查詢、分析資料庫 |
+| 7 | [AI 查詢資料庫](#7-ai-查詢資料庫mcp) | 用 AI 建立 MCP Server，讓企業員工用 Claude Desktop + token 查詢資料庫 |
 
 📖 [參考文件](#參考文件)
 
@@ -155,12 +155,15 @@ Password : 使用者密碼
 
 ## 7. AI 查詢資料庫（MCP）
 
-讓 AI 助理（Claude Desktop）透過 MCP 直接查詢、分析 PostgreSQL 資料庫。 👉 [MCP 概念介紹](./mcp_server/)
+企業導入 MCP Server 後，員工就能在 Claude Desktop 等 AI 桌面應用程式中，**用中文直接查詢公司資料庫**，連線時必須使用 token 驗證身分。 👉 [章節總覽](./mcp_server/)
 
-| # | 單元 | 內容 |
+| 單元 | 你的角色 | 內容 |
 |:---:|---|---|
-| 1 | [使用 Postgres MCP Pro](./mcp_server/1_postgres_mcp_pro/) | 安裝現成的 MCP Server，用自然語言查詢資料庫 |
-| 2 | [自己建立 MCP Server](./mcp_server/2_自建MCP_server/) | 用 Python + psycopg2 寫一個自己的 MCP Server |
+| [1. 使用現成的 MCP Server](./mcp_server/1_postgres_mcp_pro/) | 使用者 | 安裝 Postgres MCP Pro，體驗用自然語言查詢資料庫 |
+| [2. 用 AI 建立自己的 MCP Server](./mcp_server/2_用AI建立MCP_server/) ⭐ | 需求設計者、驗收者 | 規劃工具 → 請 AI 寫程式 → 測試 → 接上 Claude Desktop |
+| [3. 企業導入：遠端 MCP 與 token](./mcp_server/3_企業導入_遠端MCP與token/) ⭐ | 系統導入者 | 架設遠端 MCP Server，員工帶 token 連線，留下稽核紀錄 |
+| [4. 範例集](./mcp_server/4_範例集/) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理 |
+| [期末專題](./mcp_server/#期末專題) | 全部 | 用 AI 為一間「公司」打造專屬的 MCP Server |
 
 ---
 
