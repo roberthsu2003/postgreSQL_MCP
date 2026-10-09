@@ -1,24 +1,91 @@
 # 範例資料庫
 
-## DVD Rental DataBase(DVD出租資料庫)
+## 該用哪一個？
 
-### DVD Rental DataBase資料架構
+| 範例 | 語言 | 大小 | 匯入方式 | 適合 |
+|---|---|---|---|---|
+| ⭐ [繁體中文範例資料庫](#1-繁體中文範例資料庫推薦) | 中文 | 50–90 KB | 執行一個 `.sql` 檔 | **初學者首選**：網路商店、學校選課、圖書館借閱 |
+| [DVD Rental](#2-dvd-rental-database) | 英文 | 540 KB | pgAdmin Restore | 搭配 [postgresql-tutorial](https://neon.com/postgresql/tutorial) 官方教學 |
+| [台鐵車站進出站](#3-台鐵車站進出站人數) | 中文 | 9.4 MB | 匯入 CSV | 真實資料、大量資料的 GROUP BY 與 JOIN |
+| [其它 CSV 檔](#4-其它範例-csv-檔) | 中／英 | 4 KB–35 MB | 匯入 CSV | 練習 CREATE TABLE 與匯入 CSV |
 
-![](./images/dvd-rental-sample-database-diagram.png)
+---
 
-### 下載DVD Rental Database(postgreSQL)
-- [下載位址](./dvd_rental_database/)
-- 解壓縮後會產生一個dvdrental的資料夾
-- 使用pgadmin4
-- 建立一個dvdrental的資料庫
-- restore(注意是資料夾)如下圖
+## 1. 繁體中文範例資料庫（推薦）
+
+📁 [中文範例資料庫](./中文範例資料庫/)
+
+| 資料庫 | 檔案 | 資料表 | 適合練習 |
+|---|---|---|---|
+| 🛒 網路商店 | [shop.sql](./中文範例資料庫/shop.sql) | 分類、商品、會員、訂單、訂單明細、員工 | SELECT、WHERE、JOIN、GROUP BY、日期函式、自我連結 |
+| 🎓 學校選課 | [school.sql](./中文範例資料庫/school.sql) | 學系、教師、學生、課程、選課 | 多對多 JOIN、LEFT JOIN、HAVING、子查詢、CASE WHEN |
+| 📚 圖書館借閱 | [library.sql](./中文範例資料庫/library.sql) | 出版社、作者、書籍、會員、借閱 | 日期計算、IS NULL、LEFT JOIN、視窗函式 RANK |
+
+**三步驟匯入**（以 pgAdmin 為例）：
+
+1. 建立資料庫：`CREATE DATABASE practice;`
+2. 選取 `practice` → **Tools → Query Tool** → 📂 開啟 `shop.sql`
+3. 按 ▶ 執行
+
+DBeaver、psql、Docker 的匯入方法，以及 ER 圖和練習題（附參考答案），請看 👉 [中文範例資料庫說明](./中文範例資料庫/)
+
+---
+
+## 2. DVD Rental Database
+
+PostgreSQL 教學網站最常用的英文範例資料庫（DVD 出租店），共 15 張資料表。
+
+![DVD Rental 資料架構](./images/dvd-rental-sample-database-diagram.png)
+
+**匯入步驟**
+
+1. 下載 [dvdrental.zip](./dvd_rental_database/dvdrental.zip)，解壓縮後會得到 `dvdrental` **資料夾**
+2. 在 pgAdmin 建立一個名為 `dvdrental` 的資料庫
+3. 在 `dvdrental` 上按右鍵 → **Restore**
+4. Format 選 **Directory**，Filename 選剛才解壓縮的 `dvdrental` 資料夾（注意是選資料夾，不是檔案）
+
+<details>
+<summary>pgAdmin Restore 畫面截圖</summary>
 
 ![](./images/pic1.png)
 ![](./images/pic2.png)
 
+</details>
 
-> 出處:https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/
+> 出處：[PostgreSQL Sample Database](https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/)
 
-## 其它範例csv檔
+---
 
-- [其它範例csv下載位址](./其它範例csv)
+## 3. 台鐵車站進出站人數
+
+真實的公開資料，兩張有外來鍵關係的資料表，適合體驗「資料量變大」之後的查詢。
+
+📁 [台鐵車站進出資訊_全部整合](./其它範例csv/台鐵車站進出資訊_全部整合/)
+
+| 檔案 | 內容 | 筆數 | 大小 |
+|---|---|---|---|
+| [建立進出站的ddl.sql](./其它範例csv/台鐵車站進出資訊_全部整合/建立進出站的ddl.sql) | 建立兩張資料表的 SQL | — | 4 KB |
+| 台鐵車站資訊_202507131441.csv | 車站代碼、站名、地址、GPS | 243 | 28 KB |
+| 每日各站進出站人數_202507131441.csv | 每天每站的進站、出站人數 | 約 40 萬 | 9.4 MB |
+
+匯入順序：先執行 DDL 建表 → 匯入**車站資訊** → 再匯入**每日進出站人數**（因為有外來鍵，順序不能顛倒）。CSV 匯入方法請看 [將 csv 匯入資料表](../上課用sql/2_1匯入csv.md)。
+
+---
+
+## 4. 其它範例 CSV 檔
+
+📁 [其它範例csv](./其它範例csv/)
+
+| 檔案 | 內容 | 筆數 | 大小 |
+|---|---|---|---|
+| [目前天氣.csv](./其它範例csv/目前天氣.csv) | 各縣市溫度與體感 | 22 | 4 KB |
+| [114下半年職能進修課程.csv](./其它範例csv/114下半年職能進修課程.csv) | 進修課程資訊（欄位內含逗號與引號） | 34 | 20 KB |
+| [台鐵車站資訊.csv](./其它範例csv/台鐵車站資訊.csv) | 台鐵車站基本資料 | 243 | 24 KB |
+| [city.csv](./其它範例csv/city.csv) ／ [city.sql](./其它範例csv/city.sql) | 美國城市人口（英文） | 274 | 8 KB |
+| [artists.csv](./其它範例csv/artists.csv) | 音樂藝人（英文） | 275 | 8 KB |
+| [employees.csv](./其它範例csv/employees.csv) | 員工資料（英文） | 8 | 4 KB |
+| [invoices.csv](./其它範例csv/invoices.csv) | 發票資料（英文） | 412 | 32 KB |
+| [world.csv](./其它範例csv/world.csv) | 全球 COVID-19 每日統計 | 約 18 萬 | ⚠️ 35 MB |
+| [每日各站進出站人數20190423-20231231.zip](./其它範例csv/每日各站進出站人數20190423-20231231.zip) | 台鐵每日進出站人數（依年份分檔） | — | 2.3 MB（解壓後 9 MB） |
+
+> ⚠️ `world.csv` 檔案很大，GitHub 網頁無法預覽，請直接下載。
