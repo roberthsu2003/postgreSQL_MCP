@@ -1,7 +1,7 @@
-# 5-1：使用現成的 MCP Server（Postgres MCP Pro）
+# 3-1：安裝與設定 Postgres MCP Pro
 
 > **本單元目標**：安裝**別人寫好的** MCP Server，體驗「AI 直接查詢資料庫」是什麼感覺，並學會在 Claude Desktop 設定 MCP Server。
-> 你的角色是**使用者**。　[← 回第 5 章](../)
+> 你的角色是**使用者**。　[← 回第 3 章](../)
 
 [Postgres MCP Pro](https://github.com/crystaldba/postgres-mcp) 是一個開源的 PostgreSQL MCP Server,除了讓 AI 執行 SQL 之外,還提供查詢計畫分析、索引建議、資料庫健康檢查等功能。
 
@@ -13,7 +13,7 @@
 	docker run --name my-postgres -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres
 	```
 
-2. **已經匯入範例資料庫**(繁體中文範例資料庫 `practice`、台鐵進出站資料),請參考[範例資料庫](../../範例資料庫/)
+2. **已經匯入範例資料庫**:依照第 2 章,把[網路商店 shop.sql](../../範例資料庫/中文範例資料庫/) 匯入 `practice` 資料庫
 3. **安裝 [Claude Desktop](https://claude.ai/download)**
 4. **安裝 Docker**(推薦)**或 Python 3.12 以上 + [uv](https://docs.astral.sh/uv/getting-started/installation/)**
 
@@ -177,34 +177,9 @@ sequenceDiagram
 
 > 💡 注意：這裡的 SQL 是 **AI 自己寫的**，可能寫錯。下一個單元會改成「公司寫好 SQL，AI 只挑選工具」。
 
-## 7. 實作練習
+## 7. 開始使用
 
-### 練習一:認識網路商店資料庫
-
-先匯入[繁體中文範例資料庫](../../範例資料庫/中文範例資料庫/)的 `shop.sql` 到 `practice` 資料庫,在 Claude Desktop 輸入:
-
-- 「practice 資料庫有哪些資料表?」
-- 「說明 customers、orders、order_items、products 四個資料表之間的關聯」
-- 「列出 2025 年銷售數量最多的前 10 項商品」
-- 「把上一題使用的 SQL 給我看,並逐行解釋」
-
-> 觀察重點:Claude 會先呼叫 `list_objects`、`get_object_details` 了解資料表結構,再呼叫 `execute_sql`。把 Claude 產生的 SQL 拿到 pgAdmin 執行,比對結果是否一致。
-
-### 練習二:台鐵進出站資料
-
-將 `DATABASE_URI` 改成台鐵資料所在的資料庫,重新啟動 Claude Desktop 後提問:
-
-- 「2022 年進站人數最多的前 5 個車站是哪些?」
-- 「台北車站每個月的平均進站人數,用表格呈現」
-- 「哪些車站有提供 YouBike(haveBike)?」
-
-### 練習三:效能分析
-
-- 「幫我分析這個查詢的執行計畫:`SELECT * FROM 每日各站進出站人數 WHERE 車站代碼 = 1000`」
-- 「這個查詢應該加什麼索引?加了之後預估成本差多少?」
-- 「幫我做一次資料庫健康檢查」
-
-> 對照課程中的 [JOIN](../../上課用sql/JOIN.md)、[中文範例資料庫的練習題](../../範例資料庫/中文範例資料庫/),試著先自己寫出 SQL,再和 AI 的答案比較。
+設定完成後，👉 [3-2:第一次用中文查詢資料庫](../2_用中文查詢資料庫/),不用寫 SQL,直接用中文查詢網路商店的資料。
 
 ## 8. 連線到 Supabase(雲端 PostgreSQL)
 
@@ -303,4 +278,4 @@ Supabase 也有自己的 [官方 MCP Server](https://supabase.com/docs/guides/ge
 
 ## 下一步
 
-👉 [5-2:用 MCP 實作 SQL 語法](../2_用MCP實作SQL語法/):切換成 `unrestricted` 模式,請 AI 依照你學過的 SQL 語法建立資料表、新增、修改、查詢資料,並由你檢查 AI 寫的 SQL。
+👉 [3-2:第一次用中文查詢資料庫](../2_用中文查詢資料庫/)

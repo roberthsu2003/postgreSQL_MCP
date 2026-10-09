@@ -172,4 +172,37 @@ SELECT * FROM contacts;
 ```
 
 
+---
 
+## 🤖 不寫 SQL，用 Prompt 完成
+
+> 在 Claude Desktop 使用[第 3 章](../MCP操作資料庫/2_用中文查詢資料庫/#6-準備第-4-章設定可寫入的連線)設定的 **`postgres-sql`**（可寫入，連到 `sql_tutorial` 資料庫）。
+> 每個 prompt 執行後，點開工具呼叫（`execute_sql`），**對照 AI 執行的 SQL 和上面學的是否一樣**。
+
+**Prompt 1：NO ACTION（預設）**
+
+> 用 postgres-sql 建立兩張資料表（如果存在先刪除）：
+> - customers：customer_id 用 GENERATED ALWAYS AS IDENTITY 自動產生，是主鍵；customer_name 是 VARCHAR(255) 必填
+> - contacts：contact_id 一樣自動產生，是主鍵；customer_id 參考 customers（不設定 ON DELETE）；contact_name 是 VARCHAR(255) 必填；phone VARCHAR(15)；email VARCHAR(100)
+>
+> 新增客戶 BlueBird Inc、Dolphin LLC。新增聯絡人：John Doe（BlueBird，(408)-111-1234，john.doe@bluebird.dev）、Jane Doe（BlueBird，(408)-111-1235，jane.doe@bluebird.dev）、David Wright（Dolphin，(408)-222-1234，david.wright@dolphin.dev）。
+
+> 刪除 customer_id 是 1 的客戶，如果出錯告訴我原因。
+
+✅ 刪除失敗，錯誤訊息是 `violates foreign key constraint`，對照上面的「範例NO_ACTION設定」。
+
+**Prompt 2：SET NULL**
+
+> 把兩張資料表刪除後重建，這次客戶被刪除時，聯絡人的 customer_id 要設為 NULL。資料和剛才一樣。然後刪除 customer_id 1 的客戶，再列出所有聯絡人。
+
+✅ John Doe、Jane Doe 的 customer_id 變成 `NULL`。注意 AI 刪除資料表的順序：要先刪 contacts（child），再刪 customers（parent）。
+
+**Prompt 3：CASCADE**
+
+> 再重建一次，這次客戶被刪除時，他的聯絡人也一起刪除。資料一樣，刪除 customer_id 1 後列出所有聯絡人。
+
+✅ 只剩下 David Wright。
+
+**Prompt 4：整理觀念**
+
+> 用這三次的結果，說明 NO ACTION、SET NULL、CASCADE 的差別，什麼情況適合用哪一種？

@@ -36,3 +36,13 @@ DELETE FROM users WHERE id = 1;
 總結來說，**DML是操作資料庫中資料的語言，包含查詢、插入、更新和刪除，是資料庫應用中不可或缺的指令集。**
 
 
+---
+
+## 🤖 不寫 SQL，用 Prompt 完成
+
+> 在 Claude Desktop 使用[第 3 章](../MCP操作資料庫/2_用中文查詢資料庫/#6-準備第-4-章設定可寫入的連線)設定的 **`postgres-sql`**（可寫入，連到 `sql_tutorial` 資料庫）。
+> 每個 prompt 執行後，點開工具呼叫（`execute_sql`），**對照 AI 執行的 SQL 和上面學的是否一樣**。
+
+> 用一張有 name、major、score 欄位的 student 資料表當例子，分別寫出 SELECT、INSERT、UPDATE、DELETE 的 SQL，並用一句話說明每一個在做什麼。**先不要執行。**
+
+✅ 對照上面的「簡單示例」。注意 AI 寫的 UPDATE 和 DELETE **有沒有 WHERE**。

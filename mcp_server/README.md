@@ -1,6 +1,6 @@
 # 第 8 章：自訂 MCP Server（企業導入）
 
-> 📌 **先修**：[第 5 章 用 AI 操作資料庫（MCP）](../MCP操作資料庫/)，了解 MCP 是什麼、會設定 Claude Desktop。
+> 📌 **先修**：[第 3 章 安裝 MCP](../MCP操作資料庫/)，以及[第 4 章 SQL 語法](../README.md#4-sql-語法)（看得懂 AI 寫的 SQL）。
 
 公司的資料都在資料庫裡，但大部分員工不會寫 SQL。
 **企業只要導入 MCP Server，員工就能在 Claude Desktop 這類 AI 桌面應用程式裡，直接用中文問問題，AI 會自己去資料庫查資料。**
@@ -49,7 +49,7 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    P["<b>第 5 章</b><br/>使用現成的 MCP<br/><i>先修</i>"]
+    P["<b>第 3 章</b><br/>使用現成的 MCP<br/><i>先修</i>"]
     U1["<b>單元 1</b><br/>用 AI 建立 MCP Server<br/><i>需求設計者・驗收者</i>"]
     U2["<b>單元 2</b><br/>遠端 MCP + token<br/><i>系統導入者</i>"]
     U3["<b>單元 3</b><br/>範例集<br/><i>5 個部門的 AI 助理</i>"]
@@ -101,7 +101,7 @@ AI 寫的程式不一定正確，所以你仍然要**看得懂關鍵的 5 個地
 | **MCP Client** | AI 這一端，例如 Claude Desktop、Claude Code、VS Code |
 | **MCP Server** | 提供工具給 AI 呼叫的程式，例如「查詢銷售統計」「列出缺貨商品」 |
 | **Tool（工具）** | MCP Server 裡的一個功能，AI 會依照工具的說明決定要不要呼叫 |
-| **stdio（本機）** | MCP Server 在自己的電腦上執行，只有自己能用（第 5 章、單元 1） |
+| **stdio（本機）** | MCP Server 在自己的電腦上執行，只有自己能用（第 3 章、單元 1） |
 | **Streamable HTTP（遠端）** | MCP Server 架在伺服器上，用網址連線，多人共用（單元 2） |
 | **Token** | 一串很長的亂數密碼，就像公司的門禁卡，連線時要出示 |
 | **Bearer Token** | 把 token 放在 HTTP 標頭 `Authorization: Bearer <token>` 傳給伺服器的方式 |

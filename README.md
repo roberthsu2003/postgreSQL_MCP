@@ -1,6 +1,6 @@
 # PostgreSQL 學習指南
 
-從安裝、SQL 語法、用 AI 操作資料庫，到 Python 串接、實戰專案與自訂 MCP Server 的 PostgreSQL 完整課程。
+從安裝開始就用 AI（MCP）查詢資料庫，再學 SQL 語法、Python 串接、實戰專案，最後自訂 MCP Server 的 PostgreSQL 完整課程。
 
 ## 學習路線
 
@@ -8,20 +8,20 @@
 |:---:|---|---|
 | 1 | [環境安裝](#1-環境安裝) | 安裝 PostgreSQL Server 與管理工具 |
 | 2 | [範例資料庫](#2-範例資料庫) | 匯入練習用的資料 |
-| 3 | [SQL 語法](#3-sql-語法) | DDL 建立結構、DML 操作資料、關聯資料庫 |
-| 4 | [SQL 練習](#4-sql-練習) | 用範例資料庫動手寫查詢 |
-| 5 | [用 AI 操作資料庫（MCP）](#5-用-ai-操作資料庫mcp) | 用中文請 AI 透過 MCP 執行 SQL，並檢查 AI 寫的 SQL |
+| 3 | [安裝 MCP，用中文查詢資料庫](#3-安裝-mcp用中文查詢資料庫) | 還不會 SQL，就能用中文請 AI 查詢資料庫 |
+| 4 | [SQL 語法](#4-sql-語法) | 每一課先學 SQL，再用 prompt 讓 AI 做一次並對照 |
+| 5 | [SQL 練習](#5-sql-練習) | 用範例資料庫動手寫查詢 |
 | 6 | [Python 串接](#6-python-串接psycopg2) | 用 psycopg2 從 Python 存取資料庫 |
 | 7 | [實戰專案](#7-實戰專案) | CLI 與 Streamlit 資料應用 |
 | 8 | [自訂 MCP Server](#8-自訂-mcp-server企業導入) | 用 AI 建立 MCP Server，讓企業員工用 Claude Desktop + token 查詢資料庫 |
 
 ```mermaid
 flowchart LR
-    A["1-2<br/>環境與資料"] --> B["3-4<br/>SQL 語法與練習"] --> C["5<br/>用 AI 操作資料庫<br/>（現成的 MCP）"]
-    C --> D["6-7<br/>Python 與實戰專案"] --> E["8<br/>自訂 MCP Server<br/>（企業導入）"]
+    A["1-2<br/>環境與<br/>範例資料庫"] --> B["3<br/>安裝 MCP<br/>用中文查詢"] --> C["4-5<br/>SQL 語法與練習<br/>每課搭配 prompt"]
+    C --> D["6-7<br/>Python 與<br/>實戰專案"] --> E["8<br/>自訂 MCP Server<br/>（企業導入）"]
 
     classDef mcp fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
-    class C,E mcp
+    class B,E mcp
 ```
 
 📖 [參考文件](#參考文件)
@@ -84,7 +84,21 @@ Password : 使用者密碼
 
 ---
 
-## 3. SQL 語法
+## 3. 安裝 MCP，用中文查詢資料庫
+
+還沒學 SQL 也沒關係：安裝 MCP 後，**用中文問問題，AI 就會查詢第 2 章匯入的範例資料庫**。 👉 [章節總覽](./MCP操作資料庫/)
+
+| 單元 | 內容 |
+|:---:|---|
+| [3-1 安裝與設定 Postgres MCP Pro](./MCP操作資料庫/1_postgres_mcp_pro/) | 安裝 Postgres MCP Pro，在 Claude Desktop 設定連到範例資料庫（唯讀） |
+| [3-2 第一次用中文查詢資料庫](./MCP操作資料庫/2_用中文查詢資料庫/) ⭐ | 不寫 SQL，用中文查詢網路商店資料（附答案）；設定第 4 章要用的「可寫入」連線 |
+
+---
+
+## 4. SQL 語法
+
+每一課先學 SQL，最後的「🤖 **不寫 SQL，用 Prompt 完成**」再用中文 prompt 讓 AI 做出一樣的結果，並對照 AI 寫的 SQL 和你學的是否相同。
+
 
 ### DDL：資料定義語言
 
@@ -113,7 +127,7 @@ Password : 使用者密碼
 
 ### 關聯資料庫實作案例
 
-從零建立一個關聯資料庫，並練習各種查詢。建議先看[適合初學者的版本](./上課用sql/7.0適合初學者關聯資料庫.md)。
+從零建立一個關聯資料庫，並練習各種查詢。建議先看[適合初學者的版本](./上課用sql/7.0適合初學者關聯資料庫.md)。第 2～9 課的 prompt 請看 👉 [🤖 關聯資料庫實作：用 Prompt 操作](./上課用sql/關聯資料庫實作_用Prompt操作.md)
 
 | # | 單元 | # | 單元 |
 |:---:|---|:---:|---|
@@ -125,7 +139,7 @@ Password : 使用者密碼
 
 ---
 
-## 4. SQL 練習
+## 5. SQL 練習
 
 | 練習 | 使用資料 | 主題 |
 |---|---|---|
@@ -136,17 +150,6 @@ Password : 使用者密碼
 | [JOIN](./練習/8JOIN) | 台鐵進出站 | 合併查詢 |
 | [GROUP BY、HAVING](./練習/9HAVING) | 台鐵進出站 | 分組統計 |
 | [SubQuery](./練習/10subQuery) | 台鐵進出站 | 子查詢 |
-
----
-
-## 5. 用 AI 操作資料庫（MCP）
-
-學完 SQL 之後，改成**用中文請 AI 透過 MCP 執行 SQL**，你負責檢查 AI 寫的 SQL 對不對。 👉 [章節總覽](./MCP操作資料庫/)
-
-| 單元 | 你的角色 | 內容 |
-|:---:|---|---|
-| [5-1 使用現成的 MCP Server](./MCP操作資料庫/1_postgres_mcp_pro/) | 使用者 | 安裝 Postgres MCP Pro、設定 Claude Desktop，用中文查詢資料庫 |
-| [5-2 用 MCP 實作 SQL 語法](./MCP操作資料庫/2_用MCP實作SQL語法/) ⭐ | 下指令、檢查 SQL | 依照第 3 章的順序，請 AI 建表、新增、查詢、修改、刪除、JOIN、GROUP BY、子查詢、JSON |
 
 ---
 

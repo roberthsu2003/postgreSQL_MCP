@@ -17,7 +17,7 @@
 
 ## 1. 從「自己用」到「全公司用」
 
-| | 第 5 章、單元 1：本機（stdio） | 單元 2：遠端（Streamable HTTP） |
+| | 第 3 章、單元 1：本機（stdio） | 單元 2：遠端（Streamable HTTP） |
 |---|---|---|
 | MCP Server 在哪裡執行 | 自己的電腦，由 Claude Desktop 啟動 | 公司的伺服器，一直開著 |
 | 誰可以用 | 只有自己 | 所有拿到 token 的員工 |
@@ -199,7 +199,7 @@ sequenceDiagram
     end
 ```
 
-編輯 `claude_desktop_config.json`（位置請參考[第 5 章](../../MCP操作資料庫/1_postgres_mcp_pro/#4-設定-claude-desktop)）：
+編輯 `claude_desktop_config.json`（位置請參考[第 3 章](../../MCP操作資料庫/1_postgres_mcp_pro/#4-設定-claude-desktop)）：
 
 ```json
 {
