@@ -48,7 +48,7 @@ Shall the new role be a superuser? (y/n) y
 exit
 ```
 
-### 2. 環境設定(主要是要讓外部pgadmin4可以連線)
+### 2. 環境設定(主要是要讓外部的 DBeaver 可以連線)
 
 #### 2.1 更改postgresql.conf
 
@@ -90,20 +90,23 @@ host    all       all   ::/0         scram-sha-256
 sudo service postgresql restart
 ```
 
-### 3. pgadmin4設定
+### 3. DBeaver 設定
 
-#### 3.1 註冊新server
-#### 3.2 建立server name
-![](./images/pic1.png)
-#### 3.3 建立connection 
-- ##### Host name/address
-- ##### Port 使用預設
-- ##### Maintenance DataBase 使用預設
-- ##### Username
-- ##### Password
-- ##### Save Password
+1. 上方選單 **Database → New Database Connection**，選擇 **PostgreSQL**
+2. 填入連線資訊：
 
-![](./images/pic2.png)
+	| 欄位 | 填入 |
+	|---|---|
+	| Host | Raspberry Pi 的 IP 或主機名稱（例如 `raspberrypi.local`） |
+	| Port | `5432`（預設） |
+	| Database | `postgres`（預設） |
+	| Username | 1.3 建立的使用者，例如 `pi` |
+	| Password | 1.3 設定的密碼，勾選 **Save password** |
+
+3. **PostgreSQL** 分頁勾選 **Show all databases**
+4. 按 **Test Connection**，成功後按 **Finish**
+
+> 連不上時，確認第 2 節的 `listen_addresses`、`pg_hba.conf` 都改好並重啟服務，以及 Raspberry Pi 的防火牆有開放 5432 埠。
 
 ### 4. 使用命令列(psql)增加使用者
 #### 4.1 登入
@@ -155,7 +158,7 @@ DROP USER IF EXISTS user_1;
 DROP USER IF EXISTS user_1, user_2, user_3;  -- 一次刪除多個
 ```
 
-#### 4.5 使用者可以透過pgAdmin4連線至postgres server
+#### 4.5 使用者可以透過 DBeaver 連線至 postgres server
 
-依照[第 3 節](#3-pgadmin4設定)的方式，用新使用者的帳號密碼建立連線。
+依照[第 3 節](#3-dbeaver-設定)的方式，用新使用者的帳號密碼建立連線。
 

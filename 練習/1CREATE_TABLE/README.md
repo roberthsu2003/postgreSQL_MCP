@@ -1,6 +1,7 @@
 ## 練習建立資料表
 
-> 💡 資料表多了 `id` 欄位時，在 pgAdmin 匯入畫面的 **Columns** 取消勾選 `id`，或在 CSV 中有 id 欄位時直接對應。
+> 💡 用 DBeaver 匯入：在資料表上按右鍵 → **Import Data** → **CSV**（詳細步驟見[匯入 CSV](../../上課用sql/2_1匯入csv.md)）。
+> CSV 的欄位名稱和資料表不同時，在 **Tables mapping** 頁面按 **Columns...** 手動對應；資料表多出來的 `id` 欄位（SERIAL）不用對應，會自動產生。
 
 - 使用city.csv檔
 - 使用employees.csv檔
@@ -19,7 +20,11 @@ CREATE TABLE IF NOT EXISTS artists(
 
 ```
 
-![](./images/pic2.png)
+匯入後查詢確認：
+
+```sql
+SELECT * FROM artists;   -- 275 筆,第一筆是 1 | AC/DC
+```
 
 ---
 
@@ -35,7 +40,11 @@ CREATE TABLE IF NOT EXISTS city(
 );
 ```
 
-![](./images/pic1.png)
+匯入後查詢確認：
+
+```sql
+SELECT * FROM city;      -- 274 筆,第一筆是 1 | Abilene | 115930
+```
 
 ---
 
@@ -57,7 +66,11 @@ CREATE TABLE IF NOT EXISTS invoices(
 );
 ```
 
-![](./images/pic3.png)
+匯入後查詢確認：
+
+```sql
+SELECT * FROM invoices;  -- 412 筆
+```
 
 ---
 
@@ -84,7 +97,11 @@ CREATE TABLE IF NOT EXISTS employees(
 );
 ```
 
-![](./images/pic4.png)
+匯入後查詢確認：
+
+```sql
+SELECT * FROM employees; -- 8 筆
+```
 
 
 

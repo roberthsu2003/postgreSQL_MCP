@@ -20,13 +20,13 @@
 | 🎓 學校選課 | [school.sql](./中文範例資料庫/school.sql) | 學系、教師、學生、課程、選課 | 多對多 JOIN、LEFT JOIN、HAVING、子查詢、CASE WHEN |
 | 📚 圖書館借閱 | [library.sql](./中文範例資料庫/library.sql) | 出版社、作者、書籍、會員、借閱 | 日期計算、IS NULL、LEFT JOIN、視窗函式 RANK |
 
-**三步驟匯入**（以 pgAdmin 為例）：
+**三步驟匯入**（使用 DBeaver）：
 
-1. 建立資料庫：`CREATE DATABASE practice;`
-2. 選取 `practice` → **Tools → Query Tool** → 📂 開啟 `shop.sql`
-3. 按 ▶ 執行
+1. 建立資料庫：在連線底下的 **Databases** 按右鍵 → **Create New Database**，名稱輸入 `practice`
+2. **File → Open File** 開啟 `shop.sql`，工具列的 **Active datasource** 選擇 `practice`
+3. 按 `Alt + X` 執行整個檔案
 
-DBeaver、psql、Docker 的匯入方法，以及 ER 圖和練習題（附參考答案），請看 👉 [中文範例資料庫說明](./中文範例資料庫/)
+psql、Docker 的匯入方法，以及 ER 圖和練習題（附參考答案），請看 👉 [中文範例資料庫說明](./中文範例資料庫/)
 
 ---
 
@@ -42,7 +42,7 @@ DBeaver、psql、Docker 的匯入方法，以及 ER 圖和練習題（附參考�
 | 台鐵車站資訊_202507131441.csv | 車站代碼、站名、地址、GPS | 243 | 28 KB |
 | 每日各站進出站人數_202507131441.csv | 每天每站的進站、出站人數 | 約 40 萬 | 9.4 MB |
 
-匯入順序：先執行 DDL 建表 → 匯入**車站資訊** → 再匯入**每日進出站人數**（因為有外來鍵，順序不能顛倒）。CSV 匯入方法請看 [將 csv 匯入資料表](../上課用sql/2_1匯入csv.md)。
+匯入順序：先執行 DDL 建表 → 匯入**車站資訊** → 再匯入**每日進出站人數**（因為有外來鍵，順序不能顛倒）。CSV 匯入方法請看 [將 csv 匯入資料表](../上課用sql/2_1匯入csv.md)（DBeaver：在資料表上按右鍵 → **Import Data**）。
 
 ---
 

@@ -122,13 +122,15 @@ LIMIT 1;
 
 第 4 章每一課最後，會用 prompt 讓 AI **建立資料表、新增、修改、刪除資料**，需要一個可以寫入的連線。
 
-### 6.1 用 pgAdmin 建立練習用的資料庫
+### 6.1 用 DBeaver 建立練習用的資料庫
+
+在連線底下的 **Databases** 按右鍵 → **Create New Database**，名稱輸入 `sql_tutorial`。或在 SQL 編輯器執行：
 
 ```sql
 CREATE DATABASE sql_tutorial;
 ```
 
-> AI 透過 Postgres MCP Pro **不能建立資料庫**（會出現 `cannot run inside a transaction block`），這一步要自己在 pgAdmin 執行。
+> AI 透過 Postgres MCP Pro **不能建立資料庫**（會出現 `cannot run inside a transaction block`），這一步要自己在 DBeaver 執行。
 
 ### 6.2 在 Claude Desktop 新增 `postgres-sql`
 

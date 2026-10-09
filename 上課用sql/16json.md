@@ -26,7 +26,7 @@ PostgreSQL 有兩種 JSON 型別：
 CREATE DATABASE json_example;
 ```
 
-切換到 `json_example` 資料庫（psql 輸入 `\c json_example`；pgAdmin 請在左側選取 `json_example` 再開啟 Query Tool），再建立資料表：
+切換到 `json_example` 資料庫（psql 輸入 `\c json_example`；DBeaver 請在左側選取 `json_example`，按右鍵 **SQL Editor → New SQL script**），再建立資料表：
 
 ```sql
 CREATE TABLE people (

@@ -4,7 +4,7 @@ CREATE DATABASE SQL_TUTORIAL;
 
 /*
 不可以使用 MySQL 的 SHOW DATABASES;
-要使用 psql 的 \l,或在 pgAdmin 左側查看
+要使用 psql 的 \l,或在 DBeaver 左側連線底下的 Databases 查看
 */
 
 /*刪除資料庫*/

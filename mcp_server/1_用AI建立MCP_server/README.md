@@ -107,7 +107,7 @@ flowchart LR
 AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（擇一）：
 
 - 直接使用 [建立進出站的ddl.sql](../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/建立進出站的ddl.sql)
-- 在 pgAdmin 對資料表按右鍵 → **Scripts → CREATE Script**
+- 在 DBeaver 對資料表按右鍵 → **Generate SQL → DDL**
 - 用[第 3 章](../../MCP操作資料庫/1_postgres_mcp_pro/) 的 Postgres MCP Pro 問 Claude：「列出台鐵車站資訊、每日各站進出站人數兩張資料表的欄位與型別」
 
 ---

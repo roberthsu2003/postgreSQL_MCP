@@ -52,23 +52,42 @@ docker run --name my-postgres -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d 
 > [!NOTE]
 > 目前只測試過本機連線，從其它電腦連線的設定尚未測試成功。
 
-### 管理工具
+### 管理工具：DBeaver
 
-| 工具 | 說明 |
+本課程使用 [DBeaver](https://dbeaver.io/)（免費的 Community 版）管理資料庫。
+
+#### 建立連線
+
+1. 上方選單 **Database → New Database Connection**，選擇 **PostgreSQL**
+2. 填入連線資訊：
+
+	| 欄位 | 填入 |
+	|---|---|
+	| Host | `localhost`（Docker 或本機安裝） |
+	| Port | `5432` |
+	| Database | `postgres` |
+	| Username | `postgres` |
+	| Password | 安裝時設定的密碼 |
+
+3. 切換到 **PostgreSQL** 分頁，勾選 **Show all databases**（否則左側只會看到 `postgres` 一個資料庫）
+4. 按 **Test Connection**，第一次會提示下載驅動程式，按 **Download** 即可
+
+#### 常用操作
+
+| 要做的事 | 操作方式 |
 |---|---|
-| [pgAdmin](https://www.pgadmin.org) | PostgreSQL 官方管理工具 |
-| [DBeaver](https://dbeaver.io/) | 通用資料庫管理工具，支援多種資料庫 |
+| 開啟 SQL 編輯器 | 在左側選取資料庫 → 按右鍵 **SQL Editor → New SQL script**（`Ctrl + ]`） |
+| 執行游標所在的一句 SQL | `Ctrl + Enter` |
+| **執行整個檔案的所有 SQL** | `Alt + X`（Execute SQL Script） |
+| 開啟 `.sql` 檔 | **File → Open File** 選擇檔案，再從工具列的 **Active datasource** 選擇要執行的資料庫 |
+| 建立資料庫 | 在連線底下的 **Databases** 按右鍵 → **Create New Database** |
+| 匯入 CSV | 在資料表上按右鍵 → **Import Data** → 選 **CSV** → 選擇檔案 → 確認欄位對應 → **Proceed** |
+| 查看資料表結構、限制、外來鍵 | 在資料表上按兩下 → **Properties** 分頁（Columns、Constraints、Foreign Keys） |
+| 查看關聯圖 | 在資料表上按兩下 → **ER Diagram** 分頁 |
+| 產生資料表的 `CREATE TABLE` | 在資料表上按右鍵 → **Generate SQL → DDL** |
+| 重新整理左側清單 | 選取後按 `F5`（用 SQL 建立資料表後，左側要重新整理才會出現） |
 
-<details>
-<summary>DBeaver 連線設定（JDBC）</summary>
-
-```
-URL      : jdbc:postgresql://主機網址/資料庫名稱
-Username : 使用者名稱
-Password : 使用者密碼
-```
-
-</details>
+> 💡 MCP 和 Python 使用的連線字串格式：`postgresql://使用者名稱:密碼@主機:埠號/資料庫名稱`
 
 ---
 

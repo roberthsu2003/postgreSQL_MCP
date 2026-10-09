@@ -4,7 +4,7 @@
 -- 適合練習:JOIN、LEFT JOIN 找出沒被借過的書、日期計算(逾期天數)、IS NULL、GROUP BY、排名
 --
 -- 使用方式(擇一):
---   pgAdmin / DBeaver:開啟 SQL 編輯器 → 開啟本檔 → 全部執行
+--   DBeaver:File → Open File 開啟本檔 → 選擇資料庫 → Alt+X 執行全部
 --   psql            :psql -U postgres -d 資料庫名稱 -f 本檔名.sql
 --
 -- 本檔可以重複執行:會先刪除同名資料表再重建。

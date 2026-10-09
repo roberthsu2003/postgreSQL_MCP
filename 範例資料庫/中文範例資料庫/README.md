@@ -8,7 +8,7 @@
 | 🎓 學校選課 | [school.sql](./school.sql) | 48 KB | 5 | 200 位學生、1,000+ 筆選課 | 多對多 JOIN、LEFT JOIN、HAVING、子查詢、CASE WHEN |
 | 📚 圖書館借閱 | [library.sql](./library.sql) | 64 KB | 5 | 50 本書、900 筆借閱 | 日期計算、IS NULL、LEFT JOIN、視窗函式 RANK |
 
-> - 資料表和欄位名稱使用**英文**（打 SQL 不用切換輸入法），資料內容是**繁體中文**。每張資料表都有中文註解（COMMENT），在 pgAdmin / DBeaver 裡看得到。
+> - 資料表和欄位名稱使用**英文**（打 SQL 不用切換輸入法），資料內容是**繁體中文**。每張資料表都有中文註解（COMMENT），在 DBeaver 資料表的 **Properties** 分頁看得到。
 > - 三個檔案的資料表名稱不重複，可以**全部匯入同一個資料庫**。
 > - 檔案可以**重複執行**：會先刪除同名資料表再重建，學生把資料改壞了，重新執行一次就恢復原狀。
 > - 人名、書名、出版社都是虛構的，email 使用 `example.com`。
@@ -27,7 +27,7 @@
 
 ## 匯入方式
 
-先建立一個資料庫（以下用 `practice` 為例）：
+先建立一個資料庫（以下用 `practice` 為例）：在 DBeaver 連線底下的 **Databases** 按右鍵 → **Create New Database**，或在 SQL 編輯器執行：
 
 ```sql
 CREATE DATABASE practice;
@@ -35,25 +35,22 @@ CREATE DATABASE practice;
 
 接著挑一種方式執行 `.sql` 檔：
 
-### 方法一：pgAdmin（最簡單）
+### 方法一：DBeaver（最簡單）
 
-1. 在左側點選 `practice` 資料庫 → 上方選單 **Tools → Query Tool**
-2. 點 📂 **Open File**，選擇 `shop.sql`
-3. 按 ▶ **Execute**（F5）
+1. **File → Open File**，選擇 `shop.sql`
+2. 工具列的 **Active datasource** 選擇 `practice` 資料庫
+3. 按 `Alt + X`（**Execute SQL Script**）執行整個檔案，注意不是只執行一句的 `Ctrl + Enter`
+4. 在左側的 `practice` 按 `F5` 重新整理，就會看到新的資料表
 
-### 方法二：DBeaver
+> 看不到 `practice` 資料庫？在連線上按右鍵 → **Edit Connection** → **PostgreSQL** 分頁 → 勾選 **Show all databases**。
 
-1. 在 `practice` 資料庫上按右鍵 → **SQL 編輯器 → 開啟 SQL 腳本**
-2. 把 `shop.sql` 的內容貼上（或用 **檔案 → 開啟檔案**）
-3. 按 **執行 SQL 腳本**（`Alt + X`），注意不是只執行一行的 `Ctrl + Enter`
-
-### 方法三：psql 命令列
+### 方法二：psql 命令列
 
 ```bash
 psql -U postgres -d practice -f shop.sql
 ```
 
-### 方法四：PostgreSQL 跑在 Docker 裡
+### 方法三：PostgreSQL 跑在 Docker 裡
 
 ```bash
 # macOS / Linux / Windows cmd

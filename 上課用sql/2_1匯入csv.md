@@ -6,7 +6,7 @@
 1. 將 `city.csv` 透過 DB Browser for SQLite 匯入
 2. 透過 DB Browser for SQLite 匯出 `city.sql`
 3. [下載 city.sql 檔案](../範例資料庫/其它範例csv/city.sql)
-4. 使用 pgAdmin4 開啟 city.sql，並執行
+4. 使用 DBeaver 開啟 city.sql（**File → Open File**），選擇資料庫後按 `Alt + X` 執行
 
 ## 2. 匯入目前天氣資料
 
@@ -28,11 +28,15 @@ CREATE TABLE IF NOT EXISTS 目前天氣(
 ```
 
 ### 匯入步驟
-使用 pgAdmin 匯入 `目前天氣.csv` 至資料表 `目前天氣`
 
-![匯入步驟1](./images/pic1.png)
-![匯入步驟2](./images/pic2.png)
-![匯入步驟3](./images/pic3.png)
+使用 DBeaver 匯入 `目前天氣.csv` 至資料表 `目前天氣`：
+
+1. 左側選取資料庫按 `F5` 重新整理，找到 `目前天氣` 資料表
+2. 在 `目前天氣` 上按右鍵 → **Import Data**
+3. 選擇 **CSV** → **Next**，選擇 `目前天氣.csv`
+4. **Importer settings**：確認 **Header** 是 `top`（第一列是欄位名稱）、**Column delimiter** 是 `,`
+5. **Tables mapping**：CSV 的欄位名稱和資料表相同，會自動對應（mapping 顯示 `existing`）
+6. 按 **Proceed** 開始匯入，完成後在資料表按兩下 → **Data** 分頁確認有 22 筆
 
 ## 3. 匯入台鐵車站資訊和車站進出資料
 
@@ -69,7 +73,7 @@ CREATE TABLE IF NOT EXISTS stations(
 SELECT * FROM stations;
 ```
 
-> 匯入 `台鐵車站資訊.csv` 時，因為資料表多了 `id` 欄位，請在 pgAdmin 匯入畫面的 **Columns** 取消勾選 `id`。
+> 匯入 `台鐵車站資訊.csv` 時，CSV 沒有 `id` 欄位，DBeaver 會依照欄位名稱對應，`id` 由 SERIAL 自動產生，不需要另外設定。
 
 #### 車站進出資料表
 ```sql
@@ -85,6 +89,8 @@ CREATE TABLE IF NOT EXISTS station_in_out(
         ON UPDATE CASCADE
 );
 ```
+
+> 進出站 CSV 的欄位名稱（`trnOpDate`、`staCode`、`gateInComingCnt`、`gateOutGoingCnt`）和資料表的欄位名稱不同。DBeaver 匯入時，在 **Tables mapping** 頁面按 **Columns...**，把每個 CSV 欄位對應到資料表的欄位（`trnOpDate` → `date`，其餘依序對應）。一定要**先匯入 stations**，否則會違反 foreign key。
 
 ### 查詢範例
 
@@ -120,7 +126,7 @@ SELECT * FROM table_name WHERE boolean_column = TRUE;
 
 ## 4. 匯入繁體中文範例資料庫
 
-網路商店、學校選課、圖書館借閱三個練習用資料庫，各只有一個 `.sql` 檔，在 pgAdmin 的 Query Tool 開啟後執行即可匯入。
+網路商店、學校選課、圖書館借閱三個練習用資料庫，各只有一個 `.sql` 檔，在 DBeaver 開啟後按 `Alt + X` 執行即可匯入。
 
 👉 [繁體中文範例資料庫](../範例資料庫/中文範例資料庫/)
 
@@ -154,9 +160,9 @@ SELECT * FROM table_name WHERE boolean_column = TRUE;
 
 > 💡 Postgres MCP Pro 不能讀取你電腦上的檔案，所以要把檔案**附加到對話中**，由 AI 讀取後產生 INSERT。
 
-### 3. 台鐵資料：大量資料還是要用 pgAdmin
+### 3. 台鐵資料：大量資料還是要用 DBeaver 匯入
 
-台鐵進出站資料有數十萬筆，不適合貼給 AI。**資料表可以請 AI 建立，資料用 pgAdmin 匯入**：
+台鐵進出站資料有數十萬筆，不適合貼給 AI。**資料表可以請 AI 建立，資料用 DBeaver 的 Import Data 匯入**：
 
 > 用 postgres-sql 建立兩張資料表：
 > - stations：id 是 SERIAL 主鍵，stationCode VARCHAR(5) 不可重複且必填，stationName VARCHAR(20) 必填，name VARCHAR(20)，stationAddrTw VARCHAR(50)，stationTel VARCHAR(20)，gps VARCHAR(30)，haveBike BOOLEAN
@@ -164,7 +170,7 @@ SELECT * FROM table_name WHERE boolean_column = TRUE;
 
 ✅ 對照上面的 `CREATE TABLE stations`、`CREATE TABLE station_in_out`。注意 AI 有沒有先建立 stations（parent），再建立 station_in_out（child）。
 
-用 pgAdmin 匯入資料後，再用 prompt 查詢：
+用 DBeaver 匯入資料後，再用 prompt 查詢：
 
 > 查詢 2022 年 1 月 1 日每個車站的進站人數，顯示車站名稱，由多到少排序。
 

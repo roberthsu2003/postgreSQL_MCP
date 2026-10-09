@@ -17,7 +17,7 @@
 3. **安裝 [Claude Desktop](https://claude.ai/download)**
 4. **安裝 Docker**(推薦)**或 Python 3.12 以上 + [uv](https://docs.astral.sh/uv/getting-started/installation/)**
 
-> 先用 pgAdmin 或 DBeaver 確認帳號、密碼可以正常連線,再進行下一步。
+> 先用 DBeaver 確認帳號、密碼可以正常連線,再進行下一步。
 
 ## 2. 安裝 Postgres MCP Pro
 
