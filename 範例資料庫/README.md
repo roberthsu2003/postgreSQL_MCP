@@ -5,9 +5,8 @@
 | 範例 | 語言 | 大小 | 匯入方式 | 適合 |
 |---|---|---|---|---|
 | ⭐ [繁體中文範例資料庫](#1-繁體中文範例資料庫推薦) | 中文 | 50–90 KB | 執行一個 `.sql` 檔 | **初學者首選**：網路商店、學校選課、圖書館借閱 |
-| [DVD Rental](#2-dvd-rental-database) | 英文 | 540 KB | pgAdmin Restore | 搭配 [postgresql-tutorial](https://neon.com/postgresql/tutorial) 官方教學 |
-| [台鐵車站進出站](#3-台鐵車站進出站人數) | 中文 | 9.4 MB | 匯入 CSV | 真實資料、大量資料的 GROUP BY 與 JOIN |
-| [其它 CSV 檔](#4-其它範例-csv-檔) | 中／英 | 4 KB–35 MB | 匯入 CSV | 練習 CREATE TABLE 與匯入 CSV |
+| [台鐵車站進出站](#2-台鐵車站進出站人數) | 中文 | 9.4 MB | 匯入 CSV | 真實資料、大量資料的 GROUP BY 與 JOIN |
+| [其它 CSV 檔](#3-其它範例-csv-檔) | 中／英 | 4 KB–35 MB | 匯入 CSV | 練習 CREATE TABLE 與匯入 CSV |
 
 ---
 
@@ -31,32 +30,7 @@ DBeaver、psql、Docker 的匯入方法，以及 ER 圖和練習題（附參考�
 
 ---
 
-## 2. DVD Rental Database
-
-PostgreSQL 教學網站最常用的英文範例資料庫（DVD 出租店），共 15 張資料表。
-
-![DVD Rental 資料架構](./images/dvd-rental-sample-database-diagram.png)
-
-**匯入步驟**
-
-1. 下載 [dvdrental.zip](./dvd_rental_database/dvdrental.zip)，解壓縮後會得到 `dvdrental` **資料夾**
-2. 在 pgAdmin 建立一個名為 `dvdrental` 的資料庫
-3. 在 `dvdrental` 上按右鍵 → **Restore**
-4. Format 選 **Directory**，Filename 選剛才解壓縮的 `dvdrental` 資料夾（注意是選資料夾，不是檔案）
-
-<details>
-<summary>pgAdmin Restore 畫面截圖</summary>
-
-![](./images/pic1.png)
-![](./images/pic2.png)
-
-</details>
-
-> 出處：[PostgreSQL Sample Database](https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/)
-
----
-
-## 3. 台鐵車站進出站人數
+## 2. 台鐵車站進出站人數
 
 真實的公開資料，兩張有外來鍵關係的資料表，適合體驗「資料量變大」之後的查詢。
 
@@ -72,7 +46,7 @@ PostgreSQL 教學網站最常用的英文範例資料庫（DVD 出租店），�
 
 ---
 
-## 4. 其它範例 CSV 檔
+## 3. 其它範例 CSV 檔
 
 📁 [其它範例csv](./其它範例csv/)
 

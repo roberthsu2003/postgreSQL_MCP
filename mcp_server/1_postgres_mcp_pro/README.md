@@ -10,7 +10,7 @@
 	docker run --name my-postgres -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres
 	```
 
-2. **已經匯入範例資料庫**(dvdrental、台鐵進出站資料),請參考[範例資料庫](../../範例資料庫/)
+2. **已經匯入範例資料庫**(繁體中文範例資料庫 `practice`、台鐵進出站資料),請參考[範例資料庫](../../範例資料庫/)
 3. **安裝 [Claude Desktop](https://claude.ai/download)**
 4. **安裝 Docker**(推薦)**或 Python 3.12 以上 + [uv](https://docs.astral.sh/uv/getting-started/installation/)**
 
@@ -41,10 +41,10 @@ uvx postgres-mcp --help
 postgresql://使用者名稱:密碼@主機:埠號/資料庫名稱
 ```
 
-範例(連線到 dvdrental 資料庫):
+範例(連線到 practice 資料庫):
 
 ```
-postgresql://postgres:yourpassword@localhost:5432/dvdrental
+postgresql://postgres:yourpassword@localhost:5432/practice
 ```
 
 > 使用 Docker 版的 Postgres MCP Pro 時,`localhost` 會自動轉換成 `host.docker.internal`(macOS/Windows),所以直接寫 `localhost` 即可。
@@ -75,7 +75,7 @@ postgresql://postgres:yourpassword@localhost:5432/dvdrental
         "--access-mode=restricted"
       ],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/dvdrental"
+        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
       }
     }
   }
@@ -94,7 +94,7 @@ postgresql://postgres:yourpassword@localhost:5432/dvdrental
         "--access-mode=restricted"
       ],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/dvdrental"
+        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
       }
     }
   }
@@ -134,13 +134,13 @@ postgresql://postgres:yourpassword@localhost:5432/dvdrental
 
 ## 7. 實作練習
 
-### 練習一:認識 dvdrental 資料庫
+### 練習一:認識網路商店資料庫
 
-在 Claude Desktop 輸入:
+先匯入[繁體中文範例資料庫](../../範例資料庫/中文範例資料庫/)的 `shop.sql` 到 `practice` 資料庫,在 Claude Desktop 輸入:
 
-- 「dvdrental 資料庫有哪些資料表?」
-- 「說明 film、inventory、rental 三個資料表之間的關聯」
-- 「列出租借次數最多的前 10 部電影」
+- 「practice 資料庫有哪些資料表?」
+- 「說明 customers、orders、order_items、products 四個資料表之間的關聯」
+- 「列出 2025 年銷售數量最多的前 10 項商品」
 - 「把上一題使用的 SQL 給我看,並逐行解釋」
 
 > 觀察重點:Claude 會先呼叫 `list_objects`、`get_object_details` 了解資料表結構,再呼叫 `execute_sql`。把 Claude 產生的 SQL 拿到 pgAdmin 執行,比對結果是否一致。
@@ -159,7 +159,7 @@ postgresql://postgres:yourpassword@localhost:5432/dvdrental
 - 「這個查詢應該加什麼索引?加了之後預估成本差多少?」
 - 「幫我做一次資料庫健康檢查」
 
-> 對照課程中的 [JOIN](../../上課用sql/JOIN.md)、[GROUP BY](../../上課用sql/GROUP_BY.md)、[SubQuery](../../上課用sql/subQuery.md),試著先自己寫出 SQL,再和 AI 的答案比較。
+> 對照課程中的 [JOIN](../../上課用sql/JOIN.md)、[中文範例資料庫的練習題](../../範例資料庫/中文範例資料庫/),試著先自己寫出 SQL,再和 AI 的答案比較。
 
 ## 8. 連線到 Supabase(雲端 PostgreSQL)
 
@@ -184,10 +184,10 @@ postgresql://postgres:yourpassword@localhost:5432/dvdrental
 
 ### 8.2 匯入範例資料
 
-- **dvdrental**:使用 `pg_restore`(解壓縮後的 `dvdrental` 資料夾)。備份還原建議使用 Direct connection;網路不支援 IPv6 時改用 Session pooler
+- **繁體中文範例資料庫**:在 Supabase 的 **SQL Editor** 貼上 [shop.sql](../../範例資料庫/中文範例資料庫/shop.sql) 等檔案的內容後執行;或使用 `psql`:
 
 	```bash
-	pg_restore --no-owner --no-privileges -d "postgresql://postgres.[PROJECT-REF]:[YOUR-PASSWORD]@[POOLER-HOST]:5432/postgres?sslmode=require" dvdrental
+	psql "postgresql://postgres.[PROJECT-REF]:[YOUR-PASSWORD]@[POOLER-HOST]:5432/postgres?sslmode=require" -f shop.sql
 	```
 
 - **台鐵 CSV**:先在 Supabase 的 **SQL Editor** 執行[建立進出站的ddl.sql](../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/建立進出站的ddl.sql),再用 DBeaver 或 `psql` 的 `\copy` 匯入 CSV(進出站資料約 40 萬筆,Table Editor 網頁上傳可能會逾時)
@@ -211,7 +211,7 @@ postgresql://postgres:yourpassword@localhost:5432/dvdrental
         "--access-mode=unrestricted"
       ],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/dvdrental"
+        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
       }
     },
     "postgres-supabase": {

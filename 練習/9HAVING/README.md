@@ -46,8 +46,7 @@ HAVING 聚合函數(欄位2) > 某個值
    - HAVING 用於對分組結果的最終篩選
 
 > [!TIP]
-> [簡單範例說明-HAVING](../../上課用sql/HAVING.md)  
-> [簡單範例說明-GROUP BY](../../上課用sql/GROUP_BY.md)  
+> [更多練習:中文範例資料庫(含 GROUP BY、HAVING 題目)](../../範例資料庫/中文範例資料庫/)
 
 ---
 

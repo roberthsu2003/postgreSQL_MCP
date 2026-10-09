@@ -56,7 +56,7 @@ WHERE salary > ALL (SELECT salary FROM employees WHERE department = '行銷部')
 3. **相關子查詢**：內部查詢依賴於外部查詢的資料
 
 > [!TIP]
-> [**簡單範例說明**](../../上課用sql/subQuery.md)
+> [**更多練習:中文範例資料庫(含子查詢題目)**](../../範例資料庫/中文範例資料庫/)
 
 ---
 

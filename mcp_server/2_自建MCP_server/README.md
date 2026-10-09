@@ -221,7 +221,7 @@ uv run mcp dev server.py
 
 ## 8. 延伸挑戰
 
-1. 新增工具 `monthly_traffic(station_name, year)`:用 `GROUP BY` 回傳某車站某一年每個月的進出站總人數(參考 [GROUP BY](../../上課用sql/GROUP_BY.md))
+1. 新增工具 `monthly_traffic(station_name, year)`:用 `GROUP BY` 回傳某車站某一年每個月的進出站總人數(參考 [GROUP BY、HAVING 練習](../../練習/9HAVING/))
 2. 新增工具 `compare_stations(station_a, station_b, year)`:比較兩個車站一整年的進出站人數
 3. 為 `top_stations` 的 `limit` 加上上限(例如最多 50),避免 AI 一次取回太多資料
 4. 思考:如果要讓 AI **新增**資料,工具要怎麼設計才安全?

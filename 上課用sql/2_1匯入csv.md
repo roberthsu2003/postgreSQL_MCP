@@ -112,27 +112,8 @@ WHERE task_due_date BETWEEN NOW() AND NOW() + INTERVAL '7 days';
 SELECT * FROM table_name WHERE boolean_column = TRUE;
 ```
 
-## 4. 匯入 DVD 租賃店專案資料庫
+## 4. 匯入繁體中文範例資料庫
 
-### DVD Rental Database 資料架構
+網路商店、學校選課、圖書館借閱三個練習用資料庫，各只有一個 `.sql` 檔，在 pgAdmin 的 Query Tool 開啟後執行即可匯入。
 
-![DVD Rental Database 架構圖](../範例資料庫/images/dvd-rental-sample-database-diagram.png)
-
-### 下載和安裝步驟
-
-#### 下載 DVD Rental Database (PostgreSQL)
-- [下載位址](../範例資料庫/dvd_rental_database/)
-- 解壓縮後會產生一個 `dvdrental` 的資料夾
-
-#### 使用 pgAdmin4 還原資料庫
-1. 建立一個 `dvdrental` 的資料庫
-2. 執行 restore（注意是資料夾）
-
-![還原步驟1](./images/pic4.png)
-![還原步驟2](./images/pic5.png)
-
----
-
-> **資料來源**: [PostgreSQL Tutorial - Sample Database](https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/)
-
-
+👉 [繁體中文範例資料庫](../範例資料庫/中文範例資料庫/)

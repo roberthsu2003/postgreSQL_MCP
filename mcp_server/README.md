@@ -15,7 +15,7 @@ MCP(Model Context Protocol)是一個讓 AI 助理(例如 Claude Desktop)連接�
 
 - **MCP Client**:AI 助理本身,本講義使用 Claude Desktop
 - **MCP Server**:提供一組「工具(tools)」給 AI 呼叫,例如「列出資料表」、「執行 SQL」
-- **PostgreSQL**:我們在前面課程建立的資料庫(dvdrental、台鐵進出站資料)
+- **PostgreSQL**:我們在前面課程建立的資料庫(繁體中文範例資料庫、台鐵進出站資料)
 
 ## 單元目錄
 
