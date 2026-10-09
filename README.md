@@ -41,7 +41,11 @@ docker run --name my-postgres -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d 
 - [DBeaver 官網下載](https://dbeaver.io/) - 通用資料庫管理工具
 
 ### MCP Server
+讓 AI 助理(Claude Desktop)透過 MCP 直接查詢、分析 PostgreSQL 資料庫
 
+- [MCP 概念介紹](./mcp_server/)
+	- [使用 Postgres MCP Pro(安裝和使用)](./mcp_server/1_postgres_mcp_pro/)
+	- [自己建立一個 MCP Server(Python + psycopg2)](./mcp_server/2_自建MCP_server/)
 
 ### DBeaver 連線設定
 DBeaver 使用 JDBC 連線，設定方法如下：

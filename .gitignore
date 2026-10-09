@@ -1,0 +1,11 @@
+# PostgreSQL Docker 資料目錄(本機使用,不納入版本控制)
+postgres-data/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/

@@ -28,7 +28,7 @@ streamlit
 
 1. [lesson1_資料下載](./lesson1_資料下載.ipynb)
 2. [lesson2_建立資料表](./lesson2_建立資料表.ipynb)
-3. [lesson3_新增資料](./lesson3_新增資料.ipynb)
+3. [lesson3_新增資料](./lesson3_加入資料.ipynb)
 4. [lesson4_取出資料](./lesson4_取出資料.ipynb)
 
 ### main.py(只有股市)

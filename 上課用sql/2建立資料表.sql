@@ -47,7 +47,6 @@ CREATE TABLE student(
 );
 
 
-s
 
 
 

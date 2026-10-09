@@ -5,13 +5,13 @@
 ### 步驟說明
 1. 將 `城市.csv` 透過 DB Browser 匯入
 2. 透過 DB Browser 匯出 `城市.sql`
-3. [下載城市.sql檔案](./其它範例csv/city.sql)
+3. [下載城市.sql檔案](../範例資料庫/其它範例csv/city.sql)
 4. 使用 pgAdmin4 開啟城市.sql，並執行
 
 ## 2. 匯入目前天氣資料
 
 ### 資料來源
-- [下載目前天氣.csv](./其它範例csv/目前天氣.csv)
+- [下載目前天氣.csv](../範例資料庫/其它範例csv/目前天氣.csv)
 
 ### 建立資料表
 ```sql
@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS 目前天氣(
 ## 3. 匯入台鐵車站資訊和車站進出資料
 
 ### 資料來源
-- [台鐵車站資訊.csv](https://github.com/roberthsu2003/python-SQLite-MySQL/blob/master/postgresSQL/範例資料庫/其它範例csv/台鐵車站資訊.csv)
-- [2019-2023進出資訊](https://github.com/roberthsu2003/python-SQLite-MySQL/blob/master/postgresSQL/範例資料庫/其它範例csv/每日各站進出站人數20190423-20231231.zip)
+- [台鐵車站資訊.csv](../範例資料庫/其它範例csv/台鐵車站資訊.csv)
+- [2019-2023進出資訊](../範例資料庫/其它範例csv/每日各站進出站人數20190423-20231231.zip)
 
 ### 建立關聯式資料表
 
@@ -116,12 +116,12 @@ SELECT * FROM table_name WHERE boolean_column = TRUE;
 
 ### DVD Rental Database 資料架構
 
-![DVD Rental Database 架構圖](./images/dvd-rental-sample-database-diagram.png)
+![DVD Rental Database 架構圖](../範例資料庫/images/dvd-rental-sample-database-diagram.png)
 
 ### 下載和安裝步驟
 
 #### 下載 DVD Rental Database (PostgreSQL)
-- [下載位址](./dvd_rental_database/)
+- [下載位址](../範例資料庫/dvd_rental_database/)
 - 解壓縮後會產生一個 `dvdrental` 的資料夾
 
 #### 使用 pgAdmin4 還原資料庫
