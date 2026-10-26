@@ -15,9 +15,10 @@
    * [1.4 驗證 Docker 是否安裝成功](#步驟-14驗證-docker-是否安裝成功)
    * 📖 *[Docker 常用基本指令速查手冊](./docker基本指令.md)*
 2. **[單獨使用 Docker Run 安裝與運行 PostgreSQL](#2-單獨使用-docker-run-安裝與運行-postgresql)**
-   * [2.1 建立並啟動 PostgreSQL 容器（開機自啟與資料持久化）](#步驟-21建立並啟動-postgresql-容器)
-   * [2.2 檢查容器狀態](#步驟-22檢查容器狀態)
-   * [2.3 測試進入容器內的 psql](#步驟-23測試進入容器內的-psql可選)
+   * [2.1 建立 Docker 自訂網路 mcp-net](#步驟-21建立-docker-自訂網路-mcp-net)
+   * [2.2 建立並啟動 PostgreSQL 容器（加入網路、開機自啟與資料持久化）](#步驟-22建立並啟動-postgresql-容器)
+   * [2.3 檢查容器狀態](#步驟-23檢查容器狀態)
+   * [2.4 測試進入容器內的 psql](#步驟-24測試進入容器內的-psql可選)
 3. **[使用 DBeaver 透過 SSH 連線至 Raspberry Pi](#3-使用-dbeaver-透過-ssh-連線至-raspberry-pi)**
    * [3.1 確認樹莓派的連線資訊](#步驟-31確認樹莓派的連線資訊)
    * [3.2 在 DBeaver 設定 SSH 隧道連線（附圖解）](#步驟-32在-dbeaver-設定-ssh-隧道連線)
@@ -26,9 +27,8 @@
      * [3.2.3 【PostgreSQL 分頁】與測試連線](#323-postgresql-分頁與測試連線)
    * [3.3 DBeaver 常用操作速查表](#步驟-33dbeaver-常用操作)
 4. **[單獨使用 Docker Run 安裝 Postgres MCP Server 與連線設定](#4-單獨使用-docker-run-安裝-postgres-mcp-server-與連線設定)**
-   * [4.1 建立 Docker 自訂網路連通雙容器](#步驟-41建立-docker-自訂網路連通雙容器)
-   * [4.2 使用 docker run 單獨啟動 MCP Server 容器](#步驟-42使用-docker-run-單獨啟動-mcp-server-容器)
-   * [4.3 個人電腦端 Claude Desktop 連線設定](#步驟-43個人電腦端-claude-desktop-連線設定)
+   * [4.1 使用 docker run 啟動 MCP Server 容器（加入同一網路）](#步驟-41使用-docker-run-單獨啟動-mcp-server-容器)
+   * [4.2 個人電腦端 Claude Desktop 連線設定](#步驟-42個人電腦端-claude-desktop-連線設定)
 5. **[進階整合：使用 Docker Compose 一次安裝與啟動 2 套服務（推薦）](#5-進階整合使用-docker-compose-一次安裝與啟動-2-套服務)**
    * [5.1 建立專案資料夾與 docker-compose.yml](#步驟-51建立專案資料夾與-docker-composeyml)
    * [5.2 一行指令一次啟動 2 套容器](#步驟-52一行指令一次啟動-2-套容器)
@@ -81,13 +81,26 @@ docker compose version
 
 使用 Docker 運行 PostgreSQL 的最大好處是：**映像檔預設已允許遠端連線，且安裝、備份、刪除都極為乾淨**。
 
-### 步驟 2.1：建立並啟動 PostgreSQL 容器
+### 步驟 2.1：建立 Docker 自訂網路 `mcp-net`
 
-在樹莓派終端機執行以下指令（請將 `yourpassword` 替換為你的密碼）：
+因為我們預先知道後續需要將 PostgreSQL 與 **Postgres MCP Server** 互相連線，而 Docker 容器預設的 bridge 網路不支援直接用容器名稱（`my-postgres`）互相訪問。
+
+因此，在啟動資料庫前，我們先建立一個專屬的虛擬網路：
+
+```bash
+docker network create mcp-net
+```
+
+---
+
+### 步驟 2.2：建立並啟動 PostgreSQL 容器
+
+在樹莓派終端機執行以下指令（直接指定加入 `--network mcp-net`，並請將 `yourpassword` 替換為你的密碼）：
 
 ```bash
 docker run -d \
   --name my-postgres \
+  --network mcp-net \
   -e POSTGRES_PASSWORD=yourpassword \
   -p 5432:5432 \
   -v postgres_data:/var/lib/postgresql/data \
@@ -100,6 +113,7 @@ docker run -d \
 |---|---|
 | `-d` | 在背景執行（Detached mode） |
 | `--name my-postgres` | 指定容器名稱為 `my-postgres` |
+| `--network mcp-net` | **加入專屬虛擬網路**：讓後續啟動的 MCP Server 可以直接用 `my-postgres` 名稱連線 |
 | `-e POSTGRES_PASSWORD=yourpassword` | 設定預設管理者帳號 `postgres` 的密碼 |
 | `-p 5432:5432` | 將樹莓派主機的 `5432` 埠對應到容器內的 `5432` 埠（允許連線） |
 | `-v postgres_data:/var/lib/postgresql/data` | **資料持久化**：建立具名磁碟卷，確保容器重啟或重建時資料不會消失 |
@@ -111,9 +125,11 @@ docker run -d \
 > 指令中的 `--restart unless-stopped` 參數非常重要！這代表**未來樹莓派每次開機或重新啟動後，Docker 都會自動把 PostgreSQL 容器啟動起來**。
 > 您不需要每次開機都進終端機手動輸入指令，資料庫服務將會常駐運行。
 
-> 💡 **提示**：若想省去單獨設定網路的步驟，直接一次安裝與啟動 PostgreSQL + MCP Server 雙容器，可直接參考 [第 5 節：Docker Compose 一鍵啟動教學](#5-進階整合使用-docker-compose-一次安裝與啟動-2-套服務)。
+> 💡 **提示**：若想省去手動建立網路的步驟，直接一次安裝與啟動 PostgreSQL + MCP Server 雙容器，可直接參考 [第 5 節：Docker Compose 一鍵啟動教學](#5-進階整合使用-docker-compose-一次安裝與啟動-2-套服務)。
 
-### 步驟 2.2：檢查容器狀態
+---
+
+### 步驟 2.3：檢查容器狀態
 檢查容器是否正常運行：
 ```bash
 docker ps
@@ -125,7 +141,9 @@ docker ps
 docker logs my-postgres
 ```
 
-### 步驟 2.3：測試進入容器內的 psql（可選）
+---
+
+### 步驟 2.4：測試進入容器內的 psql（可選）
 如果想在樹莓派終端機內直接測試連線：
 ```bash
 docker exec -it my-postgres psql -U postgres
