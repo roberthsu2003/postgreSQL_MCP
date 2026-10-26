@@ -1,6 +1,6 @@
 # 單元 1：用 AI 建立自己的 MCP Server
 
-> **本單元目標**：不用自己寫程式，**請 AI 寫出**一個查詢台鐵進出站資料的 MCP Server，並接上 Claude Desktop。
+> **本單元目標**：結合前面學到的 SQL 與 Python 知識，在 **Antigravity IDE** 中建立一個查詢台鐵進出站資料的自訂 MCP Server，並透過專案級設定掛載。
 > 你的角色是**需求設計者**和**驗收者**。
 
 ## 目錄
@@ -11,7 +11,7 @@
 - [步驟 2：請 AI 寫程式](#步驟-2請-ai-寫程式)
 - [步驟 3：看懂 AI 寫的程式](#步驟-3看懂-ai-寫的程式)
 - [步驟 4：用 MCP Inspector 測試](#步驟-4用-mcp-inspector-測試)
-- [步驟 5：接上 Claude Desktop](#步驟-5接上-claude-desktop)
+- [步驟 5：在專案中掛載 MCP Server](#步驟-5在專案中掛載-mcp-server)
 - [步驟 6：請 AI 修改和除錯](#步驟-6請-ai-修改和除錯)
 - [實作練習](#實作練習)
 
@@ -23,7 +23,7 @@ flowchart LR
     S2["<b>2 請 AI 寫程式</b><br/>提示詞範本"]
     S3["<b>3 看懂程式</b><br/>5 項檢查清單"]
     S4["<b>4 測試</b><br/>MCP Inspector"]
-    S5["<b>5 接上</b><br/>Claude Desktop"]
+    S5["<b>5 專案掛載</b><br/>Antigravity"]
     S6["<b>6 請 AI<br/>修改、除錯</b>"]
     S1 --> S2 --> S3 --> S4 --> S5
     S3 -. 不符合規定 .-> S6
@@ -80,8 +80,7 @@ flowchart LR
 |---|---|
 | 台鐵資料庫 | 匯入 `台鐵車站資訊`、`每日各站進出站人數` 兩張資料表 👉 [資料與 DDL](../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/) |
 | uv | Python 套件管理工具 👉 [安裝說明](https://docs.astral.sh/uv/getting-started/installation/) |
-| AI 程式助手 | 推薦 **Claude Code**（可以直接建立檔案、執行和測試）；也可以在 Claude Desktop 或 claude.ai 對話後複製程式 |
-| Claude Desktop | 👉 [下載](https://claude.ai/download) |
+| Antigravity IDE | 本課程統一使用的整合開發環境，支援專案級 MCP、終端機與 AI 輔助開發 |
 
 ---
 
@@ -108,7 +107,7 @@ AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（�
 
 - 直接使用 [建立進出站的ddl.sql](../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/建立進出站的ddl.sql)
 - 在 DBeaver 對資料表按右鍵 → **Generate SQL → DDL**
-- 用[第 3 章](../../MCP操作資料庫/1_postgres_mcp_pro/) 的 Postgres MCP Pro 問 Claude：「列出台鐵車站資訊、每日各站進出站人數兩張資料表的欄位與型別」
+- 在 Antigravity 對話框問：「列出台鐵車站資訊、每日各站進出站人數兩張資料表的欄位與型別」
 
 ---
 
@@ -144,15 +143,7 @@ AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（�
 
 > 💡 **給 AI 的資訊越清楚，寫出來的程式越正確。** 「技術規定」那一段就是公司的安全規定，每次都要附上。
 
-### 使用 Claude Code（推薦）
 
-```bash
-mkdir my_mcp_server
-cd my_mcp_server
-claude
-```
-
-貼上提示詞後，可以再補一句：「**寫完之後幫我用 MCP Inspector 測試每個工具**」，Claude Code 會自己執行並修正錯誤。
 
 ### 參考答案
 
@@ -179,7 +170,7 @@ claude
 ```python
 from mcp.server import MCPServer
 
-mcp = MCPServer("台鐵進出站查詢")          # 名稱會顯示在 Claude Desktop
+mcp = MCPServer("台鐵進出站查詢")          # 名稱會顯示在 Antigravity 中
 
 
 @mcp.tool()                                # ① 註冊成 AI 可以呼叫的工具
@@ -189,7 +180,7 @@ def search_stations(keyword: str) -> list[dict]:
 
 
 if __name__ == "__main__":
-    mcp.run()                              # 用 stdio 和 Claude Desktop 溝通
+    mcp.run()                              # 用 stdio 和 Antigravity 溝通
 ```
 
 `keyword: str` 是**型別提示**，SDK 會依照它告訴 AI 要傳入什麼格式的參數。
@@ -254,7 +245,7 @@ Input should be '進站人數' or '出站人數'
 
 ## 步驟 4：用 MCP Inspector 測試
 
-接上 Claude Desktop 之前，先用 MCP Inspector（網頁介面）確認每個工具都正常。
+在專案掛載之前，先用 MCP Inspector（網頁介面）確認每個工具都正常。
 
 ```bash
 uv venv
@@ -286,9 +277,9 @@ uv run mcp dev server.py
 
 ---
 
-## 步驟 5：接上 Claude Desktop
+## 步驟 5：在專案中掛載 MCP Server（免全域安裝）
 
-編輯 `claude_desktop_config.json`（位置請參考[第 3 章](../../MCP操作資料庫/1_postgres_mcp_pro/#4-設定-claude-desktop)），在 `mcpServers` 中加入：
+本課程堅持**不要全域安裝**。我們直接將自訂的 MCP Server 加入本專案目錄底下的 `.agents/mcp_config.json` 中：
 
 ```json
 {
@@ -312,11 +303,11 @@ uv run mcp dev server.py
 ```
 
 - `server.py` 必須使用**完整路徑**（Windows 範例：`C:\\Users\\你的帳號\\...\\server.py`，反斜線要寫兩個）
-- `uv run --with` 會自動準備好需要的套件，不需要先啟動虛擬環境
+- `uv run --with` 會自動準備好需要的套件，不需要手動切換虛擬環境
 - 找不到 `uv` 時，`"command"` 改成完整路徑（macOS 用 `which uv` 查詢）
-- 可以和 Postgres MCP Pro 同時存在，各自用不同的名稱即可
+- 可以與既有的 `postgres` 連線同時存在，各自用不同的名稱即可
 
-存檔後**完全結束** Claude Desktop 再重新開啟。
+存檔後，在 Antigravity 中重新載入專案即可啟用。
 
 ---
 
@@ -327,12 +318,12 @@ uv run mcp dev server.py
 | 狀況 | 給 AI 的提示詞範例 |
 |---|---|
 | 出現錯誤訊息 | 「執行 `uv run mcp dev server.py` 時出現以下錯誤，請找出原因並修正：（貼上完整錯誤訊息）」 |
-| Claude 選錯工具 | 「我問『臺北站上週每天多少人』，Claude 呼叫了 top_stations 而不是 get_station_traffic，請改善兩個工具的 docstring，讓 AI 更容易分辨」 |
+| AI 選錯工具 | 「我問『臺北站上週每天多少人』，AI 呼叫了 top_stations 而不是 get_station_traffic，請改善兩個工具的 docstring，讓 AI 更容易分辨」 |
 | 要新增工具 | 「請新增工具 monthly_traffic(station_name, year)，用 GROUP BY 回傳某車站某一年每個月的進出站總人數，遵守原本的技術規定」 |
 | 回傳資料太多 | 「請幫 top_stations 的 limit 加上最多 50 筆的限制，避免一次取回太多資料」 |
 | 檢查安全性 | 「請用步驟 3 的 5 項檢查清單審查這份程式，列出不符合的地方」 |
 
-> 💡 **錯誤訊息要完整貼上**，不要只說「不能跑」。Claude Desktop 的錯誤紀錄在 `~/Library/Logs/Claude/mcp*.log`（macOS）或 `%APPDATA%\Claude\logs`（Windows）。
+> 💡 **錯誤訊息要完整貼上**，不要只說「不能跑」。詳細日誌與錯誤訊息可直接在 Antigravity 終端機或輸出面板中查看。
 
 ---
 
@@ -340,7 +331,7 @@ uv run mcp dev server.py
 
 ### 練習一：使用參考答案
 
-在 Claude Desktop 提問，觀察 Claude 呼叫了哪個工具、傳入什麼參數：
+在 Antigravity 對話框提問，觀察 AI 呼叫了哪個工具、傳入什麼參數：
 
 - 「花蓮有哪些火車站？哪些有 YouBike？」
 - 「臺北車站 2023 年 1 月 1 日到 1 月 7 日每天的進站人數」

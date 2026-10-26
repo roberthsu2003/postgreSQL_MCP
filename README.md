@@ -1,44 +1,62 @@
 # PostgreSQL 學習指南
 
-從安裝開始就用 AI（MCP）查詢資料庫，再學 SQL 語法、Python 串接、實戰專案，最後自訂 MCP Server 的 PostgreSQL 完整課程。
+結合自然語言 AI、手寫 SQL 基礎、Python 應用開發，到最後自行打造自訂 MCP Server 的完整 PostgreSQL 實戰指南。
 
-## 學習路線
-
-| 步驟 | 單元 | 你會學到 |
-|:---:|---|---|
-| 1 | [環境安裝](#1-環境安裝) | 安裝 PostgreSQL Server 與管理工具 |
-| 2 | [範例資料庫](#2-範例資料庫) | 匯入練習用的資料 |
-| 3 | [安裝 MCP，用中文查詢資料庫](#3-安裝-mcp用中文查詢資料庫) | 還不會 SQL，就能用中文請 AI 查詢資料庫 |
-| 4 | [SQL 語法](#4-sql-語法) | 每一課先學 SQL，再用 prompt 讓 AI 做一次並對照 |
-| 5 | [SQL 練習](#5-sql-練習) | 用範例資料庫動手寫查詢 |
-| 6 | [Python 串接](#6-python-串接psycopg2) | 用 psycopg2 從 Python 存取資料庫 |
-| 7 | [實戰專案](#7-實戰專案) | CLI 與 Streamlit 資料應用 |
-| 8 | [自訂 MCP Server](#8-自訂-mcp-server企業導入) | 用 AI 建立 MCP Server，讓企業員工用 Claude Desktop + token 查詢資料庫 |
+## 學習四階段路線
 
 ```mermaid
-flowchart LR
-    A["1-2<br/>環境與<br/>範例資料庫"] --> B["3<br/>安裝 MCP<br/>用中文查詢"] --> C["4-5<br/>SQL 語法與練習<br/>每課搭配 prompt"]
-    C --> D["6-7<br/>Python 與<br/>實戰專案"] --> E["8<br/>自訂 MCP Server<br/>（企業導入）"]
+flowchart TD
+    subgraph P1 ["【階段一】一般人日常查庫體驗（免寫程式）"]
+        S1["第 1-2 章<br/>環境安裝 & 範例資料庫<br/>(樹莓派 Docker / Supabase / DBeaver)"] --> S3["第 3 章<br/>一般人用的 Antigravity<br/>掛載專案級 MCP（免全域安裝）<br/>純中文自然語言查庫"]
+    end
 
-    classDef mcp fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
-    class B,E mcp
+    subgraph P2 ["【階段二】自己動手寫 SQL 與 AI 輔助"]
+        S3 --> S4["第 4-5 章<br/>SQL 基礎語法與實戰練習<br/>① 親自動手手寫 SQL<br/>② 用 prompt 請 Antigravity AI 做一次<br/>③ 比對驗證 AI 產生的 SQL 正確性"]
+    end
+
+    subgraph P3 ["【階段三】進入 Antigravity IDE 寫程式"]
+        S4 --> S6["第 6-7 章<br/>開啟 Antigravity IDE 寫程式<br/>Python psycopg2 資料庫串接<br/>CLI 與 Streamlit 視覺化專案"]
+    end
+
+    subgraph P4 ["【階段四】壓軸：打造自己的自訂 MCP Server"]
+        S6 --> S8["第 8 章（最末章）<br/>自己用 Python FastMCP 寫 MCP Server<br/>客製化企業業務工具、Token 驗證與稽核"]
+    end
+
+    classDef p1 fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
+    classDef p2 fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef p3 fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    classDef p4 fill:#fdf2f8,stroke:#db2777,color:#831843
+    class P1 p1
+    class P2 p2
+    class P3 p3
+    class P4 p4
 ```
 
-📖 [參考文件](#參考文件)
+| 階段 | 章節 | 你會學到 | 使用工具與環境 |
+|:---:|---|---|---|
+| **一** | [1. 環境安裝](#1-環境安裝) | 安裝 PostgreSQL（樹莓派 Docker / Supabase）與 DBeaver 圖形工具 | Docker / Supabase / DBeaver |
+| **一** | [2. 範例資料庫](#2-範例資料庫) | 匯入網路商店、圖書館、台鐵等繁中範例資料庫 | DBeaver 匯入 |
+| **一** | [3. 現成 MCP 中文查庫](#3-安裝現成-mcp用中文查詢資料庫) | **一般人用的 Antigravity**：掛載**專案級 MCP**（免全域安裝），純自然語言問問題，AI 自動查庫 | Antigravity + 專案級 MCP |
+| **二** | [4. SQL 語法與 AI 輔助](#4-sql-語法) | **親自學寫 SQL**：DDL/DML，每課搭配 prompt 讓 AI 做一次，學習審核與比對 AI 的 SQL | DBeaver + Antigravity 對話 |
+| **二** | [5. SQL 實戰練習](#5-sql-練習) | 關聯資料庫實戰、外來鍵、JOIN、GROUP BY、子查詢多題演練 | DBeaver 手寫查詢 |
+| **三** | [6. Python 串接](#6-python-串接psycopg2) | **進入 Antigravity IDE 寫程式**：用 psycopg2 從 Python 進行資料庫 CRUD 與交易管理 | Antigravity IDE (Python) |
+| **三** | [7. 實戰專案開發](#7-實戰專案) | 建立引導式 CLI 工具與 Streamlit 互動視覺化 Web 應用 | Antigravity IDE |
+| **四** | [8. 自訂 MCP Server](#8-自訂-mcp-server企業導入與客製化開發) | **壓軸單元**：親手用 Python 寫自訂 MCP Server，封裝專屬商業邏輯與 Token 安全防護 | Antigravity IDE + FastMCP |
 
 ---
 
 ## 1. 環境安裝
 
-本課程環境包含 **PostgreSQL 資料庫**、**DBeaver 管理工具** 與 **Postgres MCP Server（AI 連線工具）**，所有安裝與設定步驟均收錄於各教學連結內：
+本課程環境包含 **PostgreSQL 資料庫**、**DBeaver 管理工具** 與 **專案專屬 MCP Server**，所有安裝與設定步驟均收錄於各教學模組內：
 
 | 環境 / 安裝方式 | 包含內容 | 教學連結 |
 |---|---|:---:|
-| ⭐ **Raspberry Pi（Docker）** | Docker、PostgreSQL、DBeaver SSH 隧道連線、MCP Server、Docker Compose 雙容器整合 | [查看完整教學](./raspberry_docker安裝/) |
+| ⭐ **Raspberry Pi（Docker）** | 樹莓派 Docker 安裝、PostgreSQL、DBeaver SSH 隧道、專案 MCP 與 Docker Compose 雙容器整合 | [查看教學](./raspberry_docker安裝/) |
+| ⭐ **Supabase（雲端託管）** | 免硬體！申請免費雲端 PostgreSQL、DBeaver 直連與 Antigravity 專案級 MCP 設定 | [查看教學](./supabase安裝/) |
 | **Linux / Raspberry Pi（原生安裝）** | 透過 apt 原生安裝 PostgreSQL 服務與連線設定 | [查看教學](./server安裝/) |
 | **其它作業系統（Windows / macOS）** | 官方原生安裝檔下載 | [PostgreSQL 官網下載](https://www.postgresql.org/download/) |
 
-> 💡 MCP 和 Python 使用的連線字串格式：`postgresql://使用者名稱:密碼@主機:埠號/資料庫名稱`
+> 💡 連線字串格式：`postgresql://使用者名稱:密碼@主機:埠號/資料庫名稱`
 
 ---
 
@@ -54,20 +72,22 @@ flowchart LR
 
 ---
 
-## 3. 安裝 MCP，用中文查詢資料庫
+## 3. 安裝現成 MCP，用中文查詢資料庫
 
-還沒學 SQL 也沒關係：安裝 MCP 後，**用中文問問題，AI 就會查詢第 2 章匯入的範例資料庫**。 👉 [章節總覽](./MCP操作資料庫/)
+還沒學 SQL、不想碰程式碼也沒關係：
+只要在 **Antigravity 專案**中設定好現成的開源 MCP Server（**免全域安裝**，只有打開本專案才會啟動），**直接用中文問問題，AI 就會自動查詢資料庫並整理成表格回答你**！ 👉 [章節總覽](./MCP操作資料庫/)
 
 | 單元 | 內容 |
 |:---:|---|
-| [3-1 安裝與設定 Postgres MCP Pro](./MCP操作資料庫/1_postgres_mcp_pro/) | 安裝 Postgres MCP Pro，在 Claude Desktop 設定連到範例資料庫（唯讀） |
-| [3-2 第一次用中文查詢資料庫](./MCP操作資料庫/2_用中文查詢資料庫/) ⭐ | 不寫 SQL，用中文查詢網路商店資料（附答案）；設定第 4 章要用的「可寫入」連線 |
+| ⭐ **[3-1 在專案中設定 Postgres MCP](./MCP操作資料庫/1_antigravity設定.md)** | **免全域安裝！** 在專案 `.agents/mcp_config.json` 設定，開啟專案即自動連線，完全不污染電腦環境 |
+| ⭐ **[3-2 第一次用中文查詢資料庫](./MCP操作資料庫/2_用中文查詢資料庫/)** | 不用會寫 SQL，用中文提問網路商店資料（附答案）；體驗 AI 自動查庫的便利 |
 
 ---
 
-## 4. SQL 語法
+## 4. SQL 語法與 AI 輔助
 
-每一課先學 SQL，最後的「🤖 **不寫 SQL，用 Prompt 完成**」再用中文 prompt 讓 AI 做出一樣的結果，並對照 AI 寫的 SQL 和你學的是否相同。
+在第 3 章體驗了 AI 查庫後，**第 4 章我們要自己動手學會寫 SQL**！
+每一課先學正規 SQL 語法，最後的「🤖 **不寫 SQL，用 Prompt 完成**」單元，再用 prompt 讓 Antigravity AI 做一次，**親自對照 AI 寫的 SQL 和自己學的是否一樣**，學會如何驗證 AI 的正確性。
 
 
 ### DDL：資料定義語言
@@ -147,13 +167,14 @@ flowchart LR
 
 ---
 
-## 8. 自訂 MCP Server（企業導入）
+## 8. 自訂 MCP Server（企業導入與客製化開發）
 
-企業導入 MCP Server 後，員工就能在 Claude Desktop 等 AI 桌面應用程式中，**用中文直接查詢公司資料庫**，連線時必須使用 token 驗證身分。程式都**請 AI 撰寫**，你負責規劃與驗收。 👉 [章節總覽](./mcp_server/)
+學會了 SQL 與 Python 後，我們不再受限於現成工具，而是**使用 Python（FastMCP）在 Antigravity IDE 中親手打造專屬的 MCP Server**！
+自己封裝商業邏輯、權限檢查與安全稽核，並支援在 **Antigravity** 與 **Claude Desktop** 中掛載，甚至佈署成具備 token 驗證的遠端微服務。 👉 [章節總覽](./mcp_server/)
 
 | 單元 | 你的角色 | 內容 |
 |:---:|---|---|
-| [1. 用 AI 建立自己的 MCP Server](./mcp_server/1_用AI建立MCP_server/) ⭐ | 需求設計者、驗收者 | 規劃工具 → 請 AI 寫程式 → 測試 → 接上 Claude Desktop |
+| [1. 用 AI 建立自己的 MCP Server](./mcp_server/1_用AI建立MCP_server/) ⭐ | 需求設計者、開發者 | 在 Antigravity 中規劃工具 → 撰寫 FastMCP 程式碼 → 本地除錯與掛載 |
 | [2. 企業導入：遠端 MCP 與 token](./mcp_server/2_企業導入_遠端MCP與token/) ⭐ | 系統導入者 | 架設遠端 MCP Server，員工帶 token 連線，留下稽核紀錄 |
 | [3. 範例集](./mcp_server/3_範例集/) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理 |
 | [4. 會寫入資料的 MCP Server](./mcp_server/4_寫入型MCP_server/) | 需求設計者、驗收者 | 圖書館借還書：只開放特定寫入、檢查寫在程式裡、交易與稽核 |

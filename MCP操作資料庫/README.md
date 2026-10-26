@@ -1,22 +1,22 @@
-# 第 3 章：安裝 MCP，用中文查詢資料庫
+# 第 3 章：安裝現成 MCP，用中文查詢資料庫
 
-還沒學 SQL 也沒關係。安裝好 MCP 之後，**用中文問問題，AI 就會幫你查詢資料庫**。
+還沒學 SQL 也沒關係。只要在 Antigravity 專案中掛載別人寫好的開源 MCP Server，**用中文問問題，AI 就會自動幫你查詢資料庫**。
 
 > 「最貴的商品是什麼？」「哪些商品缺貨了？」「哪個月的訂單最多？」
-> → AI 透過 MCP 查詢 PostgreSQL → 整理成表格回答你
+> → AI 透過專案的 MCP 工具查詢 PostgreSQL → 整理成精美表格回答你
 
 ---
 
 ## 什麼是 MCP？
 
-**MCP（Model Context Protocol）** 是 AI 連接外部工具與資料的標準規格，就像 USB 是電腦連接各種裝置的標準。
+**MCP（Model Context Protocol）** 是 AI 連接外部工具與資料庫的標準規格：
 
 ```mermaid
 flowchart LR
-    U(["你"]) -->|"用中文提問"| AI["Claude Desktop<br/>（MCP Client）"]
-    AI -->|"呼叫工具<br/>execute_sql"| MCP["Postgres MCP Pro<br/>（MCP Server）"]
+    U(["你"]) -->|"用中文提問"| AI["Antigravity<br/>（AI 助手）"]
+    AI -->|"呼叫專案工具<br/>execute_sql"| MCP["Postgres MCP<br/>（專案級 MCP Server）"]
     MCP -->|"SQL"| DB[("PostgreSQL")]
-    DB -->|"結果"| MCP --> AI -->|"整理後回答"| U
+    DB -->|"查詢結果"| MCP --> AI -->|"整理為表格回答"| U
 
     classDef ai fill:#fff7ed,stroke:#ea580c,color:#7c2d12
     classDef mcp fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
@@ -26,43 +26,37 @@ flowchart LR
 
 | 名詞 | 白話說明 |
 |---|---|
-| **MCP Client** | AI 這一端，本課程使用 Claude Desktop |
-| **MCP Server** | 提供「工具」給 AI 呼叫的程式，本章使用別人寫好的 Postgres MCP Pro |
-| **Tool（工具）** | MCP Server 的一個功能，例如 `list_objects`（列出資料表）、`execute_sql`（執行 SQL） |
-| **access mode** | Postgres MCP Pro 的權限：`restricted` 只能查詢、`unrestricted` 可以建表與修改資料 |
+| **MCP Client** | AI 這一端，本課程使用 **Antigravity** |
+| **專案級 MCP** | 只有開啟本專案時才會啟動的 MCP 設定，不需全域安裝，不污染系統環境 |
+| **MCP Server** | 提供「工具」給 AI 呼叫的程式，本章使用現成的開源映像檔 `postgres-mcp` |
+| **Tool（工具）** | MCP Server 的功能，例如 `list_objects`（列出資料表）、`execute_sql`（執行 SQL） |
 
 ---
 
 ## 本章單元
 
 | 單元 | 內容 |
-|---|---|
-| [3-1 安裝與設定 Postgres MCP Pro](./1_postgres_mcp_pro/) | 安裝 Postgres MCP Pro，在 Claude Desktop 設定連到 `practice` 資料庫（唯讀） |
-| [3-2 第一次用中文查詢資料庫](./2_用中文查詢資料庫/) ⭐ | 用中文查詢網路商店資料（附答案），並設定第 4 章要用的「可寫入」連線 |
+|:---:|---|
+| ⭐ **[3-1 在 Antigravity 中設定專案級 Postgres MCP](./1_antigravity設定.md)** | 免全域安裝！在專案 `.agents/mcp_config.json` 中掛載 MCP，開啟專案即自動連線 |
+| ⭐ **[3-2 第一次用中文查詢資料庫](./2_用中文查詢資料庫/)** | 不用會寫 SQL，用中文查詢網路商店資料（附答案）；體驗 AI 查庫的威力 |
 
 ---
 
-## 接下來的課程怎麼使用 MCP
+## 接下來的學習路線：自己寫 SQL 與 AI 輔助
+
+在第 3 章體驗完「AI 自動查庫」後，接下來的第 4、5 章我們將學習：
+**「自己動手學寫 SQL，並由 Antigravity AI 在旁邊輔助、驗證與比對！」**
 
 ```mermaid
 flowchart LR
-    C3["<b>第 3 章</b><br/>用中文查詢<br/>不用會 SQL"] --> C4["<b>第 4 章 SQL 語法</b><br/>每一課：<br/>① 學 SQL<br/>② 用 prompt 做一次<br/>③ 比對 AI 寫的 SQL"]
-    C4 --> C8["<b>第 8 章</b><br/>用 AI 建立<br/>自己的 MCP Server"]
+    C3["<b>第 3 章</b><br/>用中文查庫<br/>不用會 SQL"] --> C4["<b>第 4-5 章 SQL 語法與練習</b><br/>① 自己動手學寫 SQL<br/>② 用 prompt 讓 AI 做一次<br/>③ 比對 AI 寫的 SQL 是否正確"]
+    C4 --> C6["<b>第 6-7 章</b><br/>用 Antigravity IDE<br/>寫 Python 存取資料庫"]
+    C6 --> C8["<b>第 8 章</b><br/>自己用 Python<br/>寫自訂 MCP Server"]
 
     classDef mcp fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
-    class C3,C4,C8 mcp
+    class C3,C8 mcp
 ```
-
-學 SQL 的目的不是取代 AI，而是**看得懂 AI 寫的 SQL**：
-
-| 情況 | 沒學過 SQL | 學過 SQL |
-|---|---|---|
-| AI 的 `UPDATE` 漏了 `WHERE` | 沒發現，整張表都被改掉 | 一眼看出來，阻止執行 |
-| AI 用 `JOIN` 而不是 `LEFT JOIN` | 不知道少了一些資料 | 知道結果不完整 |
-| AI 說「已完成」 | 相信它 | 用查詢確認結果 |
 
 ---
 
-## 下一步
-
-👉 [第 4 章：SQL 語法](../README.md#4-sql-語法)
+👉 **下一步：[3-1 在 Antigravity 中設定專案級 Postgres MCP](./1_antigravity設定.md)**

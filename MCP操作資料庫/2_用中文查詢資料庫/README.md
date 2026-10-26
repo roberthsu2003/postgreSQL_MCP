@@ -1,20 +1,20 @@
 # 3-2：第一次用中文查詢資料庫
 
-> **本單元目標**：還沒學 SQL，也能用中文問問題，讓 AI 透過 MCP 查詢資料庫。
-> 你的角色是**提問的人**。　[← 回第 3 章](../)
+> **本單元目標**：還沒學 SQL，也能用中文問問題，讓 AI 透過專案級 MCP 查詢資料庫。
+> 你的角色是**提問的人**（不需要寫任何程式）。　[← 回第 3 章](../)
 
 ## 事前準備
 
 - [x] 已依照第 2 章，把[網路商店 shop.sql](../../範例資料庫/中文範例資料庫/#-網路商店-shop) 匯入 `practice` 資料庫
-- [x] 已依照 [3-1](../1_postgres_mcp_pro/) 在 Claude Desktop 設定好 `postgres`（`restricted` 唯讀模式，連到 `practice`）
+- [x] 已依照 [3-1](../1_antigravity設定.md) 在專案 `.agents/mcp_config.json` 設定好 `postgres`（連到 `practice`）
 
-> `restricted` 模式只能查詢，**不會改到任何資料**，可以放心亂問。
+> 💡 **免全域安裝**：只要在 Antigravity 中開啟本專案資料夾，專案專屬的 MCP 就會自動啟動，離開專案便不佔資源。
 
 ---
 
 ## 1. 先認識資料庫
 
-第一次接觸一個資料庫，先請 AI 帶你認識它：
+第一次接觸一個資料庫，先請 AI 帶你認識它。直接在 **Antigravity 對話框**中輸入：
 
 > 用 postgres 查詢 practice 資料庫，裡面有哪些資料表？每張資料表大概存什麼資料？
 
@@ -26,14 +26,14 @@
 
 ### 觀察 AI 怎麼做
 
-在 Claude Desktop 中點開工具呼叫的紀錄，你會看到 AI 依序呼叫：
+在 Antigravity 中點開工具呼叫紀錄，你會看到 AI 依序呼叫：
 
 ```mermaid
 flowchart LR
     A["list_objects<br/>有哪些資料表"] --> B["get_object_details<br/>每張表有哪些欄位"] --> C["execute_sql<br/>執行查詢"]
 ```
 
-AI 會**先了解資料表結構，再寫出查詢**。`execute_sql` 裡面那段文字就是 **SQL**，第 4 章開始你會學到怎麼看懂它。
+AI 會**先了解資料表結構，再寫出查詢**。`execute_sql` 裡面那段文字就是 **SQL**，第 4 章開始你會學到怎麼自己寫出它。
 
 ---
 
@@ -43,7 +43,7 @@ AI 會**先了解資料表結構，再寫出查詢**。`execute_sql` 裡面那�
 
 ### 基本查詢
 
-| # | 問 Claude | 答案 |
+| # | 在 Antigravity 中提問 | 答案 |
 |:---:|---|---|
 | 1 | 最貴的商品是什麼？多少錢？ | 機械式鍵盤，2,490 元 |
 | 2 | 哪些商品缺貨（庫存是 0）？ | 無線藍牙耳機、方格筆記本 A5、地瓜脆片、竹纖維毛巾 3 入、素面圓領 T 恤、護唇膏，共 6 項 |
@@ -52,7 +52,7 @@ AI 會**先了解資料表結構，再寫出查詢**。`execute_sql` 裡面那�
 
 ### 需要合併多張資料表
 
-| # | 問 Claude | 答案 |
+| # | 在 Antigravity 中提問 | 答案 |
 |:---:|---|---|
 | 5 | 2025 年（只算已完成的訂單）賣出數量最多的 3 項商品 | 防曬乳 SPF50（85）、USB-C 快充線（75）、竹纖維毛巾 3 入（73） |
 | 6 | 營業額最高的商品分類是哪一個？ | 3C周邊 |
@@ -67,7 +67,7 @@ AI 會**先了解資料表結構，再寫出查詢**。`execute_sql` 裡面那�
 
 > 把每個月的訂單數和營業額整理成表格，並畫成折線圖。
 
-> 根據這些資料，寫一段 200 字的「2025 年銷售摘要」給老闆看。
+> 根據這些資料，寫一段 200 字的「2025 年銷售摘要」給主管看。
 
 > 哪些商品快缺貨了（庫存少於 20）？幫我整理成補貨清單。
 
@@ -88,41 +88,15 @@ ORDER BY price DESC
 LIMIT 1;
 ```
 
-現在看不懂沒關係。**第 4 章會一句一句教你這些語法**，每一課的最後也會教你怎麼用 prompt 讓 AI 做出一樣的結果。學完之後，你就能判斷 AI 寫的 SQL 對不對。
+現在看不懂沒關係。**第 4 章會一步一步帶你親手學會這些語法**，每一課也會讓你練習如何透過 AI 輔助與比對。學完之後，你就能一眼判斷 AI 寫的 SQL 正不正確。
 
 ---
 
-## 4. 試試看：AI 不能做的事
+## 4. 準備第 4 章：設定 `sql_tutorial` 練習庫連線
 
-> 刪除所有已取消的訂單。
+第 4 章每一課最後，會自己手寫 SQL，並可讓 AI 協助在 `sql_tutorial` 練習庫中驗證建立資料表、新增與查詢資料。
 
-因為是 `restricted` 模式，AI 會告訴你**無法修改資料**。這就是唯讀模式的保護。
-
----
-
-## 5. 更多資料庫
-
-把 `DATABASE_URI` 換成其他範例資料庫，重新啟動 Claude Desktop 再提問（`school.sql`、`library.sql` 也可以全部匯入 `practice`，不用換）：
-
-| 資料庫 | 可以問 |
-|---|---|
-| 🎓 學校選課 | 「113-2 學期有哪些學生兩科以上不及格？」「哪門課的平均分數最低？」 |
-| 📚 圖書館借閱 | 「現在有哪些書逾期還沒還？逾期幾天？」「2025 年最熱門的 5 本書」 |
-| 🚆 台鐵進出站 | 「2022 年進站人數最多的 5 個車站」「臺北車站每個月的平均進站人數」 |
-
-進階：Postgres MCP Pro 也能分析效能
-
-> 幫我做一次資料庫健康檢查。
-
-> 分析這個查詢為什麼慢，應該加什麼索引？（貼上一段 SQL）
-
----
-
-## 6. 準備第 4 章：設定「可寫入」的連線
-
-第 4 章每一課最後，會用 prompt 讓 AI **建立資料表、新增、修改、刪除資料**，需要一個可以寫入的連線。
-
-### 6.1 用 DBeaver 建立練習用的資料庫
+### 4.1 用 DBeaver 建立練習用的資料庫
 
 在連線底下的 **Databases** 按右鍵 → **Create New Database**，名稱輸入 `sql_tutorial`。或在 SQL 編輯器執行：
 
@@ -130,35 +104,58 @@ LIMIT 1;
 CREATE DATABASE sql_tutorial;
 ```
 
-> AI 透過 Postgres MCP Pro **不能建立資料庫**（會出現 `cannot run inside a transaction block`），這一步要自己在 DBeaver 執行。
+### 4.2 在專案 `.agents/mcp_config.json` 新增連線
 
-### 6.2 在 Claude Desktop 新增 `postgres-sql`
-
-在 `claude_desktop_config.json` 的 `mcpServers` 中，**保留**原本的 `postgres`，**另外新增**一個 `unrestricted` 的連線：
+打開本專案目錄下的 `.agents/mcp_config.json`，在 `mcpServers` 中**保留**原本的 `postgres`，**另外新增**一個連到 `sql_tutorial` 的連線 `postgres-sql`：
 
 ```json
-"postgres-sql": {
-  "command": "docker",
-  "args": ["run", "-i", "--rm", "-e", "DATABASE_URI", "crystaldba/postgres-mcp", "--access-mode=unrestricted"],
-  "env": {
-    "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/sql_tutorial"
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DATABASE_URI",
+        "crystaldba/postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
+      }
+    },
+    "postgres-sql": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DATABASE_URI",
+        "crystaldba/postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/sql_tutorial"
+      }
+    }
   }
 }
 ```
 
-使用 uvx 時，`args` 改成 `["--with", "mcp<2", "postgres-mcp", "--access-mode=unrestricted"]`（見 [3-1](../1_postgres_mcp_pro/#使用-uvx-的設定)）。
-
-| 連線名稱 | 模式 | 資料庫 | 用途 |
+| 連線名稱 | 模式 | 目標資料庫 | 主要用途 |
 |---|---|---|---|
-| `postgres` | restricted（唯讀） | practice | 查詢範例資料，不會改壞 |
-| `postgres-sql` | **unrestricted（可寫入）** | sql_tutorial | 第 4 章跟著講義建立資料表、新增修改資料 |
+| `postgres` | unrestricted | practice | 查詢範例資料（網路商店、圖書館等） |
+| `postgres-sql` | unrestricted | sql_tutorial | 第 4 章自己練習手寫 SQL、建表、新增修改，並由 AI 輔助驗證 |
 
-> ⚠️ **`unrestricted` 只能連練習用的資料庫**。AI 可以建立、修改、刪除任何資料。
+> 💡 **專案限定好處**：只會在開啟此專案時啟動，換到別的專案不會啟動，不佔用系統資源！
 
-重新啟動 Claude Desktop 後問：「用 postgres-sql 列出 sql_tutorial 有哪些資料表」，回答「沒有資料表」就代表設定成功。
+存檔後，在 Antigravity 對話框問：「用 postgres-sql 列出 sql_tutorial 有哪些資料表」，AI 回答「目前沒有資料表」就代表設定成功！
 
 ---
 
 ## 下一步
 
-👉 [第 4 章：SQL 語法](../../README.md#4-sql-語法)：每一課先學 SQL，最後再用 prompt 讓 AI 做一次，對照 AI 寫的 SQL 和你學的是否一樣。
+👉 **[進入第 4 章：SQL 語法與 AI 輔助](../../上課用sql/)**：從基本型別、建立資料表開始，親自動手寫 SQL，體會人機協作的威力！
