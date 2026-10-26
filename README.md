@@ -34,8 +34,9 @@ flowchart LR
 
 | 安裝方式 | 說明 |
 |---|---|
-| **Docker**（推薦） | 一行指令完成，見下方 |
-| Linux / Raspberry Pi | [安裝教學](./server安裝/) |
+| **Docker（本機）**（推薦） | 一行指令完成，見下方 |
+| **Raspberry Pi（Docker）** | [安裝教學](./raspberry_docker安裝/)（Docker、PostgreSQL 與 DBeaver 遠端連線） |
+| Linux / Raspberry Pi（原生安裝） | [安裝教學](./server安裝/)（apt 原生安裝與設定檔調整） |
 | 其它作業系統 | [PostgreSQL 官網下載](https://www.postgresql.org/download/) |
 
 ```bash
@@ -49,8 +50,8 @@ docker run --name my-postgres -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d 
 | `-p 5432:5432` | 將容器的 5432 埠對應到本機 5432 埠 |
 | `-d postgres` | 在背景執行，使用官方 postgres 映像檔 |
 
-> [!NOTE]
-> 目前只測試過本機連線，從其它電腦連線的設定尚未測試成功。
+> [!TIP]
+> 若要從其它電腦遠端連線至運行於 Raspberry Pi 的 PostgreSQL，請參考 [Raspberry Pi（Docker）安裝教學](./raspberry_docker安裝/)。
 
 ### 管理工具：DBeaver
 
