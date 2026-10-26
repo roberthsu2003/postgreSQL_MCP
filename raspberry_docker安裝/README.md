@@ -234,22 +234,13 @@ docker exec -it my-postgres psql -U postgres
 
 ## 4. 單獨使用 Docker Run 安裝 Postgres MCP Server 與連線設定
 
-在第 2 節中，我們已經用 `docker run` 啟動了 `my-postgres` 資料庫。現在我們接著**單獨使用 `docker run` 安裝與啟動 Postgres MCP Server**，讓 AI（如 Claude Desktop）能連線至樹莓派資料庫進行中文查詢。
+在步驟 2.1 與 2.2 中，我們已經建立好了 `mcp-net` 專屬網路，並讓 `my-postgres` 運行於其中。
 
-### 步驟 4.1：建立 Docker 自訂網路連通雙容器
-在 Docker 中，兩個單獨啟動的容器需要處於同一個網路下才能透過容器名稱（`my-postgres`）互相通訊。
+現在我們只需**單獨使用 `docker run` 啟動 Postgres MCP Server 並加入同一網路**，它就能透過主機名稱 `my-postgres` 與資料庫互通，讓 AI（如 Claude Desktop）進行中文查詢！
 
-請在樹莓派終端機執行：
-```bash
-# 1. 建立一個名為 mcp-net 的專屬網路
-docker network create mcp-net
+### 步驟 4.1：使用 `docker run` 啟動 MCP Server 容器
 
-# 2. 將第 2 節已經在運行的 my-postgres 容器加入該網路
-docker network connect mcp-net my-postgres
-```
-
-### 步驟 4.2：使用 `docker run` 單獨啟動 MCP Server 容器
-執行以下指令啟動 MCP Server 容器（請將 `yourpassword` 替換為第 2 節設定的密碼）：
+在樹莓派終端機執行以下指令啟動 MCP Server（請將 `yourpassword` 替換為資料庫密碼）：
 
 ```bash
 docker run -d \
@@ -257,28 +248,66 @@ docker run -d \
   --network mcp-net \
   -e DATABASE_URI=postgresql://postgres:yourpassword@my-postgres:5432/postgres \
   --restart unless-stopped \
-  crystaldba/postgres-mcp --access-mode=restricted
+  crystaldba/postgres-mcp
 ```
 
 #### 參數解說：
 | 參數 | 說明 |
 |---|---|
-| `-d` | 背景執行容器 |
+| `-d` | 背景執行容器（終端機不會被佔用） |
 | `--name my-postgres-mcp` | 容器自訂名稱 |
-| `--network mcp-net` | 加入剛建立的 `mcp-net` 網路，因此能直接透過主機名稱 `my-postgres` 連到資料庫 |
-| `-e DATABASE_URI=...` | 指定資料庫連線字串，主機名稱為 `my-postgres`，連接埠為 `5432` |
+| `--network mcp-net` | **加入步驟 2.1 建立的專屬網路**：與 `my-postgres` 容器互通，直接使用容器名當主機名 |
+| `-e DATABASE_URI=...` | 指定資料庫連線字串（重要！見下方詳細拆解） |
 | `--restart unless-stopped` | 開機自動重啟 MCP Server |
-| `--access-mode=restricted` | 限制為唯讀查詢模式（避免 AI 誤刪資料） |
+
+> [!TIP]
+> **關於 `--access-mode` 存取權限模式說明：**
+> * **教學環境（讓 AI 協助做事）**：在指令末尾不加或加上 `--access-mode=unrestricted`，代表**不受限模式**。AI 除了查詢外，還能協助建立資料表（CREATE TABLE）、新增、修改資料，最適合上課與教學實戰！
+> * **正式環境（唯讀保護）**：若在指令末尾加上 `--access-mode=restricted`，則為**唯讀模式**，AI 只能做 `SELECT` 查詢，不能改動任何資料庫結構與內容。
+
+---
+
+#### 🔍 白話詳細拆解：什麼是 `DATABASE_URI`？
+這行指令看起來最複雜、最容易讓人混淆：
+```text
+DATABASE_URI=postgresql://postgres:yourpassword@my-postgres:5432/postgres
+```
+
+其實它的通用公式非常固定：
+```text
+postgresql://【帳號】:【密碼】@【主機位址】:【埠號】/【資料庫名稱】
+```
+
+將這一段文字拆開來看：
+
+| 欄位片段 | 代表意義 | 白話說明 |
+|---|---|---|
+| `postgresql://` | **連線協定** | 告訴程式這是要連線到 PostgreSQL 資料庫 |
+| `postgres` | **帳號 (Username)** | PostgreSQL 預設最高管理者的帳號名稱就叫做 `postgres` |
+| `:yourpassword` | **密碼 (Password)** | 步驟 2.2 啟動資料庫時自己設定的密碼 |
+| `@my-postgres` | **主機位址 (Host)** | ⭐ **關鍵重點**：在同一個 Docker 網路內，**容器名稱就是主機名稱**！填入步驟 2.2 的 `--name my-postgres`，Docker 就會自動找到資料庫，完全不需要填寫 IP |
+| `:5432` | **連接埠 (Port)** | PostgreSQL 的預設通訊埠號 |
+| `/postgres` | **資料庫名稱 (Database)** | 連線進入的目標資料庫名稱。預設內建資料庫叫 `postgres`；如果未來要切換到練習用的資料庫（例如 `practice`），只需改成 `/practice` |
+
+> 💡 **常見疑問：為什麼字串裡有這麼多個 `postgres`？**
+> * 第一個 `postgresql://`：是**資料庫類型**
+> * 第二個 `postgres`：是**使用者帳號**
+> * 第三個 `@my-postgres`：是**容器名稱**（代表那台伺服器）
+> * 第四個 `/postgres`：是**要連進去的資料庫**
+> 
+> 它們各自扮演不同的角色，只是預設都叫這個名字！
+
+---
 
 檢查容器是否正常啟動：
 ```bash
 docker ps
 ```
-若能看到 `my-postgres` 與 `my-postgres-mcp` 兩個容器同時處於 `Up` 狀態，代表安裝完成！
+若能看到 `my-postgres` 與 `my-postgres-mcp` 兩個容器同時處於 `Up` 狀態，代表單獨安裝成功！
 
 ---
 
-### 步驟 4.3：個人電腦端 Claude Desktop 連線設定
+### 步驟 4.2：個人電腦端 Claude Desktop 連線設定
 
 在個人電腦（Mac / Windows）安裝 [Claude Desktop](https://claude.ai/download) 後，打開設定檔：
 * **macOS**：`~/Library/Application Support/Claude/claude_desktop_config.json`
