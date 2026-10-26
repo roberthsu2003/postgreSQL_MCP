@@ -327,7 +327,7 @@ docker ps
         "-e",
         "DATABASE_URI",
         "crystaldba/postgres-mcp",
-        "--access-mode=restricted"
+        "--access-mode=unrestricted"
       ],
       "env": {
         "DATABASE_URI": "postgresql://postgres:yourpassword@<樹莓派IP或主機名稱>:5432/postgres"
@@ -337,6 +337,8 @@ docker ps
 }
 ```
 
+> 💡 **教學提示**：使用 `--access-mode=unrestricted` 模式，AI 才能完整協助建立資料表（`CREATE TABLE`）、新增與修改資料。
+> 
 > **測試連線：**
 > 存檔後**完全退出並重新開啟 Claude Desktop**。在輸入框下方點選工具圖示，若看到 `raspberry-postgres` 工具（例如 `list_objects`、`execute_sql`），即代表已成功連上樹莓派上的資料庫！
 
