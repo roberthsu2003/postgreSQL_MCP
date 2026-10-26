@@ -1,14 +1,41 @@
-# 在 Raspberry Pi 上使用 Docker 安裝 PostgreSQL 與 DBeaver 連線
+# 在 Raspberry Pi 上使用 Docker 安裝 PostgreSQL、DBeaver 與 MCP Server
 
-本指南適用於在 **Raspberry Pi（樹莓派）** 環境下，透過 **Docker** 快速建立 PostgreSQL 資料庫服務，並從個人電腦（Mac / Windows）使用 **DBeaver** 進行遠端連線管理。
+本指南適用於在 **Raspberry Pi（樹莓派）** 環境下，透過 **Docker** 建立 PostgreSQL 資料庫服務與 **Postgres MCP Server**，並從個人電腦（Mac / Windows）使用 **DBeaver** 與 **Claude Desktop** 進行管理與 AI 查詢。
 
 ---
 
-## 目錄
-1. [在 Raspberry Pi 安裝 Docker](#1-在-raspberry-pi-安裝-docker)
-2. [在 Docker 上安裝與運行 PostgreSQL](#2-在-docker-上安裝與運行-postgresql)
-3. [使用 DBeaver 連線至 Raspberry Pi](#3-使用-dbeaver-連線至-raspberry-pi)
-4. [常用維護指令與常見問題](#4-常用維護指令與常見問題)
+## 📋 完整目錄導覽
+
+本手冊涵蓋從基礎 Docker 安裝到進階 Docker Compose 雙容器整合的完整步驟，您可以點選以下目錄快速跳轉：
+
+1. **[在 Raspberry Pi 安裝 Docker](#1-在-raspberry-pi-安裝-docker)**
+   * [1.1 更新系統套件](#步驟-11更新系統套件)
+   * [1.2 使用官方腳本安裝 Docker](#步驟-12使用官方腳本安裝-docker)
+   * [1.3 將目前使用者加入 docker 群組](#步驟-13將目前使用者加入-docker-群組)
+   * [1.4 驗證 Docker 是否安裝成功](#步驟-14驗證-docker-是否安裝成功)
+   * 📖 *[Docker 常用基本指令速查手冊](./docker基本指令.md)*
+2. **[單獨使用 Docker Run 安裝與運行 PostgreSQL](#2-單獨使用-docker-run-安裝與運行-postgresql)**
+   * [2.1 建立並啟動 PostgreSQL 容器（開機自啟與資料持久化）](#步驟-21建立並啟動-postgresql-容器)
+   * [2.2 檢查容器狀態](#步驟-22檢查容器狀態)
+   * [2.3 測試進入容器內的 psql](#步驟-23測試進入容器內的-psql可選)
+3. **[使用 DBeaver 透過 SSH 連線至 Raspberry Pi](#3-使用-dbeaver-透過-ssh-連線至-raspberry-pi)**
+   * [3.1 確認樹莓派的連線資訊](#步驟-31確認樹莓派的連線資訊)
+   * [3.2 在 DBeaver 設定 SSH 隧道連線（附圖解）](#步驟-32在-dbeaver-設定-ssh-隧道連線)
+     * [3.2.1 【主（Main）分頁】設定資料庫連線](#321-主main分頁設定資料庫連線)
+     * [3.2.2 【SSH 分頁】設定 SSH 隧道](#322-ssh-分頁設定-ssh-隧道核心步驟)
+     * [3.2.3 【PostgreSQL 分頁】與測試連線](#323-postgresql-分頁與測試連線)
+   * [3.3 DBeaver 常用操作速查表](#步驟-33dbeaver-常用操作)
+4. **[單獨使用 Docker Run 安裝 Postgres MCP Server 與連線設定](#4-單獨使用-docker-run-安裝-postgres-mcp-server-與連線設定)**
+   * [4.1 建立 Docker 自訂網路連通雙容器](#步驟-41建立-docker-自訂網路連通雙容器)
+   * [4.2 使用 docker run 單獨啟動 MCP Server 容器](#步驟-42使用-docker-run-單獨啟動-mcp-server-容器)
+   * [4.3 個人電腦端 Claude Desktop 連線設定](#步驟-43個人電腦端-claude-desktop-連線設定)
+5. **[進階整合：使用 Docker Compose 一次安裝與啟動 2 套服務（推薦）](#5-進階整合使用-docker-compose-一次安裝與啟動-2-套服務)**
+   * [5.1 建立專案資料夾與 docker-compose.yml](#步驟-51建立專案資料夾與-docker-composeyml)
+   * [5.2 一行指令一次啟動 2 套容器](#步驟-52一行指令一次啟動-2-套容器)
+   * [5.3 檢查狀態與多容器彩色即時日誌](#步驟-53檢查狀態與日誌)
+6. **[常用維護指令與常見問題](#6-常用維護指令與常見問題)**
+   * [常用 Docker 維護指令](#常用-docker-維護指令)
+   * [常見問題排查](#常見問題排查)
 
 ---
 
@@ -50,7 +77,7 @@ docker compose version
 
 ---
 
-## 2. 在 Docker 上安裝與運行 PostgreSQL
+## 2. 單獨使用 Docker Run 安裝與運行 PostgreSQL
 
 使用 Docker 運行 PostgreSQL 的最大好處是：**映像檔預設已允許遠端連線，且安裝、備份、刪除都極為乾淨**。
 
@@ -84,26 +111,7 @@ docker run -d \
 > 指令中的 `--restart unless-stopped` 參數非常重要！這代表**未來樹莓派每次開機或重新啟動後，Docker 都會自動把 PostgreSQL 容器啟動起來**。
 > 您不需要每次開機都進終端機手動輸入指令，資料庫服務將會常駐運行。
 
-> [!TIP]
-> **可選：使用 Docker Compose 管理**
-> 如果習慣使用 Docker Compose，可在樹莓派建立 `docker-compose.yml`：
-> ```yaml
-> services:
->   postgres:
->     image: postgres
->     container_name: my-postgres
->     restart: unless-stopped
->     environment:
->       POSTGRES_PASSWORD: yourpassword
->     ports:
->       - "5432:5432"
->     volumes:
->       - postgres_data:/var/lib/postgresql/data
-> 
-> volumes:
->   postgres_data:
-> ```
-> 啟動指令：`docker compose up -d`
+> 💡 **提示**：若想省去單獨設定網路的步驟，直接一次安裝與啟動 PostgreSQL + MCP Server 雙容器，可直接參考 [第 5 節：Docker Compose 一鍵啟動教學](#5-進階整合使用-docker-compose-一次安裝與啟動-2-套服務)。
 
 ### 步驟 2.2：檢查容器狀態
 檢查容器是否正常運行：
@@ -185,19 +193,205 @@ docker exec -it my-postgres psql -U postgres
 
 ---
 
-## 4. 常用維護指令與常見問題
+### 步驟 3.3：DBeaver 常用操作
+
+| 要做的事 | 操作方式 |
+|---|---|
+| **開啟 SQL 編輯器** | 在左側選取資料庫 → 按右鍵 **SQL Editor → New SQL script**（`Ctrl + ]` 或 Mac 的 `Cmd + ]`） |
+| **執行游標所在的一句 SQL** | `Ctrl + Enter`（Mac：`Cmd + Enter`） |
+| **執行整個檔案的所有 SQL** | `Alt + X`（Mac：`Opt + X`） |
+| **開啟 `.sql` 檔** | **File → Open File** 選擇檔案，再從工具列的 **Active datasource** 選擇要執行的資料庫 |
+| **建立資料庫** | 在連線底下的 **Databases** 按右鍵 → **Create New Database** |
+| **匯入 CSV** | 在資料表上按右鍵 → **Import Data** → 選 **CSV** → 選擇檔案 → 確認欄位對應 → **Proceed** |
+| **查看資料表結構、限制、外來鍵** | 在資料表上按兩下 → **Properties** 分頁（Columns、Constraints、Foreign Keys） |
+| **查看關聯圖 (ERD)** | 在資料表或 Schema 上按兩下 → **ER Diagram** 分頁 |
+| **產生資料表的 `CREATE TABLE` (DDL)** | 在資料表上按右鍵 → **Generate SQL → DDL** |
+| **重新整理左側清單** | 選取後按 `F5`（用 SQL 建立資料庫或資料表後，左側需重新整理才會出現） |
+
+> 💡 **連線字串格式參考**（MCP 和 Python 使用）：
+> `postgresql://使用者名稱:密碼@主機:埠號/資料庫名稱`
+> 例如本機 SSH 轉發：`postgresql://postgres:yourpassword@localhost:5432/postgres`
+
+---
+
+## 4. 單獨使用 Docker Run 安裝 Postgres MCP Server 與連線設定
+
+在第 2 節中，我們已經用 `docker run` 啟動了 `my-postgres` 資料庫。現在我們接著**單獨使用 `docker run` 安裝與啟動 Postgres MCP Server**，讓 AI（如 Claude Desktop）能連線至樹莓派資料庫進行中文查詢。
+
+### 步驟 4.1：建立 Docker 自訂網路連通雙容器
+在 Docker 中，兩個單獨啟動的容器需要處於同一個網路下才能透過容器名稱（`my-postgres`）互相通訊。
+
+請在樹莓派終端機執行：
+```bash
+# 1. 建立一個名為 mcp-net 的專屬網路
+docker network create mcp-net
+
+# 2. 將第 2 節已經在運行的 my-postgres 容器加入該網路
+docker network connect mcp-net my-postgres
+```
+
+### 步驟 4.2：使用 `docker run` 單獨啟動 MCP Server 容器
+執行以下指令啟動 MCP Server 容器（請將 `yourpassword` 替換為第 2 節設定的密碼）：
+
+```bash
+docker run -d \
+  --name my-postgres-mcp \
+  --network mcp-net \
+  -e DATABASE_URI=postgresql://postgres:yourpassword@my-postgres:5432/postgres \
+  --restart unless-stopped \
+  crystaldba/postgres-mcp --access-mode=restricted
+```
+
+#### 參數解說：
+| 參數 | 說明 |
+|---|---|
+| `-d` | 背景執行容器 |
+| `--name my-postgres-mcp` | 容器自訂名稱 |
+| `--network mcp-net` | 加入剛建立的 `mcp-net` 網路，因此能直接透過主機名稱 `my-postgres` 連到資料庫 |
+| `-e DATABASE_URI=...` | 指定資料庫連線字串，主機名稱為 `my-postgres`，連接埠為 `5432` |
+| `--restart unless-stopped` | 開機自動重啟 MCP Server |
+| `--access-mode=restricted` | 限制為唯讀查詢模式（避免 AI 誤刪資料） |
+
+檢查容器是否正常啟動：
+```bash
+docker ps
+```
+若能看到 `my-postgres` 與 `my-postgres-mcp` 兩個容器同時處於 `Up` 狀態，代表安裝完成！
+
+---
+
+### 步驟 4.3：個人電腦端 Claude Desktop 連線設定
+
+在個人電腦（Mac / Windows）安裝 [Claude Desktop](https://claude.ai/download) 後，打開設定檔：
+* **macOS**：`~/Library/Application Support/Claude/claude_desktop_config.json`
+* **Windows**：`%APPDATA%\Claude\claude_desktop_config.json`
+
+在 `claude_desktop_config.json` 中填入連線設定（將 `<樹莓派IP或主機名稱>` 替換為您的樹莓派 IP，例如 `192.168.1.150` 或 `pi4robert03012gb.local`）：
+
+```json
+{
+  "mcpServers": {
+    "raspberry-postgres": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DATABASE_URI",
+        "crystaldba/postgres-mcp",
+        "--access-mode=restricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:yourpassword@<樹莓派IP或主機名稱>:5432/postgres"
+      }
+    }
+  }
+}
+```
+
+> **測試連線：**
+> 存檔後**完全退出並重新開啟 Claude Desktop**。在輸入框下方點選工具圖示，若看到 `raspberry-postgres` 工具（例如 `list_objects`、`execute_sql`），即代表已成功連上樹莓派上的資料庫！
+
+---
+
+## 5. 進階整合：使用 Docker Compose 一次安裝與啟動 2 套服務
+
+雖然在第 2 節與第 4 節我們可以用 `docker run` 分別啟動資料庫與 MCP Server，但必須執行多次指令，還要手動建立網路（`docker network create`、`connect`），較為瑣碎。
+
+**Docker Compose** 解決了這個痛點：**只需撰寫一份 `docker-compose.yml`，一行指令就能同時建立網路、配置環境變數、並一次啟動 2 套服務！**
+
+### 步驟 5.1：建立專案資料夾與 `docker-compose.yml`
+若想改用 Docker Compose 管理，建議先停止原本單獨運行的容器：
+```bash
+docker stop my-postgres my-postgres-mcp
+docker rm my-postgres my-postgres-mcp
+```
+> [!NOTE]
+> 刪除容器不會刪除 `postgres_data` 資料卷，原本建立的資料表依然完整保存。
+
+接著在樹莓派終端機建立 compose 專案：
+```bash
+mkdir -p ~/postgres-compose && cd ~/postgres-compose
+nano docker-compose.yml
+```
+
+貼入以下內容（請將 `yourpassword` 替換為您的密碼）：
+
+```yaml
+services:
+  # 服務 1：PostgreSQL 資料庫
+  postgres:
+    image: postgres:latest
+    container_name: my-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mcp-net
+
+  # 服務 2：Postgres MCP Server（AI 連線工具）
+  postgres-mcp:
+    image: crystaldba/postgres-mcp:latest
+    container_name: my-postgres-mcp
+    restart: unless-stopped
+    environment:
+      # 在同一個 compose 網路中，可以直接使用服務名稱 postgres 連線
+      DATABASE_URI: postgresql://postgres:yourpassword@postgres:5432/postgres
+    depends_on:
+      - postgres
+    networks:
+      - mcp-net
+
+volumes:
+  postgres_data:
+
+networks:
+  mcp-net:
+    driver: bridge
+```
+> 按 `Ctrl + O` 儲存，按 `Enter`，按 `Ctrl + X` 離開。
+
+### 步驟 5.2：一行指令一次啟動 2 套容器
+在含有 `docker-compose.yml` 的目錄下執行：
+
+```bash
+docker compose up -d
+```
+
+### 步驟 5.3：檢查狀態與日誌
+- **查看 2 個容器的狀態：**
+  ```bash
+  docker compose ps
+  ```
+- **同時查看 2 個容器的彩色輸出日誌：**
+  ```bash
+  docker compose logs -f
+  ```
+- **重啟這 2 套服務：**
+  ```bash
+  docker compose restart
+  ```
+
+---
+
+## 6. 常用維護指令與常見問題
 
 ### 常用 Docker 維護指令
 
-- **停止資料庫：**
+- **停止容器：**
   ```bash
   docker stop my-postgres
   ```
-- **啟動資料庫：**
+- **啟動容器：**
   ```bash
   docker start my-postgres
   ```
-- **重啟資料庫：**
+- **重啟容器：**
   ```bash
   docker restart my-postgres
   ```

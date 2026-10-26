@@ -30,63 +30,13 @@ flowchart LR
 
 ## 1. 環境安裝
 
-### PostgreSQL Server
+本課程環境包含 **PostgreSQL 資料庫**、**DBeaver 管理工具** 與 **Postgres MCP Server（AI 連線工具）**，所有安裝與設定步驟均收錄於各教學連結內：
 
-| 安裝方式 | 說明 |
-|---|---|
-| **Docker（本機）**（推薦） | 一行指令完成，見下方 |
-| **Raspberry Pi（Docker）** | [安裝教學](./raspberry_docker安裝/)（Docker、PostgreSQL 與 DBeaver 遠端連線） |
-| Linux / Raspberry Pi（原生安裝） | [安裝教學](./server安裝/)（apt 原生安裝與設定檔調整） |
-| 其它作業系統 | [PostgreSQL 官網下載](https://www.postgresql.org/download/) |
-
-```bash
-docker run --name my-postgres -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres
-```
-
-| 參數 | 說明 |
-|---|---|
-| `--name my-postgres` | 容器名稱 |
-| `-e POSTGRES_PASSWORD=yourpassword` | 設定預設帳號 `postgres` 的密碼 |
-| `-p 5432:5432` | 將容器的 5432 埠對應到本機 5432 埠 |
-| `-d postgres` | 在背景執行，使用官方 postgres 映像檔 |
-
-> [!TIP]
-> 若要從其它電腦遠端連線至運行於 Raspberry Pi 的 PostgreSQL，請參考 [Raspberry Pi（Docker）安裝教學](./raspberry_docker安裝/)。
-
-### 管理工具：DBeaver
-
-本課程使用 [DBeaver](https://dbeaver.io/)（免費的 Community 版）管理資料庫。
-
-#### 建立連線
-
-1. 上方選單 **Database → New Database Connection**，選擇 **PostgreSQL**
-2. 填入連線資訊：
-
-	| 欄位 | 填入 |
-	|---|---|
-	| Host | `localhost`（Docker 或本機安裝） |
-	| Port | `5432` |
-	| Database | `postgres` |
-	| Username | `postgres` |
-	| Password | 安裝時設定的密碼 |
-
-3. 切換到 **PostgreSQL** 分頁，勾選 **Show all databases**（否則左側只會看到 `postgres` 一個資料庫）
-4. 按 **Test Connection**，第一次會提示下載驅動程式，按 **Download** 即可
-
-#### 常用操作
-
-| 要做的事 | 操作方式 |
-|---|---|
-| 開啟 SQL 編輯器 | 在左側選取資料庫 → 按右鍵 **SQL Editor → New SQL script**（`Ctrl + ]`） |
-| 執行游標所在的一句 SQL | `Ctrl + Enter` |
-| **執行整個檔案的所有 SQL** | `Alt + X`（Execute SQL Script） |
-| 開啟 `.sql` 檔 | **File → Open File** 選擇檔案，再從工具列的 **Active datasource** 選擇要執行的資料庫 |
-| 建立資料庫 | 在連線底下的 **Databases** 按右鍵 → **Create New Database** |
-| 匯入 CSV | 在資料表上按右鍵 → **Import Data** → 選 **CSV** → 選擇檔案 → 確認欄位對應 → **Proceed** |
-| 查看資料表結構、限制、外來鍵 | 在資料表上按兩下 → **Properties** 分頁（Columns、Constraints、Foreign Keys） |
-| 查看關聯圖 | 在資料表上按兩下 → **ER Diagram** 分頁 |
-| 產生資料表的 `CREATE TABLE` | 在資料表上按右鍵 → **Generate SQL → DDL** |
-| 重新整理左側清單 | 選取後按 `F5`（用 SQL 建立資料表後，左側要重新整理才會出現） |
+| 環境 / 安裝方式 | 包含內容 | 教學連結 |
+|---|---|:---:|
+| ⭐ **Raspberry Pi（Docker）** | Docker、PostgreSQL、DBeaver SSH 隧道連線、MCP Server、Docker Compose 雙容器整合 | [查看完整教學](./raspberry_docker安裝/) |
+| **Linux / Raspberry Pi（原生安裝）** | 透過 apt 原生安裝 PostgreSQL 服務與連線設定 | [查看教學](./server安裝/) |
+| **其它作業系統（Windows / macOS）** | 官方原生安裝檔下載 | [PostgreSQL 官網下載](https://www.postgresql.org/download/) |
 
 > 💡 MCP 和 Python 使用的連線字串格式：`postgresql://使用者名稱:密碼@主機:埠號/資料庫名稱`
 
