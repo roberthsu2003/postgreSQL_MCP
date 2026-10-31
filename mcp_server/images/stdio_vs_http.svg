@@ -16,7 +16,7 @@
   <rect x="50" y="108" width="250" height="180" rx="10" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 4"/>
   <text x="62" y="128" font-size="13" fill="#64748b">你的電腦</text>
   <rect x="70" y="138" width="210" height="46" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
-  <text x="175" y="167" text-anchor="middle" font-size="16" font-weight="700" fill="#9a3412">Claude Desktop</text>
+  <text x="175" y="167" text-anchor="middle" font-size="16" font-weight="700" fill="#9a3412">Antigravity</text>
   <line x1="175" y1="184" x2="175" y2="212" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
   <text x="185" y="203" font-size="12" fill="#64748b">啟動</text>
   <rect x="70" y="216" width="210" height="52" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>

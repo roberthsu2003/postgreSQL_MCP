@@ -21,14 +21,12 @@
 
 ## 1. 環境安裝
 
-本課程環境包含 **PostgreSQL 資料庫**、**DBeaver 管理工具** 與 **專案專屬 MCP Server**，所有安裝與設定步驟均收錄於各教學模組內：
+本課程環境採用**容器化標準（Docker）**運行 PostgreSQL 資料庫，免除繁瑣的原生環境設定；管理與查詢則由本機電腦的 **DBeaver** 與 **Antigravity 專案級 MCP** 負責：
 
 | 環境 / 安裝方式 | 包含內容 | 教學連結 |
 |---|---|:---:|
-| ⭐ **Raspberry Pi（Docker）** | 樹莓派 Docker 安裝、PostgreSQL、DBeaver SSH 隧道、專案 MCP 與 Docker Compose 雙容器整合 | [查看教學](./raspberry_docker安裝/) |
-| ⭐ **Supabase（雲端託管）** | 免硬體！申請免費雲端 PostgreSQL、DBeaver 直連與 Antigravity 專案級 MCP 設定 | [查看教學](./supabase安裝/) |
-| **Linux / Raspberry Pi（原生安裝）** | 透過 apt 原生安裝 PostgreSQL 服務與連線設定 | [查看教學](./server安裝/) |
-| **其它作業系統（Windows / macOS）** | 官方原生安裝檔下載 | [PostgreSQL 官網下載](https://www.postgresql.org/download/) |
+| ⭐ **Raspberry Pi（Docker 容器推薦）** | 樹莓派 Docker 安裝、PostgreSQL 容器化運行、DBeaver SSH 隧道、專案 MCP 與 Docker Compose 雙容器整合 | [查看教學](./raspberry_docker安裝/) |
+| ⭐ **Supabase（雲端託管容器）** | 免硬體！申請免費雲端託管 PostgreSQL、DBeaver 直連與 Antigravity 專案級 MCP 設定 | [查看教學](./supabase安裝/) |
 
 > 💡 連線字串格式：`postgresql://使用者名稱:密碼@主機:埠號/資料庫名稱`
 

@@ -22,7 +22,7 @@
   <!-- AI -->
   <rect x="600" y="70" width="260" height="230" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
   <text x="730" y="104" text-anchor="middle" font-size="20" font-weight="700" fill="#5b21b6">AI</text>
-  <text x="730" y="128" text-anchor="middle" font-size="14" fill="#475569">工程師（Claude Code 等）</text>
+  <text x="730" y="128" text-anchor="middle" font-size="14" fill="#475569">工程師（Antigravity）</text>
   <g font-size="15" fill="#1e293b">
     <text x="626" y="170">✔ 寫程式</text>
     <text x="626" y="203">✔ 修正錯誤</text>
