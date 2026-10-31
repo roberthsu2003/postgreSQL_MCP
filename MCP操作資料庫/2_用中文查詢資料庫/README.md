@@ -112,14 +112,11 @@ CREATE DATABASE sql_tutorial;
 {
   "mcpServers": {
     "postgres": {
-      "command": "docker",
+      "command": "uvx",
       "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "DATABASE_URI",
-        "crystaldba/postgres-mcp",
+        "--with",
+        "mcp<2",
+        "postgres-mcp",
         "--access-mode=unrestricted"
       ],
       "env": {
@@ -127,14 +124,11 @@ CREATE DATABASE sql_tutorial;
       }
     },
     "postgres-sql": {
-      "command": "docker",
+      "command": "uvx",
       "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "DATABASE_URI",
-        "crystaldba/postgres-mcp",
+        "--with",
+        "mcp<2",
+        "postgres-mcp",
         "--access-mode=unrestricted"
       ],
       "env": {

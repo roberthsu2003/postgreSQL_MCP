@@ -81,20 +81,17 @@
 透過專案級 MCP 配置，免全域安裝，只要打開本專案，Antigravity 就會自動連線至您的 Supabase 雲端資料庫！
 
 ### 設定方式：
-開啟專案根目錄下的 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)，加入 Supabase 連線設定（連線字串末尾建議加上 `?sslmode=require`）：
+開啟專案根目錄下的 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)，使用免安裝 Docker 的 **`uvx`** 加入 Supabase 連線設定（連線字串末尾加上 `?sslmode=require`）：
 
 ```json
 {
   "mcpServers": {
     "supabase-postgres": {
-      "command": "docker",
+      "command": "uvx",
       "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "DATABASE_URI",
-        "crystaldba/postgres-mcp",
+        "--with",
+        "mcp<2",
+        "postgres-mcp",
         "--access-mode=unrestricted"
       ],
       "env": {
@@ -106,7 +103,8 @@
 ```
 
 > [!TIP]
-> 儲存後，直接在 Antigravity 聊天框輸入：「請幫我查詢目前 Supabase 資料庫中的資料表」，AI 就會調用 MCP 自動查詢！
+> * **免安裝 Docker**：只要個人電腦有安裝 `uv`（內建 `uvx`），Antigravity 就會自動喚起開源的 Postgres MCP 工具。
+> * **測試連線**：儲存後重新載入專案，直接在 Antigravity 聊天框輸入：「請幫我查詢目前 Supabase 資料庫中的資料表」，AI 就會調用 MCP 自動查詢！
 
 ---
 
