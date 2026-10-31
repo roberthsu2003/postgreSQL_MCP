@@ -36,7 +36,7 @@ docker run -d \
   -p 5432:5432 \
   -v postgres_data:/var/lib/postgresql/data \
   --restart unless-stopped \
-  postgres
+  postgres:17
 ```
 
 | 常用參數 | 作用 |
@@ -175,7 +175,7 @@ docker rm -f my-postgres
 services:
   # 1. PostgreSQL 資料庫服務
   postgres:
-    image: postgres:latest
+    image: postgres:17
     container_name: my-postgres
     restart: unless-stopped
     environment:

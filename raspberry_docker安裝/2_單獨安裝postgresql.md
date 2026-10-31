@@ -28,7 +28,7 @@ docker run -d \
   -p 5432:5432 \
   -v postgres_data:/var/lib/postgresql/data \
   --restart unless-stopped \
-  postgres
+  postgres:17
 ```
 
 ### 參數詳細解說：
@@ -39,9 +39,13 @@ docker run -d \
 | `--network mcp-net` | **加入專屬虛擬網路**：讓後續啟動的 MCP Server 可以直接用 `my-postgres` 名稱連線 |
 | `-e POSTGRES_PASSWORD=yourpassword` | 設定預設管理者帳號 `postgres` 的密碼 |
 | `-p 5432:5432` | 將樹莓派主機的 `5432` 埠對應到容器內的 `5432` 埠（允許連線） |
-| `-v postgres_data:/var/lib/postgresql/data` | **資料持久化**：建立具名磁碟卷，確保容器重啟或重建時資料不會消失 |
+| `-v postgres_data:/var/lib/postgresql/data` | **資料持久化**：掛載具名磁碟卷，Docker 會自動建立，確保容器重啟或重建時資料不遺失 |
 | `--restart unless-stopped` | **開機自動重啟**：設定開機自動啟動容器（除非手動停止），樹莓派重開機後會自動啟動 |
-| `postgres` | 使用 Docker Hub 官方最新版本的 PostgreSQL 映像檔（支援 ARM64 架構） |
+| `postgres:17` | **鎖定穩定版標籤**：使用官方長期穩定的 PostgreSQL 17 版本，避免 `latest` 帶來的目錄不相容問題 |
+
+> [!TIP]
+> **關於具名磁碟卷（Volume）的自動建立：**
+> 指令中的 `-v postgres_data:...` 會在 Docker 檢查發現本系統還沒有此 Volume 時**自動建立**，您不需要先手動執行 `docker volume create`。
 
 > [!IMPORTANT]
 > **未來開機會自動重新啟動：**

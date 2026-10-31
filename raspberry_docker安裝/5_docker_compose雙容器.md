@@ -30,7 +30,7 @@ nano docker-compose.yml
 services:
   # PostgreSQL 資料庫伺服器
   postgres:
-    image: postgres:latest
+    image: postgres:17
     container_name: my-postgres
     restart: unless-stopped
     environment:

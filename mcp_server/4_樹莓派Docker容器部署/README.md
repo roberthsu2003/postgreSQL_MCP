@@ -154,7 +154,7 @@ nano docker-compose.yml
 services:
   # 1. PostgreSQL 資料庫伺服器（沿用第 1 章的資料卷與設定）
   postgres:
-    image: postgres:latest
+    image: postgres:17
     container_name: my-postgres
     restart: unless-stopped
     environment:
