@@ -78,6 +78,7 @@ def header(title, tables, topics):
 -- =====================================================================
 
 SET client_encoding = 'UTF8';
+SET search_path TO public;
 BEGIN;
 
 """

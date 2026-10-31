@@ -12,6 +12,7 @@
 -- =====================================================================
 
 SET client_encoding = 'UTF8';
+SET search_path TO public;
 BEGIN;
 
 DROP TABLE IF EXISTS order_items, orders, customers, products, categories, staff CASCADE;
