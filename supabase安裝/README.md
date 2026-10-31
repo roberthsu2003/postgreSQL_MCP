@@ -104,11 +104,80 @@
 
 > [!TIP]
 > * **免安裝 Docker**：只要個人電腦有安裝 `uv`（內建 `uvx`），Antigravity 就會自動喚起開源的 Postgres MCP 工具。
-> * **測試連線**：儲存後重新載入專案，直接在 Antigravity 聊天框輸入：「請幫我查詢目前 Supabase 資料庫中的資料表」，AI 就會調用 MCP 自動查詢！
+> * **連線驗證**：儲存後重新載入專案，直接在 Antigravity 聊天框輸入：「請幫我查詢目前 Supabase 資料庫中的資料表」，AI 就會調用 MCP 自動查詢！
 
 ---
 
-### 🔍 補充說明：為什麼不直接用 Supabase 官方後台給的 `serverUrl` 設定？
+## 5. 直觀實戰測試 — 讓 AI 在 Supabase 上新增、查詢選取、修改與刪除
+
+因為我們在設定檔中啟用了 `--access-mode=unrestricted`（不受限模式），AI 具備完整的雲端資料庫操作權限。請依序貼入以下 5 個指令，完整體驗雲端資料庫的 **CRUD（建立、選取查詢、更新、刪除）** 與資料表管理：
+
+---
+
+### 🟢 測試 1：建立資料表並寫入多筆具體資料（CREATE TABLE & INSERT）
+直接對 Antigravity 說：
+> 「請在我的 Supabase 雲端資料庫中建立一張學生名單資料表 `students_test`，包含欄位：
+> - 學號（id）：自動編號整數，主鍵
+> - 姓名（name）：文字，必填
+> - 年級（grade）：整數
+> - 城市（city）：文字
+> - 考試成績（score）：整數
+>
+> 建立好後，請幫我寫入以下 4 筆具體學生資料：
+> 1. 陳小明，2年級，台北市，88分
+> 2. 林美玲，3年級，新北市，95分
+> 3. 張志豪，2年級，台中市，72分
+> 4. 李佳穎，3年級，台北市，60分
+>
+> 新增完成後，請把整張資料表的所有內容列出來給我看。」
+
+* **直觀成果**：AI 會調用 MCP 工具自動在 Supabase 執行 `CREATE TABLE` 與 `INSERT INTO`，並立刻以 Markdown 表格回傳這 4 位學生的完整資料。
+* **雙重驗證方式**：
+  1. **DBeaver**：在左側 Supabase 連線的資料表清單按 `F5`，立刻看到新建立的 `students_test`！
+  2. **Supabase 網頁後台**：登入 Supabase 點選 **Table Editor**，也能即時看到這張表與這 4 筆資料！
+
+---
+
+### 🔍 測試 2：條件選取與篩選查詢（SELECT with WHERE & ORDER BY）
+測試 AI 的條件選取與排序能力，對 Antigravity 說：
+> 「請幫我從 `students_test` 選取查詢符合以下條件的學生：
+> 1. 只選取住在『台北市』**或**成績大於等於 80 分的學生
+> 2. 依照『考試成績』由高到低排序（ORDER BY DESC）
+> 3. 只顯示學號、姓名、城市與成績 4 個欄位即可」
+
+* **直觀成果**：AI 會在背後撰寫精準的 `SELECT id, name, city, score FROM students_test WHERE city = '台北市' OR score >= 80 ORDER BY score DESC;`，篩選出符合條件的學生並整齊列出。
+
+---
+
+### 🟡 測試 3：更新特定學生的資料（UPDATE）
+接著測試資料修改，對 Antigravity 說：
+> 「李佳穎同學補考通過了！請幫我把 `students_test` 資料表中『李佳穎』的成績更新為 85 分，並把她的最新資料單獨選取出來確認。」
+
+* **直觀成果**：AI 會執行 `UPDATE students_test SET score = 85 WHERE name = '李佳穎';`，並重新選取顯示她修改後的最新成績。
+
+---
+
+### 🟠 測試 4：刪除特定一筆資料（DELETE FROM）
+接著測試刪除單筆資料，對 Antigravity 說：
+> 「張志豪同學轉學了，請幫我從 `students_test` 刪除他的資料，並列出目前剩下的所有學生確認。」
+
+* **直觀成果**：AI 執行 `DELETE FROM students_test WHERE name = '張志豪';`，剩下的 3 筆資料會即時呈現，確認已被刪除。
+
+---
+
+### 🔴 測試 5：測試結束，刪除整張資料表（DROP TABLE）
+最後清理雲端測試環境，對 Antigravity 說：
+> 「測試結束了，請幫我把剛剛建立的測試資料表 `students_test` 完全刪除（DROP TABLE），並確認資料庫內是否已經沒有這張表。」
+
+* **直觀成果**：AI 會執行 `DROP TABLE IF EXISTS students_test;`，確認刪除後回覆「資料表已順利清除」。
+* **驗證方式**：回到 DBeaver 或 Supabase 網頁後台重新整理，確認資料表已消失，不留任何測試垃圾！
+
+> [!TIP]
+> 透過這個完整的實戰演練，學生能直觀地感受到：**不管是遠在區網的樹莓派，還是位於雲端的 Supabase，只要透過 Antigravity 說中文，AI 都能以完全相同的 MCP 工具進行精準的操作！**
+
+---
+
+## 6. 補充說明：為什麼不直接用 Supabase 官方後台給的 `serverUrl` 設定？
 
 在 Supabase 後台的 Connect 選單中，您可能會看到官方提供類似這樣的 MCP 設定：
 ```json
@@ -134,7 +203,7 @@
 
 ---
 
-## 5. 常見問題與注意事項
+## 7. 常見問題與注意事項
 
 1. **免費版專案自動休眠：**
    * Supabase 免費專案若連續 7 天沒有存取，會自動進入「休眠狀態（Paused）」。
