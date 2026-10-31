@@ -33,12 +33,14 @@ flowchart LR
 
 ---
 
-## 本章單元
+## 本章實戰
 
-| 單元 | 內容 |
-|:---:|---|
-| ⭐ **[3-1 在 Antigravity 中設定專案級 Postgres MCP](./1_antigravity設定.md)** | 免全域安裝！在專案 `.agents/mcp_config.json` 中掛載 MCP，開啟專案即自動連線 |
-| ⭐ **[3-2 第一次用中文查詢資料庫](./2_用中文查詢資料庫/)** | 不用會寫 SQL，用中文查詢網路商店資料（附答案）；體驗 AI 查庫的威力 |
+在第 1 章完成樹莓派或 Supabase 的環境安裝後，專案目錄下的 `.agents/mcp_config.json` 已經設定好。
+現在直接進入實戰提問：
+
+👉 **[3. 第一次用中文查詢資料庫實戰](./2_用中文查詢資料庫/)**：不用會寫 SQL，用中文查詢網路商店資料（附答案）；體驗 AI 查庫的威力。
+
+> 💡 若日後需要更換資料庫連線字串或檢查設定，可隨時參考第 1 章的 [樹莓派 MCP 設定](../raspberry_docker安裝/4_單獨安裝mcp_server.md) 或 [Supabase MCP 設定](../supabase安裝/)。
 
 ---
 
@@ -59,4 +61,4 @@ flowchart LR
 
 ---
 
-👉 **下一步：[3-1 在 Antigravity 中設定專案級 Postgres MCP](./1_antigravity設定.md)**
+👉 **下一步：[3. 第一次用中文查詢資料庫實戰](./2_用中文查詢資料庫/)**
