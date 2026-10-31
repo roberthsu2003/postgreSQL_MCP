@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="230" viewBox="0 0 960 230" font-family="'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- 外框背景 -->
+  <rect x="1" y="1" width="958" height="228" rx="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <!-- 階段一：第 1-3 章 -->
+  <g transform="translate(18, 18)">
+    <rect x="0" y="0" width="212" height="194" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <rect x="14" y="12" width="184" height="26" rx="6" fill="#2563eb"/>
+    <text x="106" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">【階段一】免寫程式查庫體驗</text>
+    <text x="106" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a8a">第 1–3 章</text>
+    <line x1="18" y1="68" x2="194" y2="68" stroke="#bfdbfe" stroke-width="1.5"/>
+    <text x="18" y="92" font-size="13" fill="#1e3a8a" font-weight="600">• 環境安裝 &amp; 範例資料庫</text>
+    <text x="28" y="111" font-size="12" fill="#475569">樹莓派 Docker / Supabase</text>
+    <text x="18" y="136" font-size="13" fill="#1e3a8a" font-weight="600">• 掛載現成專案級 MCP</text>
+    <text x="28" y="155" font-size="12" fill="#475569">Antigravity 純中文自然語言</text>
+    <text x="28" y="173" font-size="12" fill="#475569">免全域安裝、直接對話查庫</text>
+  </g>
+
+  <!-- 箭頭 1 → 2 -->
+  <line x1="232" y1="115" x2="252" y2="115" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 階段二：第 4-5 章 -->
+  <g transform="translate(256, 18)">
+    <rect x="0" y="0" width="212" height="194" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <rect x="14" y="12" width="184" height="26" rx="6" fill="#d97706"/>
+    <text x="106" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">【階段二】手寫 SQL 與 AI 驗證</text>
+    <text x="106" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#78350f">第 4–5 章</text>
+    <line x1="18" y1="68" x2="194" y2="68" stroke="#fde68a" stroke-width="1.5"/>
+    <text x="18" y="92" font-size="13" fill="#78350f" font-weight="600">• ① 親自動手寫正規 SQL</text>
+    <text x="28" y="111" font-size="12" fill="#475569">DDL / DML / JOIN / 子查詢</text>
+    <text x="18" y="136" font-size="13" fill="#78350f" font-weight="600">• ② 用 Prompt 請 AI 做一次</text>
+    <text x="18" y="160" font-size="13" fill="#78350f" font-weight="600">• ③ 比對並審核 AI 的 SQL</text>
+    <text x="28" y="178" font-size="12" fill="#475569">培養看懂與驗收 AI 的能力</text>
+  </g>
+
+  <!-- 箭頭 2 → 3 -->
+  <line x1="470" y1="115" x2="490" y2="115" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 階段三：第 6-7 章 -->
+  <g transform="translate(494, 18)">
+    <rect x="0" y="0" width="212" height="194" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+    <rect x="14" y="12" width="184" height="26" rx="6" fill="#16a34a"/>
+    <text x="106" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">【階段三】Python 資料庫應用</text>
+    <text x="106" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#14532d">第 6–7 章</text>
+    <line x1="18" y1="68" x2="194" y2="68" stroke="#bbf7d0" stroke-width="1.5"/>
+    <text x="18" y="92" font-size="13" fill="#14532d" font-weight="600">• Antigravity IDE 寫程式</text>
+    <text x="28" y="111" font-size="12" fill="#475569">psycopg2 連線、交易與參數化</text>
+    <text x="18" y="136" font-size="13" fill="#14532d" font-weight="600">• 4 大實戰視覺化專案</text>
+    <text x="28" y="155" font-size="12" fill="#475569">引導式 CLI、台鐵進出站、</text>
+    <text x="28" y="173" font-size="12" fill="#475569">大盤股市、YouBike Streamlit</text>
+  </g>
+
+  <!-- 箭頭 3 → 4 -->
+  <line x1="708" y1="115" x2="728" y2="115" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 階段四：第 8 章 -->
+  <g transform="translate(732, 18)">
+    <rect x="0" y="0" width="210" height="194" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
+    <rect x="14" y="12" width="182" height="26" rx="6" fill="#db2777"/>
+    <text x="105" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">【階段四】打造自訂 MCP</text>
+    <text x="105" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#831843">第 8 章（壓軸）</text>
+    <line x1="18" y1="68" x2="192" y2="68" stroke="#fbcfe8" stroke-width="1.5"/>
+    <text x="18" y="92" font-size="13" fill="#831843" font-weight="600">• 個人篇：本機 FastMCP</text>
+    <text x="28" y="111" font-size="12" fill="#475569">唯讀查詢 &amp; 安全交易寫入</text>
+    <text x="18" y="136" font-size="13" fill="#831843" font-weight="600">• 企業篇：遠端 + 樹莓派容器</text>
+    <text x="28" y="155" font-size="12" fill="#475569">Token 門禁稽核、打包部署至</text>
+    <text x="28" y="173" font-size="12" fill="#475569">樹莓派 Docker 雙容器常駐</text>
+  </g>
+</svg>
+

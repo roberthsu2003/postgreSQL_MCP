@@ -4,33 +4,7 @@
 
 ## 學習四階段路線
 
-```mermaid
-flowchart TD
-    subgraph P1 ["【階段一】一般人日常查庫體驗（免寫程式）"]
-        S1["第 1-2 章<br/>環境安裝 & 範例資料庫<br/>(樹莓派 Docker / Supabase / DBeaver)"] --> S3["第 3 章<br/>一般人用的 Antigravity<br/>掛載專案級 MCP（免全域安裝）<br/>純中文自然語言查庫"]
-    end
-
-    subgraph P2 ["【階段二】自己動手寫 SQL 與 AI 輔助"]
-        S3 --> S4["第 4-5 章<br/>SQL 基礎語法與實戰練習<br/>① 親自動手手寫 SQL<br/>② 用 prompt 請 Antigravity AI 做一次<br/>③ 比對驗證 AI 產生的 SQL 正確性"]
-    end
-
-    subgraph P3 ["【階段三】進入 Antigravity IDE 寫程式"]
-        S4 --> S6["第 6-7 章<br/>開啟 Antigravity IDE 寫程式<br/>Python psycopg2 資料庫串接<br/>CLI 與 Streamlit 視覺化專案"]
-    end
-
-    subgraph P4 ["【階段四】壓軸：打造自己的自訂 MCP Server"]
-        S6 --> S8["第 8 章（最末章）<br/>自己用 Python FastMCP 寫 MCP Server<br/>客製化企業業務工具、Token 驗證與稽核"]
-    end
-
-    classDef p1 fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
-    classDef p2 fill:#fef3c7,stroke:#d97706,color:#78350f
-    classDef p3 fill:#f0fdf4,stroke:#16a34a,color:#14532d
-    classDef p4 fill:#fdf2f8,stroke:#db2777,color:#831843
-    class P1 p1
-    class P2 p2
-    class P3 p3
-    class P4 p4
-```
+![學習四階段路線](./mcp_server/images/learning_roadmap.svg)
 
 | 階段 | 章節 | 你會學到 | 使用工具與環境 |
 |:---:|---|---|---|
