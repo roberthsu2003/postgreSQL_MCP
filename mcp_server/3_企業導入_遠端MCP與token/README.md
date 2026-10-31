@@ -1,6 +1,6 @@
-# 單元 2：企業導入：遠端 MCP Server 與 token
+# 單元 3：企業導入：遠端 MCP Server 與 Token 門禁
 
-> **本單元目標**：把 MCP Server 架在伺服器上，讓多位員工用 Claude Desktop **帶著自己的 token** 連線，並記錄每個人查了什麼。
+> **本單元目標**：將原本只在本機執行的 MCP Server 升級為 **Streamable HTTP 遠端服務**，讓多位員工在 Antigravity（或 Claude Desktop）**帶著自己的 Token** 連線，並即時記錄每個人查了什麼。　[← 回第 8 章](../)
 
 ## 目錄
 
@@ -17,11 +17,11 @@
 
 ## 1. 從「自己用」到「全公司用」
 
-| | 第 3 章、單元 1：本機（stdio） | 單元 2：遠端（Streamable HTTP） |
+| | 第 3 章、單元 1–2：個人本機（stdio） | 單元 3–4：企業遠端（Streamable HTTP） |
 |---|---|---|
-| MCP Server 在哪裡執行 | 自己的電腦，由 Claude Desktop 啟動 | 公司的伺服器，一直開著 |
+| MCP Server 在哪裡執行 | 自己的電腦，由 Antigravity / Claude 啟動 | 公司的伺服器（如樹莓派 Docker），一直開著 |
 | 誰可以用 | 只有自己 | 所有拿到 token 的員工 |
-| 怎麼連線 | 設定 `command` 執行程式 | 設定**網址** + **token** |
+| 怎麼連線 | 設定 `command` 執行本機程式 | 設定**網址** + **token** |
 | 資料庫密碼在哪裡 | 每個人的電腦上 | **只在伺服器上**，員工拿不到 |
 | 程式更新 | 每個人都要更新 | 伺服器更新一次，全公司生效 |
 
@@ -90,7 +90,7 @@ def audit(tool, **params):
 ### 4.2 安裝套件
 
 ```bash
-cd mcp_server/2_企業導入_遠端MCP與token
+cd mcp_server/3_企業導入_遠端MCP與token
 uv venv
 uv pip install -r requirements.txt
 ```
@@ -172,15 +172,15 @@ data: {"jsonrpc":"2.0","id":1,"result":{..."serverInfo":{"name":"網路商店營
 
 ## 5. 員工端：連線到公司的 MCP Server
 
-### 5.1 Claude Desktop
+### 5.1 Antigravity 專案設定（或 Claude Desktop）
 
-Claude Desktop 的設定檔裡不能直接寫網址和 token，所以透過 [mcp-remote](https://github.com/geelen/mcp-remote) 這個小程式轉接，它會在每次連線時幫你帶上 token。
+透過 [mcp-remote](https://github.com/geelen/mcp-remote) 轉接工具，可以在每次連線時自動幫你帶上 `Authorization: Bearer <token>` 標頭。
 
 **需要先安裝 [Node.js](https://nodejs.org/)**（`mcp-remote` 用 `npx` 執行）。
 
 ```mermaid
 sequenceDiagram
-    participant CD as Claude Desktop
+    participant CD as Antigravity / Claude
     participant MR as mcp-remote<br/>（員工電腦上的轉接程式）
     participant S as MCP Server<br/>（公司伺服器）
     participant DB as PostgreSQL
@@ -199,7 +199,7 @@ sequenceDiagram
     end
 ```
 
-編輯 `claude_desktop_config.json`（位置請參考[第 3 章](../../MCP操作資料庫/1_postgres_mcp_pro/#4-設定-claude-desktop)）：
+編輯本專案的 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)（或 `claude_desktop_config.json`）：
 
 ```json
 {
@@ -402,6 +402,9 @@ flowchart LR
 
 ## 下一步
 
-👉 [單元 3：範例集](../3_範例集/)：5 個部門的 AI 助理，每個都可以用本機或遠端 + token 執行
+目前我們是在自己的電腦開一個終端機視窗模擬「公司伺服器」，一旦關掉視窗或闔上筆電就會斷線。
+在下一單元，我們要把這支 `server_http.py` **打包成 Docker 容器放進 Raspberry Pi**，與 PostgreSQL 組成 24 小時常駐的雙容器伺服器！
 
-👉 [期末專題](../#期末專題)：用 AI 為一間「公司」打造需要 token 的 MCP Server
+👉 **[單元 4：正式上線：部署至 Raspberry Pi Docker 雙容器](../4_樹莓派Docker容器部署/)**
+
+👉 **[單元 5：企業各部門範例集](../5_範例集/)**：5 個部門的 AI 助理，每個都可以用本機或遠端 + Token 執行

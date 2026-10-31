@@ -1,6 +1,6 @@
-# 單元 4：會寫入資料的 MCP Server
+# 單元 2：會寫入資料的 MCP Server（個人本機進階：交易與商業規則把關）
 
-> **本單元目標**：用 AI 建立一個可以**新增、修改資料**的 MCP Server，並學會讓寫入工具保持安全的設計原則。
+> **本單元目標**：延續[單元 1](../1_用AI建立MCP_server/) 的本機開發模式，用 AI 建立一個可以**新增、修改資料**的 MCP Server，並學會讓寫入工具保持安全的設計原則。
 > 你的角色是**需求設計者**和**驗收者**。　[← 回第 8 章](../)
 
 程式：[library_counter.py](./library_counter.py)　資料庫：[library.sql](../../範例資料庫/中文範例資料庫/#-圖書館借閱-library)
@@ -117,7 +117,9 @@ def borrow_book(member_id: int, book_id: int) -> dict:
 
 > ⚠️ 這個 MCP Server 會**修改資料**。練習完想恢復原狀時，重新執行一次 `library.sql` 就好。
 
-### 2. 接上 Claude Desktop
+### 2. 接上 Antigravity（或 Claude Desktop）
+
+在專案的 `.agents/mcp_config.json`（或 `claude_desktop_config.json`）加入：
 
 ```json
 {
@@ -125,7 +127,7 @@ def borrow_book(member_id: int, book_id: int) -> dict:
     "library-counter": {
       "command": "uv",
       "args": ["run", "--with", "mcp[cli]", "--with", "psycopg2-binary",
-               "/完整路徑/mcp_server/4_寫入型MCP_server/library_counter.py"],
+               "/完整路徑/mcp_server/2_寫入型MCP_server/library_counter.py"],
       "env": {
         "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice",
         "MCP_USER": "王館員"
@@ -188,4 +190,8 @@ def borrow_book(member_id: int, book_id: int) -> dict:
 
 ## 下一步
 
-👉 [期末專題](../#期末專題)：為一間「公司」打造需要 token 的 MCP Server，可以包含唯讀和寫入工具
+恭喜你完成了**第一階段：個人開發篇**！你已經會在本機打造唯讀查詢（單元 1）與安全寫入（單元 2）的 MCP Server。
+
+接下來進入**第二階段：企業共用篇**——如何把 MCP Server 升級為網路服務、加上 Token 門禁，並打包放進 **Raspberry Pi 的 Docker 容器**供全公司使用？
+
+👉 **[單元 3：企業導入：遠端 MCP 與 Token 門禁](../3_企業導入_遠端MCP與token/)**

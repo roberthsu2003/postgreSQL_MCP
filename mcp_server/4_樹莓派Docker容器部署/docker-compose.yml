@@ -1,0 +1,44 @@
+services:
+  # 1. PostgreSQL 資料庫伺服器（沿用第 1 章的資料卷與設定）
+  postgres:
+    image: postgres:latest
+    container_name: my-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5432:5432"   # 供教學時 DBeaver 遠端管理；正式企業環境可移除此埠映射，徹底隱藏資料庫
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mcp-net
+
+  # 2. 自訂企業 MCP Server 容器（Streamable HTTP + Token 門禁）
+  mcp-server:
+    build: ./my-mcp-server
+    container_name: my-mcp-server
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      # 注意：主機位址直接填容器服務名稱 postgres，走 Docker 內部高速網路直連！
+      DATABASE_URI: postgresql://postgres:yourpassword@postgres:5432/practice
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8000
+    ports:
+      - "8000:8000"   # 對區域網路開放 8000 埠，員工帶 Bearer Token 連線
+    volumes:
+      # 將樹莓派上的 tokens.json 掛載進容器（唯讀），新增或註銷員工 Token 免重新打包映像檔
+      - ./my-mcp-server/tokens.json:/app/tokens.json:ro
+    networks:
+      - mcp-net
+
+volumes:
+  # 資料持久化具名磁碟卷
+  postgres_data:
+
+networks:
+  # 專屬內部橋接網路，讓 mcp-server 與 postgres 容器安全互通
+  mcp-net:
+    driver: bridge
+

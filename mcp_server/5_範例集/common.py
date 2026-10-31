@@ -8,8 +8,8 @@
 各部門的 MCP Server 只需要專心設計自己的工具。
 
 啟動方式(由環境變數 MCP_TRANSPORT 決定):
-    stdio(預設):本機使用,由 Claude Desktop 啟動,和單元 2 相同
-    http        :遠端使用,需要 token,和單元 3 相同
+    stdio(預設):本機使用,由 Antigravity / Claude Desktop 啟動,和單元 1–2 相同
+    http        :遠端使用,需要 token,和單元 3–4 相同
 """
 
 import contextvars

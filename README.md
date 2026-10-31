@@ -167,18 +167,19 @@ flowchart TD
 
 ---
 
-## 8. 自訂 MCP Server（企業導入與客製化開發）
+## 8. 自訂 MCP Server（個人本機開發到企業容器化導入）
 
 學會了 SQL 與 Python 後，我們不再受限於現成工具，而是**使用 Python（FastMCP）在 Antigravity IDE 中親手打造專屬的 MCP Server**！
-自己封裝商業邏輯、權限檢查與安全稽核，並支援在 **Antigravity** 與 **Claude Desktop** 中掛載，甚至佈署成具備 token 驗證的遠端微服務。 👉 [章節總覽](./mcp_server/)
+採用**「先個人（本機執行 MCP 連樹莓派 DB） $\rightarrow$ 後企業共用（打包進樹莓派 Docker 雙容器 + Token 門禁）」**的循序漸進路線。 👉 [章節總覽](./mcp_server/)
 
-| 單元 | 你的角色 | 內容 |
-|:---:|---|---|
-| [1. 用 AI 建立自己的 MCP Server](./mcp_server/1_用AI建立MCP_server/) ⭐ | 需求設計者、開發者 | 在 Antigravity 中規劃工具 → 撰寫 FastMCP 程式碼 → 本地除錯與掛載 |
-| [2. 企業導入：遠端 MCP 與 token](./mcp_server/2_企業導入_遠端MCP與token/) ⭐ | 系統導入者 | 架設遠端 MCP Server，員工帶 token 連線，留下稽核紀錄 |
-| [3. 範例集](./mcp_server/3_範例集/) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理 |
-| [4. 會寫入資料的 MCP Server](./mcp_server/4_寫入型MCP_server/) | 需求設計者、驗收者 | 圖書館借還書：只開放特定寫入、檢查寫在程式裡、交易與稽核 |
-| [期末專題](./mcp_server/#期末專題) | 全部 | 用 AI 為一間「公司」打造專屬的 MCP Server |
+| 階段 | 單元 | 你的角色 | 內容 |
+|:---:|---|---|---|
+| **個人篇** | [1. 用 AI 建立自己的 MCP Server（唯讀）](./mcp_server/1_用AI建立MCP_server/) ⭐ | 需求設計者、開發者 | 在本機規劃工具 → 撰寫 FastMCP 程式碼 → 本地 Inspector 除錯與專案掛載 |
+| **個人篇** | [2. 會寫入資料的 MCP Server（安全寫入）](./mcp_server/2_寫入型MCP_server/) ⭐ | 需求設計者、驗收者 | 圖書館借還書：只開放特定寫入、商業檢查寫在程式裡、資料庫交易（Transaction） |
+| **企業篇** | [3. 企業導入：遠端 MCP 與 Token 門禁](./mcp_server/3_企業導入_遠端MCP與token/) ⭐ | 系統導入者 | 升級為 Streamable HTTP 遠端服務，員工帶 Token 連線，留下即時稽核紀錄 |
+| **企業篇** | [4. 正式上線：部署至樹莓派 Docker 雙容器](./mcp_server/4_樹莓派Docker容器部署/) ⭐ | 系統架構師 | 撰寫 `Dockerfile` 與 `docker-compose.yml`，將 MCP 放進樹莓派與 PostgreSQL 內網直連 |
+| **綜合篇** | [5. 企業各部門範例集](./mcp_server/5_範例集/) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理（本機/遠端雙模） |
+| **綜合篇** | [期末專題](./mcp_server/#期末專題) | 全部 | 用 AI 為一間「公司」打造專屬的 MCP Server 並完成容器化部署 |
 
 ---
 

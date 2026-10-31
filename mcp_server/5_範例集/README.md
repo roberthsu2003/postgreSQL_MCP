@@ -1,6 +1,6 @@
-# 單元 3：MCP Server 範例集
+# 單元 5：企業各部門 MCP Server 範例集
 
-> 把課程中**所有的範例資料庫**都做成 MCP Server。每個範例都是一個「部門」的 AI 助理，可以直接使用，也可以當作請 AI 寫程式時的參考。
+> 把課程中**所有的範例資料庫**都做成 MCP Server。每個範例都是一個「部門」的 AI 助理，可以直接使用（支援本機 `stdio` 與遠端 `http + Token` 雙模式），也可以當作請 AI 寫程式與期末專題的參考。　[← 回第 8 章](../)
 
 ## 範例一覽
 
@@ -15,7 +15,7 @@ flowchart LR
         STK[("大盤股市<br/>實戰專案")]
     end
     subgraph MCP Server
-        E0["營運助理<br/>（單元 2）"]
+        E0["營運助理<br/>（單元 3–4）"]
         E1["客服助理"]
         E2["教務處助理"]
         E3["館員助理"]
@@ -44,7 +44,8 @@ flowchart LR
 | 3 | [📚 圖書館館員助理](./library_desk.md) | 圖書館館員 | library.sql | 4 | 日期計算（逾期天數）、`RANK()` 排名、可選的篩選條件 |
 | 4 | [🚲 YouBike 查詢](./youbike.md) | 一般民眾 | YouBike 實戰專案 | 4 | 時間序列取「最新一筆」、**台／臺**的搜尋問題 |
 | 5 | [📈 股市大盤查詢](./stock.md) | 理財專員 | 大盤股市實戰專案 | 4 | 依日／週／月彙總、計算漲跌幅、限制回傳筆數 |
-| — | [🛍️ 網路商店營運助理](../2_企業導入_遠端MCP與token/) | 主管 | shop.sql | 4 | 單元 2 的遠端 + token 範例 |
+| — | [🛍️ 網路商店營運助理](../3_企業導入_遠端MCP與token/) | 主管 | shop.sql | 4 | 單元 3–4 的遠端 + Token 範例 |
+| — | [📖 圖書館借還書櫃台](../2_寫入型MCP_server/) | 櫃台館員 | library.sql | 5 | 單元 2 的安全寫入 + 交易範例 |
 | — | [🚆 台鐵進出站查詢](../1_用AI建立MCP_server/) | 一般民眾 | 台鐵資料 | 3 | 單元 1 的基礎範例 |
 
 > 💡 **同一個資料庫，可以有不同的 MCP Server。** 網路商店就有「客服助理」和「營運助理」兩個：客服只能查會員訂單，主管才能看營業額。這就是企業依照**部門**開放不同工具的做法。
@@ -100,7 +101,7 @@ if __name__ == "__main__":
 ### 1. 安裝套件
 
 ```bash
-cd mcp_server/3_範例集
+cd mcp_server/5_範例集
 uv venv
 uv pip install -r requirements.txt
 ```
@@ -126,16 +127,16 @@ uv run mcp dev shop_service.py
 
 每個範例都可以用**本機**或**遠端**兩種方式執行，程式不用改，只要改環境變數 `MCP_TRANSPORT`。
 
-| | 本機（預設） | 遠端 |
+| | 本機（預設） | 遠端（本機或樹莓派 Docker） |
 |---|---|---|
 | 設定 | 不用設定 | `MCP_TRANSPORT=http` |
-| 誰啟動 | Claude Desktop | 自己在終端機啟動，一直開著 |
+| 誰啟動 | Antigravity / Claude Desktop | 終端機或樹莓派 Docker 容器常駐啟動 |
 | token | 不需要 | 需要（`tokens.json`） |
-| 對應單元 | [單元 1](../1_用AI建立MCP_server/) | [單元 2](../2_企業導入_遠端MCP與token/) |
+| 對應單元 | [單元 1](../1_用AI建立MCP_server/)、[單元 2](../2_寫入型MCP_server/) | [單元 3](../3_企業導入_遠端MCP與token/)、[單元 4](../4_樹莓派Docker容器部署/) |
 
 ### 方式一：本機
 
-在 `claude_desktop_config.json` 加入，**可以同時註冊好幾個範例**：
+在 `.agents/mcp_config.json`（或 `claude_desktop_config.json`）加入，**可以同時註冊好幾個範例**：
 
 ```json
 {
@@ -143,7 +144,7 @@ uv run mcp dev shop_service.py
     "shop-service": {
       "command": "uv",
       "args": ["run", "--with", "mcp[cli]", "--with", "psycopg2-binary",
-               "/完整路徑/mcp_server/3_範例集/shop_service.py"],
+               "/完整路徑/mcp_server/5_範例集/shop_service.py"],
       "env": {
         "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
       }
@@ -151,7 +152,7 @@ uv run mcp dev shop_service.py
     "school-office": {
       "command": "uv",
       "args": ["run", "--with", "mcp[cli]", "--with", "psycopg2-binary",
-               "/完整路徑/mcp_server/3_範例集/school_office.py"],
+               "/完整路徑/mcp_server/5_範例集/school_office.py"],
       "env": {
         "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
       }
@@ -159,7 +160,7 @@ uv run mcp dev shop_service.py
     "library-desk": {
       "command": "uv",
       "args": ["run", "--with", "mcp[cli]", "--with", "psycopg2-binary",
-               "/完整路徑/mcp_server/3_範例集/library_desk.py"],
+               "/完整路徑/mcp_server/5_範例集/library_desk.py"],
       "env": {
         "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice",
         "MCP_USER": "王館員"
@@ -175,7 +176,7 @@ uv run mcp dev shop_service.py
 ### 方式二：遠端 + token
 
 ```bash
-# 1. 從 tokens.example.json 複製一份 tokens.json,填入 token(產生方式見單元 2)
+# 1. 從 tokens.example.json 複製一份 tokens.json,填入 token(產生方式見單元 3)
 cp tokens.example.json tokens.json
 
 # 2. 啟動(macOS / Linux)
@@ -191,7 +192,7 @@ $env:MCP_TRANSPORT="http"; $env:MCP_PORT="8001"
 uv run school_office.py
 ```
 
-員工的 Claude Desktop 設定（和[單元 2](../2_企業導入_遠端MCP與token/#51-claude-desktop) 相同）：
+員工的 Antigravity `.agents/mcp_config.json`（或 Claude Desktop）設定（和[單元 3](../3_企業導入_遠端MCP與token/#51-antigravity-專案設定或-claude-desktop) 相同）：
 
 ```json
 {
@@ -230,4 +231,5 @@ uv run school_office.py
 
 ## 下一步
 
-範例集的工具全部是**唯讀**的。👉 [單元 4：會寫入資料的 MCP Server](../4_寫入型MCP_server/)：讓 AI 登記借書、還書，並學會寫入工具的安全設計。
+- 如果想在範例中加入**新增或修改資料**的工具，請複習 👉 [單元 2：會寫入資料的 MCP Server](../2_寫入型MCP_server/)
+- 準備動手挑戰壓軸任務 👉 [期末專題：為企業打造專屬 MCP Server](../#期末專題)
