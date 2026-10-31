@@ -2,7 +2,7 @@
 
 本教學遵循**「伺服器端與操作端分離」**的現代化架構：
 * 🍓 **所有 Server 都在 Raspberry Pi 內的 Docker 執行**（PostgreSQL 資料庫伺服器、未來的自訂 MCP 伺服器容器）。
-* 💻 **所有操作都在您的個人電腦（Mac / Windows）執行**（DBeaver、Antigravity、Antigravity IDE）。
+* 💻 **所有操作都在您的個人電腦（Mac / Windows）執行**（DBeaver、Antigravity）。
 
 ---
 
@@ -12,7 +12,7 @@
 graph LR
     subgraph Client ["💻 您的個人電腦（所有操作都在這裡）"]
         DBP["DBeaver<br/>(視覺化資料庫管理與 SQL 查詢)"]
-        AG["Antigravity / Antigravity IDE<br/>(AI 助手 / 程式開發 / 專案 MCP)"]
+        AG["Antigravity<br/>(AI 助手 / 程式開發 / 專案 MCP)"]
     end
 
     subgraph Pi ["🍓 Raspberry Pi 樹莓派（伺服器端）"]
@@ -37,7 +37,7 @@ graph LR
 | 🍓 **Raspberry Pi（伺服器端）** | 跑 Docker 容器 | **Docker 引擎**<br>• `my-postgres` 容器 (5432)<br>• 具名磁碟卷 (資料持久化) | 專職當作 Backend 伺服器，開機常駐背景運行，不需在此寫程式或開桌面視窗。 |
 | 💻 **個人電腦（操作與開發端）** | 視覺化管理 & 寫 SQL | **DBeaver** | 在自己電腦打開圖形介面，透過 SSH 隧道或區網 IP 遠端管理樹莓派資料庫。 |
 | 💻 **個人電腦（操作與開發端）** | 一般人 AI 查庫 | **Antigravity** | 在自己電腦提問，透過本專案的專案級 MCP 直接用自然語言查詢樹莓派資料庫。 |
-| 💻 **個人電腦（操作與開發端）** | 程式開發與進階客製 | **Antigravity IDE** | 在自己電腦撰寫 Python、開發自訂 MCP Server 與除錯。 |
+| 💻 **個人電腦（操作與開發端）** | 程式開發與進階客製 | **Antigravity** | 在自己電腦撰寫 Python、開發自訂 MCP Server 與除錯。 |
 
 ---
 

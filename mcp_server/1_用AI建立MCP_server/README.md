@@ -1,6 +1,6 @@
 # 單元 1：用 AI 建立自己的 MCP Server
 
-> **本單元目標**：結合前面學到的 SQL 與 Python 知識，在 **Antigravity IDE** 中建立一個查詢台鐵進出站資料的自訂 MCP Server，並透過專案級設定掛載。
+> **本單元目標**：結合前面學到的 SQL 與 Python 知識，在 **Antigravity** 中建立一個查詢台鐵進出站資料的自訂 MCP Server，並透過專案級設定掛載。
 > 你的角色是**需求設計者**和**驗收者**。
 
 ## 目錄
@@ -80,7 +80,7 @@ flowchart LR
 |---|---|
 | 台鐵資料庫 | 匯入 `台鐵車站資訊`、`每日各站進出站人數` 兩張資料表 👉 [資料與 DDL](../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/) |
 | uv | Python 套件管理工具 👉 [安裝說明](https://docs.astral.sh/uv/getting-started/installation/) |
-| Antigravity IDE | 本課程統一使用的整合開發環境，支援專案級 MCP、終端機與 AI 輔助開發 |
+| Antigravity | 本課程統一使用的 AI 助手，支援專案級 MCP、終端機與 AI 輔助開發 |
 
 ---
 

@@ -89,7 +89,7 @@ flowchart LR
 
 ## 你與 AI 的協同開發模式
 
-在 Antigravity IDE 中開發 MCP Server 時，你不需要從空白文字檔自己刻全部語法，你可以透過 Antigravity AI 協作：
+在 Antigravity 中開發 MCP Server 時，你不需要從空白文字檔自己刻全部語法，你可以透過 Antigravity AI 協作：
 
 ![你和 AI 的分工](./images/ai_division.svg)
 

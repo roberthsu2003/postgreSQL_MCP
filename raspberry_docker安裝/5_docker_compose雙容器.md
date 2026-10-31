@@ -11,7 +11,7 @@
 * 🍓 **樹莓派（伺服器端）**：使用 Docker Compose 啟動並常駐執行 PostgreSQL 容器（埠號 `5432`）。
 * 💻 **本機電腦（操作端）**：
   * **DBeaver**：透過 SSH 隧道或區網 IP 管理資料表與寫 SQL。
-  * **Antigravity / Antigravity IDE**：透過專案級 MCP（`.agents/mcp_config.json`）連線查庫與寫程式。
+  * **Antigravity**：透過專案級 MCP（`.agents/mcp_config.json`）連線查庫與寫程式。
 
 ---
 

@@ -11,7 +11,7 @@
 ```mermaid
 graph LR
     subgraph Local ["💻 您的個人電腦 (Local PC / Mac)"]
-        AG["Antigravity / Antigravity IDE"]
+        AG["Antigravity"]
         Config[".agents/mcp_config.json"]
         MCPRunner["本地 MCP 執行緒<br/>(Docker / uvx)"]
         AG --> Config --> MCPRunner

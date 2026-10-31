@@ -50,7 +50,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     C3["<b>第 3 章</b><br/>用中文查庫<br/>不用會 SQL"] --> C4["<b>第 4-5 章 SQL 語法與練習</b><br/>① 自己動手學寫 SQL<br/>② 用 prompt 讓 AI 做一次<br/>③ 比對 AI 寫的 SQL 是否正確"]
-    C4 --> C6["<b>第 6-7 章</b><br/>用 Antigravity IDE<br/>寫 Python 存取資料庫"]
+    C4 --> C6["<b>第 6-7 章</b><br/>在 Antigravity 中<br/>寫 Python 存取資料庫"]
     C6 --> C8["<b>第 8 章</b><br/>自己用 Python<br/>寫自訂 MCP Server"]
 
     classDef mcp fill:#eff6ff,stroke:#2563eb,color:#1e3a8a

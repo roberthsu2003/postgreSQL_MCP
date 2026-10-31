@@ -13,9 +13,9 @@
 | **一** | [3. 現成 MCP 中文查庫](#3-安裝現成-mcp用中文查詢資料庫) | **一般人用的 Antigravity**：掛載**專案級 MCP**（免全域安裝），純自然語言問問題，AI 自動查庫 | Antigravity + 專案級 MCP |
 | **二** | [4. SQL 語法與 AI 輔助](#4-sql-語法) | **親自學寫 SQL**：DDL/DML，每課搭配 prompt 讓 AI 做一次，學習審核與比對 AI 的 SQL | DBeaver + Antigravity 對話 |
 | **二** | [5. SQL 實戰練習](#5-sql-練習) | 關聯資料庫實戰、外來鍵、JOIN、GROUP BY、子查詢多題演練 | DBeaver 手寫查詢 |
-| **三** | [6. Python 串接](#6-python-串接psycopg2) | **進入 Antigravity IDE 寫程式**：用 psycopg2 從 Python 進行資料庫 CRUD 與交易管理 | Antigravity IDE (Python) |
-| **三** | [7. 實戰專案開發](#7-實戰專案) | 建立引導式 CLI 工具與 Streamlit 互動視覺化 Web 應用 | Antigravity IDE |
-| **四** | [8. 自訂 MCP Server](#8-自訂-mcp-server企業導入與客製化開發) | **壓軸單元**：親手用 Python 寫自訂 MCP Server，封裝專屬商業邏輯與 Token 安全防護 | Antigravity IDE + FastMCP |
+| **三** | [6. Python 串接](#6-python-串接psycopg2) | **在 Antigravity 中寫程式**：用 psycopg2 從 Python 進行資料庫 CRUD 與交易管理 | Antigravity (Python) |
+| **三** | [7. 實戰專案開發](#7-實戰專案) | 建立引導式 CLI 工具與 Streamlit 互動視覺化 Web 應用 | Antigravity |
+| **四** | [8. 自訂 MCP Server](#8-自訂-mcp-server個人本機開發到企業容器化導入) | **壓軸單元**：打造自訂 MCP Server，封裝專屬商業邏輯與 Token 安全防護 | Antigravity + FastMCP |
 
 ---
 
@@ -143,7 +143,7 @@
 
 ## 8. 自訂 MCP Server（個人本機開發到企業容器化導入）
 
-學會了 SQL 與 Python 後，我們不再受限於現成工具，而是**使用 Python（FastMCP）在 Antigravity IDE 中親手打造專屬的 MCP Server**！
+學會了 SQL 與 Python 後，我們不再受限於現成工具，而是**使用 Python（FastMCP）在 Antigravity 中親手打造專屬的 MCP Server**！
 採用**「先個人（本機執行 MCP 連樹莓派 DB） $\rightarrow$ 後企業共用（打包進樹莓派 Docker 雙容器 + Token 門禁）」**的循序漸進路線。 👉 [章節總覽](./mcp_server/)
 
 | 階段 | 單元 | 你的角色 | 內容 |
