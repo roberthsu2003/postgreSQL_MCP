@@ -108,6 +108,32 @@
 
 ---
 
+### 🔍 補充說明：為什麼不直接用 Supabase 官方後台給的 `serverUrl` 設定？
+
+在 Supabase 後台的 Connect 選單中，您可能會看到官方提供類似這樣的 MCP 設定：
+```json
+{
+  "mcpServers": {
+    "supabase": {
+      "serverUrl": "https://mcp.supabase.com/mcp?project_ref=...&features=docs,account,database..."
+    }
+  }
+}
+```
+
+為什麼本課程建議使用 `uvx` + `DATABASE_URI`，而不是官方的這個 `serverUrl` 呢？
+
+| 比較項目 | 課程採用的 `postgres-mcp` (推薦) | Supabase 官方的 `serverUrl` |
+|---|---|---|
+| **本質與目的** | **專注於 PostgreSQL 資料庫與 SQL 操作** | **整個 Supabase 雲端平台的後台管理介面** |
+| **教學一致性** | ⭐⭐⭐ **極佳**：無論連樹莓派 Docker 還是連 Supabase，AI 工具完全一樣，操作心智模型 100% 統一。 | ❌ **不一致**：樹莓派不能用此網址，學生會面臨兩套完全不同的工具名稱與行為。 |
+| **AI 聚焦度** | 只提供標準的 SQL 查詢與資料表結構工具，AI 不會分心。 | 會把查看 Logs、部署 Edge Functions、管理 Storage、查 API 文件等 20 多個管理工具通通塞給 AI，容易干擾 AI 寫 SQL。 |
+| **身分驗證** | 只需資料庫連線字串，隨開隨用。 | 通常需要額外進行 Supabase 平台的 OAuth 授權登入。 |
+
+> 💡 **結論**：本課程的核心是學會 **PostgreSQL 與 SQL 語法**，因此使用標準的 `postgres-mcp` 最乾淨、最直觀，也能無縫切換本機、樹莓派與雲端資料庫！
+
+---
+
 ## 5. 常見問題與注意事項
 
 1. **免費版專案自動休眠：**
