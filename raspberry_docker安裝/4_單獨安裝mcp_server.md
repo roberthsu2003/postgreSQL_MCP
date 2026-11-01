@@ -73,9 +73,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
     "raspberry-postgres": {
       "command": "uvx",
       "args": [
-        "--with",
-        "mcp<2",
-        "postgres-mcp",
+        "postgres-mcp==0.3.0",
         "--access-mode=unrestricted"
       ],
       "env": {
