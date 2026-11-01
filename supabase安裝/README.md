@@ -8,8 +8,10 @@
 1. [註冊 Supabase 與建立 PostgreSQL 專案](#1-註冊-supabase-與建立-postgresql-專案)
 2. [取得資料庫連線字串 (Session Pooler)](#2-取得資料庫連線字串-session-pooler)
 3. [使用 DBeaver 連線至 Supabase](#3-使用-dbeaver-連線至-supabase)
-4. [設定 Supabase MCP Server（AI 中文查詢）](#4-設定-supabase-mcp-serverai-中文查詢)
-5. [常見問題與注意事項](#5-常見問題與注意事項)
+4. [設定 Antigravity 專案級 MCP Server（AI 助教連線）](#4-設定-antigravity-專案級-mcp-serverai-助教連線)
+5. [SQL 學習助教實戰 — 讓 AI 看庫解題，學生在 DBeaver 親自執行](#5-sql-學習助教實戰--讓-ai-看庫解題學生在-dbeaver-親自執行)
+6. [補充說明：為什麼不直接用 Supabase 官方後台給的 serverUrl 設定？](#6-補充說明為什麼不直接用-supabase-官方後台給的-serverurl-設定)
+7. [常見問題與注意事項](#7-常見問題與注意事項)
 
 ---
 
@@ -76,12 +78,21 @@
 
 ---
 
-## 4. 設定 Antigravity 專案級 MCP Server（AI 中文查詢）
+## 4. 設定 Antigravity 專案級 MCP Server（AI 助教連線）
 
 透過專案級 MCP 配置，免全域安裝，只要打開本專案，Antigravity 就會自動連線至您的 Supabase 雲端資料庫！
 
-### 設定方式：
-開啟專案根目錄下的 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)，使用免安裝 Docker 的 **`uvx`** 加入 Supabase 連線設定（連線字串末尾加上 `?sslmode=require`）：
+因為本教材是**為了學生學習 SQL 語法**，我們將 MCP 設定為受限唯讀模式（`--access-mode=restricted`），讓 AI 專職擔任「**SQL 學習助教**」，只負責查庫解題與指導語法，保護雲端資料庫安全，並由學生親自在 DBeaver 中敲 SQL 執行。
+
+### 🌟 讓 Antigravity 自動幫你設定（複製貼上自然語言）
+您可以直接在 Antigravity 聊天框發送以下指令，讓 AI 一鍵為您設定好設定檔（請自行替換密碼、專案代碼與 Pooler Host）：
+
+> 「請幫我在專案的 `.agents/mcp_config.json` 中設定名為 `supabase-postgres` 的 MCP Server：
+> 1. command 使用 `uvx`
+> 2. args 指定使用本專案虛擬環境 `--python .venv`，指定版本 `postgres-mcp==0.3.0`，並啟用唯讀保護模式 `--access-mode=restricted`
+> 3. DATABASE_URI 設定為：`postgresql://postgres.[PROJECT-REF]:<您的密碼>@[POOLER-HOST]:5432/postgres?sslmode=require`」
+
+* **AI 自動化成果**：Antigravity 會自動在專案中建立或更新 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)，內容如下（供檢閱確認）：
 
 ```json
 {
@@ -89,10 +100,10 @@
     "supabase-postgres": {
       "command": "uvx",
       "args": [
-        "--with",
-        "mcp<2",
-        "postgres-mcp",
-        "--access-mode=unrestricted"
+        "--python",
+        ".venv",
+        "postgres-mcp==0.3.0",
+        "--access-mode=restricted"
       ],
       "env": {
         "DATABASE_URI": "postgresql://postgres.[PROJECT-REF]:[YOUR-PASSWORD]@[POOLER-HOST]:5432/postgres?sslmode=require"
@@ -102,78 +113,72 @@
 }
 ```
 
+> 💡 **關鍵參數說明**：
+> 1. **`"--python", ".venv"`**：**環境隔離！** 明確指定 `uvx` 必須使用專案虛擬環境 `.venv` 內的 Python 來載入與運行 MCP Server。
+> 2. **`"postgres-mcp==0.3.0"`**：**鎖定版本！** 鎖定 `0.3.0` 版本，確保 MCP 功能與語法解析穩定運作。
+> 3. **`"--access-mode=restricted"`**：**學習階段唯讀保護！** 啟用受限唯讀模式，AI 只能做 `SELECT` 查詢資料表與欄位綱要，**禁止直接寫入、更新或刪除資料庫**，防呆又安全。（未來學成後，可隨時改為 `unrestricted` 解鎖完整權限）
+> 4. **`?sslmode=require`**：**雲端必備！** 連線 Supabase 雲端資料庫一律必須在字串最後加上 SSL 加密連線參數。
+> 5. **`[PROJECT-REF]`、`[YOUR-PASSWORD]`、`[POOLER-HOST]`**：請替換為步驟 2 取得的連線參數。
+
 > [!TIP]
-> * **免安裝 Docker**：只要個人電腦有安裝 `uv`（內建 `uvx`），Antigravity 就會自動喚起開源的 Postgres MCP 工具。
-> * **連線驗證**：儲存後重新載入專案，直接在 Antigravity 聊天框輸入：「請幫我查詢目前 Supabase 資料庫中的資料表」，AI 就會調用 MCP 自動查詢！
+> **關於 `--access-mode` 存取模式（學習階段 vs 未來實務）：**
+> * 🎓 **學習階段（當前設定：`restricted` 唯讀保護）**：
+>   * AI 僅能進行 `SELECT` 查詢資料表與綱要架構，防止誤刪或弄亂雲端資料庫。
+>   * AI 的職責是**「指導老師／助教」**：遇到不會寫的語法時向 AI 請教，AI 負責給出標準 SQL 語法與逐行解析，最後由**學生親自複製到 DBeaver 中手動執行**，真正動手練就紮實的 SQL 功力！
+> * 🚀 **未來實務階段（未來可改為：`unrestricted` 不受限模式）**：
+>   * 等到未來 SQL 已經學得很熟練、需要進行真實專案開發時，如果想讓 AI 直接幫您建立資料表（CREATE TABLE）、自動匯入大量測試資料或執行批次更新，只要回到 `.agents/mcp_config.json` 將參數改為 `--access-mode=unrestricted` 即可完全解鎖！
 
 ---
 
-## 5. 直觀實戰測試 — 讓 AI 在 Supabase 上新增、查詢選取、修改與刪除
+## 5. SQL 學習助教實戰 — 讓 AI 看庫解題，學生在 DBeaver 親自執行
 
-因為我們在設定檔中啟用了 `--access-mode=unrestricted`（不受限模式），AI 具備完整的雲端資料庫操作權限。請依序貼入以下 5 個指令，完整體驗雲端資料庫的 **CRUD（建立、選取查詢、更新、刪除）** 與資料表管理：
+因為我們啟用了 `--access-mode=restricted`（唯讀保護模式），AI 成為最強大的**「專屬 SQL 助教」**：它看得到 Supabase 雲端資料庫的現況，能精確教你寫 SQL，但**不會直接幫你改資料庫**。
+
+請依序嘗試以下 4 個情境，體驗身歷其境的 SQL 輔助學習：
 
 ---
 
-### 🟢 測試 1：建立資料表並寫入多筆具體資料（CREATE TABLE & INSERT）
+### 🔍 情境 1：請 AI 查看現有資料庫結構並詳細講解（Schema 探索）
 直接對 Antigravity 說：
-> 「請在我的 Supabase 雲端資料庫中建立一張學生名單資料表 `students_test`，包含欄位：
-> - 學號（id）：自動編號整數，主鍵
-> - 姓名（name）：文字，必填
-> - 年級（grade）：整數
-> - 城市（city）：文字
-> - 考試成績（score）：整數
+> 「請連線我的 Supabase 資料庫，幫我檢查目前資料庫裡有哪些資料表？並挑一張表詳細列出它的所有欄位、資料型態（Data Type）與主鍵設定，教我該怎麼看懂這張表的架構。」
+
+* **直觀成果**：AI 會調用 MCP 讀取 Supabase 的資料字典，以整齊的 Markdown 表格列出欄位名稱與型別（如 `VARCHAR`、`INTEGER`、`TIMESTAMP`），並用白話文解釋各欄位用途。
+
+---
+
+### 💡 情境 2：提出查詢需求，請 AI 教導撰寫 SELECT 語法（學生在 DBeaver 執行）
+想查特定條件的數據卻卡關時，對 Antigravity 說：
+> 「我想在 Supabase 資料庫中查詢符合以下條件的資料：
+> 1. 篩選出特定的分類或分數及格的紀錄
+> 2. 依照時間或分數由大到小排序（DESC）
+> 3. 只取前 5 筆
 >
-> 建立好後，請幫我寫入以下 4 筆具體學生資料：
-> 1. 陳小明，2年級，台北市，88分
-> 2. 林美玲，3年級，新北市，95分
-> 3. 張志豪，2年級，台中市，72分
-> 4. 李佳穎，3年級，台北市，60分
->
-> 新增完成後，請把整張資料表的所有內容列出來給我看。」
+> 請不要直接幫我跑，請教我這段 SQL 語法該怎麼寫？並逐行詳細解釋 `SELECT`、`WHERE`、`ORDER BY` 與 `LIMIT` 的用法。」
 
-* **直觀成果**：AI 會調用 MCP 工具自動在 Supabase 執行 `CREATE TABLE` 與 `INSERT INTO`，並立刻以 Markdown 表格回傳這 4 位學生的完整資料。
-* **雙重驗證方式**：
-  1. **DBeaver**：在左側 Supabase 連線的資料表清單按 `F5`，立刻看到新建立的 `students_test`！
-  2. **Supabase 網頁後台**：登入 Supabase 點選 **Table Editor**，也能即時看到這張表與這 4 筆資料！
+* **直觀成果**：AI 會根據現有資料表結構，寫出完全正確的 SQL 語法，並提供清晰易懂的關鍵字教學。
+* **學生動手練**：學生將 AI 提供的 SQL 複製，貼到本機 **DBeaver** 的 SQL 編輯器中按下執行（Ctrl + Enter），親眼看到查詢結果！
 
 ---
 
-### 🔍 測試 2：條件選取與篩選查詢（SELECT with WHERE & ORDER BY）
-測試 AI 的條件選取與排序能力，對 Antigravity 說：
-> 「請幫我從 `students_test` 選取查詢符合以下條件的學生：
-> 1. 只選取住在『台北市』**或**成績大於等於 80 分的學生
-> 2. 依照『考試成績』由高到低排序（ORDER BY DESC）
-> 3. 只顯示學號、姓名、城市與成績 4 個欄位即可」
+### ✍️ 情境 3：想新增或修改資料，請 AI 教寫語法並解釋防呆觀念
+學習資料修改（DML）時，對 Antigravity 說：
+> 「如果我想在資料庫中把某筆紀錄更新，請教我正確的 `UPDATE` 語法該怎麼寫？另外請特別提醒我，撰寫 `UPDATE` 時如果不小心漏掉什麼子句會造成嚴重的災難？」
 
-* **直觀成果**：AI 會在背後撰寫精準的 `SELECT id, name, city, score FROM students_test WHERE city = '台北市' OR score >= 80 ORDER BY score DESC;`，篩選出符合條件的學生並整齊列出。
+* **直觀成果**：AI 會示範標準 `UPDATE 表名 SET 欄位 = 值 WHERE 條件;` 語法，並強烈警告學生：**「千萬不能漏掉 WHERE 條件，否則整張表的資料都會被一起改掉！」**
+* **學生動手練**：學生理解觀念後，在 DBeaver 中親自執行修改，並用 `SELECT` 驗證數據變更。
 
 ---
 
-### 🟡 測試 3：更新特定學生的資料（UPDATE）
-接著測試資料修改，對 Antigravity 說：
-> 「李佳穎同學補考通過了！請幫我把 `students_test` 資料表中『李佳穎』的成績更新為 85 分，並把她的最新資料單獨選取出來確認。」
+### 🛡️ 情境 4：安全防護驗證 — 測試 AI 是否真的無法改庫（防呆測試）
+故意命令 AI 直接去刪除資料，對 Antigravity 說：
+> 「請直接幫我刪除 Supabase 資料庫裡的某張資料表（DROP TABLE）！」
 
-* **直觀成果**：AI 會執行 `UPDATE students_test SET score = 85 WHERE name = '李佳穎';`，並重新選取顯示她修改後的最新成績。
-
----
-
-### 🟠 測試 4：刪除特定一筆資料（DELETE FROM）
-接著測試刪除單筆資料，對 Antigravity 說：
-> 「張志豪同學轉學了，請幫我從 `students_test` 刪除他的資料，並列出目前剩下的所有學生確認。」
-
-* **直觀成果**：AI 執行 `DELETE FROM students_test WHERE name = '張志豪';`，剩下的 3 筆資料會即時呈現，確認已被刪除。
-
----
-
-### 🔴 測試 5：測試結束，刪除整張資料表（DROP TABLE）
-最後清理雲端測試環境，對 Antigravity 說：
-> 「測試結束了，請幫我把剛剛建立的測試資料表 `students_test` 完全刪除（DROP TABLE），並確認資料庫內是否已經沒有這張表。」
-
-* **直觀成果**：AI 會執行 `DROP TABLE IF EXISTS students_test;`，確認刪除後回覆「資料表已順利清除」。
-* **驗證方式**：回到 DBeaver 或 Supabase 網頁後台重新整理，確認資料表已消失，不留任何測試垃圾！
+* **直觀成果**：因為我們設定了 `--access-mode=restricted`，MCP 工具會嚴格拒絕寫入與刪除請求，AI 會回覆：**「目前處於唯讀保護模式，無法直接對資料庫執行刪除操作」**，並改為提供語法給學生參考。這保證了雲端資料庫的絕對安全！
 
 > [!TIP]
-> 透過這個完整的實戰演練，學生能直觀地感受到：**不管是遠在區網的樹莓派，還是位於雲端的 Supabase，只要透過 Antigravity 說中文，AI 都能以完全相同的 MCP 工具進行精準的操作！**
+> **教學總結與未來進階指南**：
+> 1. **🎓 學習階段堅持使用 `restricted`**：不要把大腦交給 AI 盲目代工，而是把 AI 當作隨身家教——**「AI 隨時看庫教學、學生親自動手在 DBeaver 敲 SQL 驗證」**，學習效果最佳且安全無虞！
+> 2. **🚀 未來實務隨時切換為 `unrestricted`**：當您已經具備自主寫 SQL 與資料庫設計能力時，若想讓 AI 升級為全自動化工程師直接替您建表或寫入資料，只要回到 `.agents/mcp_config.json` 將參數改為 `--access-mode=unrestricted`，就能立刻解鎖完整權限！
 
 ---
 
