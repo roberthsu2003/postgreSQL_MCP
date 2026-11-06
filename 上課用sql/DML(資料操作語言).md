@@ -46,3 +46,12 @@ DELETE FROM users WHERE id = 1;
 > 用一張有 name、major、score 欄位的 student 資料表當例子，分別寫出 SELECT、INSERT、UPDATE、DELETE 的 SQL，並用一句話說明每一個在做什麼。**先不要執行。**
 
 ✅ 對照上面的「簡單示例」。注意 AI 寫的 UPDATE 和 DELETE **有沒有 WHERE**。
+
+---
+
+## 🧭 課程導覽
+
+| ⬅️ 上一階段 | 🏠 返回目錄 | ➡️ 下一單元 |
+|:---|:---:|---:|
+| [單元 5：限制條件](./4限制.md) | [第 4 章：SQL 語法與 AI 輔助](../README.md#dml資料操作語言) | [DML 單元 1：新增資料](./3新增資料.md) |
+
