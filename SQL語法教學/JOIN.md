@@ -1,257 +1,207 @@
-## JOIN(連結)
+# 單元 14：多表連接查詢全指南 (JOIN)
 
-## 新增2個資料表,並加入資料
+在關聯式資料庫中，資料被正規化拆分存放在不同的資料表（例如：常態菜單表、本期促銷表、門市表、訂單表）。  
+`JOIN` 指令就是用來**依據指定的關聯鍵，將多張資料表的資料橫向拼接合併為一張完整報表**的核心武器！
+
+---
+
+## 1. 準備示範資料庫：咖啡菜單 vs 本月促銷
+
+為了最直觀地理解 7 種不同的 JOIN 行為，我們先建立兩張簡單易懂的對照表：
+* **`menu_items` (常態菜單表)**：店內常規販售的咖啡
+* **`promo_items` (本月促銷表)**：本月享有特價折扣的商品
 
 ```sql
-CREATE TABLE basket_a(
-	a INT PRIMARY KEY,
-	fruit_a VARCHAR(100) NOT NULL
+DROP TABLE IF EXISTS promo_items CASCADE;
+DROP TABLE IF EXISTS menu_items CASCADE;
+
+-- 常態菜單表 (左表)
+CREATE TABLE menu_items (
+    item_id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE basket_b(
-	b INT PRIMARY KEY,
-	fruit_b VARCHAR(100) NOT NULL
+-- 本月促銷表 (右表)
+CREATE TABLE promo_items (
+    promo_id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    discount_price INT NOT NULL
 );
 
-INSERT INTO basket_a (a, fruit_a)
-VALUES
-    (1, 'Apple'),
-    (2, 'Orange'),
-    (3, 'Banana'),
-    (4, 'Cucumber');
-	
-INSERT INTO basket_b (b, fruit_b)
-VALUES
-    (1, 'Orange'),
-    (2, 'Apple'),
-    (3, 'Watermelon'),
-    (4, 'Pear');
+INSERT INTO menu_items (item_id, name) VALUES
+    (1, '美式咖啡'),
+    (2, '拿鐵咖啡'),
+    (3, '卡布奇諾'),
+    (4, '焦糖瑪奇朵');
+
+INSERT INTO promo_items (promo_id, name, discount_price) VALUES
+    (101, '拿鐵咖啡', 99),
+    (102, '美式咖啡', 69),
+    (103, '西西里檸檬咖啡', 89),
+    (104, '燕麥奶拿鐵', 109);
 ```
 
-### 結果
-```
-a | fruit_a
----+----------
- 1 | Apple
- 2 | Orange
- 3 | Banana
- 4 | Cucumber
-(4 rows)
+### 資料現況對照
 
-
-b |  fruit_b
----+------------
- 1 | Orange
- 2 | Apple
- 3 | Watermelon
- 4 | Pear
-(4 rows)
-```
-
-### inner join(交集)
-
-```sql
-/*INNER JOIN-交集*/
-SELECT a,fruit_a,b,fruit_b
-FROM basket_a INNER JOIN basket_b ON fruit_a = fruit_b
-```
-
-![](./images/pic8.png)
-
-### 結果:
-
-```
-a | fruit_a | b | fruit_b
----+---------+---+---------
- 1 | Apple   | 2 | Apple
- 2 | Orange  | 1 | Orange
-```
+| `menu_items` (常態菜單/左表) | `promo_items` (本月促銷/右表) |
+|---|---|
+| 1: 美式咖啡 | 101: 拿鐵咖啡 (特價 99) |
+| 2: 拿鐵咖啡 | 102: 美式咖啡 (特價 69) |
+| 3: 卡布奇諾 | 103: 西西里檸檬咖啡 (特價 89) |
+| 4: 焦糖瑪奇朵 | 104: 燕麥奶拿鐵 (特價 109) |
 
 ---
 
-### left join
+## 2. INNER JOIN (內連接 / 交集)
 
-```sql
-/*LEFT JOIN*/
-SELECT a, fruit_a, b, fruit_b
-FROM basket_a LEFT JOIN basket_b ON fruit_a = fruit_b
+只保留**兩張表都有匹配成功**的資料列（交集部分）。
+
+```mermaid
+flowchart LR
+    subgraph INNER JOIN 兩表交集
+        direction LR
+        L["常態菜單 (menu_items)"] --- M(("交集品項<br>★ 美式咖啡<br>★ 拿鐵咖啡")) --- R["本月促銷 (promo_items)"]
+    end
+    style M fill:#d1fae5,stroke:#059669,stroke-width:2px;
 ```
 
-![](./images/pic9.png)
-
-### 結果
-
-```
- a | fruit_a  |  b   | fruit_b
----+----------+------+---------
- 1 | Apple    |    2 | Apple
- 2 | Orange   |    1 | Orange
- 3 | Banana   | null | null
- 4 | Cucumber | null | null
-```
-
----
-
-### left join(加上where 語法)
-
-```sql
-SELECT a, fruit_a, b, fruit_b
-FROM basket_a LEFT JOIN basket_b ON fruit_a = fruit_b
-WHERE b IS NULL
-```
-
-![](./images/pic10.png)
-
-### 結果
-
-```
-a | fruit_a  |  b   | fruit_b
----+----------+------+---------
- 3 | Banana   | null | null
- 4 | Cucumber | null | null
-```
-
----
-
-### right join
-
-```sql
-SELECT a, fruit_a, b, fruit_b
-FROM basket_a RIGHT JOIN basket_b ON fruit_a = fruit_b
-```
-
-![](./images/pic11.png)
-
-### 結果
-
-```
-a   | fruit_a | b |  fruit_b
-------+---------+---+------------
-    2 | Orange  | 1 | Orange
-    1 | Apple   | 2 | Apple
- null | null    | 3 | Watermelon
- null | null    | 4 | Pear
-```
-
----
-
-### right join(where)
-
-```sql
-/*RIGHT JOIN with WHERE Clause*/
-SELECT a, fruit_a, b, fruit_b
-FROM basket_a RIGHT JOIN basket_b ON fruit_a = fruit_b
-WHERE a IS NULL
-```
-
-![](./images/pic12.png)
-
-### 結果
-
-```
- a   | fruit_a | b |  fruit_b
-------+---------+---+------------
- null | null    | 3 | Watermelon
- null | null    | 4 | Pear
-(2 rows)
-```
-
----
-
-### full outer join
-
-```sql
-SELECT a, fruit_a, b, fruit_b
-FROM basket_a FULL OUTER JOIN basket_b ON fruit_a = fruit_b
-```
-
-![](./images/pic13.png)
-
-### 結果
-
-```
-a   | fruit_a  |  b   |  fruit_b
-------+----------+------+------------
-    1 | Apple    |    2 | Apple
-    2 | Orange   |    1 | Orange
-    3 | Banana   | null | null
-    4 | Cucumber | null | null
- null | null     |    3 | Watermelon
- null | null     |    4 | Pear
-```
-
----
-
-### full outer join with where
-
-```sql
-SELECT a, fruit_a, b, fruit_b
-FROM basket_a FULL OUTER JOIN basket_b ON fruit_a = fruit_b
-WHERE a IS NULL OR b IS NULL;
-```
-
-![](./images/pic14.png)
-
-### 結果
-
-```
- a   | fruit_a  |  b   |  fruit_b
-------+----------+------+------------
-    3 | Banana   | null | null
-    4 | Cucumber | null | null
- null | null     |    3 | Watermelon
- null | null     |    4 | Pear
-```
-
-
----
-
-## 🤖 不寫 SQL，用 Prompt 完成
-
-> 在 Antigravity 使用[第 3 章](../MCP操作資料庫/2_用中文查詢資料庫/#6-準備第-4-章設定可寫入的連線)設定的 **`postgres-sql`**（可寫入，連到 `sql_tutorial` 資料庫）。
-> 每個 prompt 執行後，點開工具呼叫（`execute_sql`），**對照 AI 執行的 SQL 和上面學的是否一樣**。
-
-**先準備資料：**
-
-> 用 postgres-sql 建立 basket_a（a 整數主鍵、fruit_a VARCHAR(100) 必填）和 basket_b（b 整數主鍵、fruit_b VARCHAR(100) 必填），如果存在先刪除。
-> basket_a 放入：1 Apple、2 Orange、3 Banana、4 Cucumber。basket_b 放入：1 Orange、2 Apple、3 Watermelon、4 Pear。
-
-| # | Prompt | 對照上面 | 答案 |
-|:---:|---|---|---|
-| 1 | 列出兩個籃子都有的水果 | inner join | Apple、Orange |
-| 2 | 列出 A 籃所有水果，以及 B 籃有沒有一樣的 | left join | 4 筆，Banana、Cucumber 的 B 籃欄位是 NULL |
-| 3 | 只在 A 籃有、B 籃沒有的水果 | left join + where | Banana、Cucumber |
-| 4 | 列出 B 籃所有水果，以及 A 籃有沒有一樣的 | right join | 4 筆 |
-| 5 | 只在 B 籃有、A 籃沒有的水果 | right join + where | Watermelon、Pear |
-| 6 | 兩個籃子所有水果都列出來對照 | full outer join | 6 筆 |
-| 7 | 只出現在其中一個籃子的水果 | full outer join + where | Banana、Cucumber、Watermelon、Pear |
-
-✅ 檢查重點：
-- 每一題 AI 用的是哪一種 JOIN？和上面的圖對照
-- 第 3 題 AI 可能用 `NOT EXISTS` 或 `NOT IN` 而不是 LEFT JOIN，**結果一樣也是對的**。問 AI：「可以改用 LEFT JOIN 寫嗎？」
-
----
-
-## 🛠️ 實戰演練：連鎖咖啡門市 (`cafe_shop`) 多表關聯實作
-
-> 💡 **資料來源**：請先在資料庫匯入 [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)，包含 `stores`（門市）、`staff`（員工）、`orders`（訂單）、`order_items`（明細）、`products`（商品）、`customers`（會員）。
-
-請在 DBeaver 開啟 SQL 編輯器，親自動手挑戰以下經典實務題目：
-
-### 題目 1：取出所有訂單與所屬門市名稱（指定欄位 JOIN）
 ```sql
 SELECT 
-    o.order_id AS 訂單編號,
-    o.order_date AS 銷售日期,
-    s.name AS 門市名稱,
-    s.city AS 所在縣市,
-    o.status AS 訂單狀態
-FROM orders o
-JOIN stores s ON o.store_id = s.store_id
-ORDER BY o.order_date DESC;
+    m.item_id,
+    m.name AS 菜單商品,
+    p.promo_id,
+    p.name AS 促銷商品,
+    p.discount_price AS 特價
+FROM menu_items m
+INNER JOIN promo_items p ON m.name = p.name;
 ```
 
-### 題目 2：查詢「台北市」門市在 2024 年 3 月份的所有已完成訂單
+**查詢結果**：
+| item_id | 菜單商品 | promo_id | 促銷商品 | 特價 |
+|:---:|---|:---:|---|:---:|
+| 1 | 美式咖啡 | 102 | 美式咖啡 | 69 |
+| 2 | 拿鐵咖啡 | 101 | 拿鐵咖啡 | 99 |
+
+---
+
+## 3. LEFT JOIN (左外連接 / 保留左表全部)
+
+**完整保留左表 (`menu_items`) 的所有資料**。右表有對應就顯示特價，若無對應則填補 `NULL`。
+
+```mermaid
+flowchart LR
+    subgraph LEFT JOIN 保留左表全部
+        direction LR
+        L["常態菜單 (全部保留)<br>• 美式咖啡<br>• 拿鐵咖啡<br>• 卡布奇諾<br>• 焦糖瑪奇朵"] --> M["比對促銷"]
+        M --> R["右表無特價者<br>自動填補 NULL"]
+    end
+    style L fill:#dbeafe,stroke:#2563eb,stroke-width:2px;
+```
+
+```sql
+SELECT 
+    m.item_id,
+    m.name AS 菜單商品,
+    p.promo_id,
+    p.discount_price AS 特價
+FROM menu_items m
+LEFT JOIN promo_items p ON m.name = p.name;
+```
+
+**查詢結果**：
+| item_id | 菜單商品 | promo_id | 特價 | 說明 |
+|:---:|---|:---:|:---:|---|
+| 1 | 美式咖啡 | 102 | 69 | 有促銷特價 |
+| 2 | 拿鐵咖啡 | 101 | 99 | 有促銷特價 |
+| 3 | 卡布奇諾 | *NULL* | *NULL* | 無促銷（維持原價） |
+| 4 | 焦糖瑪奇朵 | *NULL* | *NULL* | 無促銷（維持原價） |
+
+---
+
+## 4. LEFT JOIN + WHERE IS NULL (只在左表、不在右表)
+
+找出「屬於常態商品，但**本月沒有任何促銷特價**」的品項（差集）。
+
+```mermaid
+flowchart LR
+    subgraph 差集：只在左表
+        L["卡布奇諾<br>焦糖瑪奇朵"] --- X["排除有促銷者 (p.promo_id IS NULL)"]
+    end
+    style L fill:#fee2e2,stroke:#dc2626,stroke-width:2px;
+```
+
+```sql
+SELECT 
+    m.item_id,
+    m.name AS 未特價常態商品
+FROM menu_items m
+LEFT JOIN promo_items p ON m.name = p.name
+WHERE p.promo_id IS NULL;
+```
+
+---
+
+## 5. RIGHT JOIN (右外連接 / 保留右表全部)
+
+**完整保留右表 (`promo_items`) 的所有資料**。用來檢查本期促銷活動中，有哪些是「促銷限定新品（常態菜單未登錄）」。
+
+```sql
+SELECT 
+    m.item_id,
+    m.name AS 菜單品名,
+    p.name AS 促銷活動品名,
+    p.discount_price AS 特價
+FROM menu_items m
+RIGHT JOIN promo_items p ON m.name = p.name;
+```
+
+**查詢結果**：
+| item_id | 菜單品名 | 促銷活動品名 | 特價 | 說明 |
+|:---:|---|---|:---:|---|
+| 2 | 拿鐵咖啡 | 拿鐵咖啡 | 99 | 常規品有特價 |
+| 1 | 美式咖啡 | 美式咖啡 | 69 | 常規品有特價 |
+| *NULL* | *NULL* | 西西里檸檬咖啡 | 89 | 促銷限定新品！ |
+| *NULL* | *NULL* | 燕麥奶拿鐵 | 109 | 促銷限定新品！ |
+
+---
+
+## 6. FULL OUTER JOIN (全外連接 / 兩表聯集全收)
+
+無論左表或右表，**只要存在任一張表中，全部列出對照**；對應不到的欄位補 `NULL`。
+
+```sql
+SELECT 
+    m.name AS 菜單商品,
+    p.name AS 促銷商品,
+    p.discount_price AS 特價
+FROM menu_items m
+FULL OUTER JOIN promo_items p ON m.name = p.name;
+```
+
+---
+
+## 🤖 助教提示詞：運用 MCP 產生建議 SQL（學生手動執行）
+
+> 💡 **學習規範**：  
+> 請直接在對話框中發問。AI 會透過 MCP 檢查資料表結構，並為你產生**建議的測試 SQL 語法**；請將語法**複製到 DBeaver 手動執行**！
+
+### 練習 1：請 AI 產生連鎖咖啡門市跨 3 表 JOIN 的 SQL
+> **Prompt 範例**：  
+> 「在目前的 `cafe_shop` 資料庫中，我想查詢每張訂單明細包含的：門市名稱、下單日期、經手員工、購買商品名稱、購買數量、成交金額。請透過 MCP 檢查外來鍵關聯後，給我標準的四表 JOIN SQL，我會在 DBeaver 中手動執行。」
+
+### 練習 2：用 LEFT JOIN 找出潛水未消費會員
+> **Prompt 範例**：  
+> 「請給我一條使用 `LEFT JOIN ... WHERE ... IS NULL` 的標準 SQL，從 `customers` 與 `orders` 中抓出註冊至今從未下單過的會員名單，我會在 DBeaver 中親自執行驗證。」
+
+---
+
+## 🛠️ 實戰演練：連鎖咖啡門市 (`cafe_shop`) 多表關聯手寫題
+
+> 💡 **資料來源**：在資料庫匯入 [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)。
+
+請在 DBeaver 開啟 SQL 編輯器，親自動手挑戰以下經典題目：
+
+### 題目 1：查詢「台北市」門市在 2024 年 3 月份的所有已完成訂單
 ```sql
 SELECT 
     o.order_id AS 訂單編號,
@@ -266,7 +216,7 @@ WHERE s.city = '台北市'
 ORDER BY o.order_date ASC;
 ```
 
-### 題目 3：跨 3 張表 JOIN（訂單明細 ➡️ 商品名稱 ➡️ 門市名稱）
+### 題目 2：跨 3 表 JOIN（明細 ➡️ 商品 ➡️ 門市）
 ```sql
 SELECT 
     o.order_id AS 訂單編號,
@@ -282,15 +232,10 @@ JOIN products p ON i.product_id = p.product_id
 ORDER BY o.order_id ASC, i.item_id ASC;
 ```
 
-### 題目 4：使用 LEFT JOIN 找出「從未有消費紀錄」的會員（抓出潛水會員）
-```sql
-SELECT 
-    c.customer_id AS 會員編號,
-    c.name AS 會員姓名,
-    c.phone AS 聯絡電話,
-    o.order_id AS 訂單編號
-FROM customers c
-LEFT JOIN orders o ON c.customer_id = o.customer_id
-WHERE o.order_id IS NULL;
-```
+---
 
+## 🧭 課程導覽
+
+| ⬅️ 上一單元 | 🏠 返回目錄 | ➡️ 下一單元 |
+|:---|:---:|---:|
+| [單元 9.2：完整商業關聯庫實戰](./7創建關聯資料庫.md) | [第 4 章：SQL 語法與實戰練功](../README.md#關聯資料庫實作案例) | [單元 15：聚合函式與分組](./10聚合函式.sql) |

@@ -1,39 +1,64 @@
-/*ON DELETE action*/
-/*ON DELETE SET NULL->當foreign key 對應的primary key 被刪除時,對應的foreign key資料全設為NULL*/
-/*ON DELETE CASCADE->當foreign key 對應的primary key 被刪除時,對應的資料全部刪除*/
+/* ==============================================================================
+   單元 15：外來鍵刪除連鎖動作 (ON DELETE CASCADE / SET NULL / RESTRICT)
+   (以繁體中文範例庫 cafe_shop / shop 為例)
+   ============================================================================== */
 
-/*
-以下是 7創建關聯資料庫.sql 建立資料表時的設定(只是複習,不要再執行):
+-- ==============================================================================
+-- 1. ON DELETE CASCADE (連鎖刪除) 實戰
+-- 場景：當一張「訂單」被刪除時，其所屬的「訂單明細」必須連帶全部刪除，不能留下幽靈孤兒資料！
+-- ==============================================================================
 
-CREATE TABLE branch(
-	...
-	FOREIGN KEY(manager_id)
-	REFERENCES employee(emp_id) ON DELETE SET NULL      <- 經理離職,部門的 manager_id 設為 NULL
+-- 建立測試用的迷你訂單與明細表
+DROP TABLE IF EXISTS demo_order_items CASCADE;
+DROP TABLE IF EXISTS demo_orders CASCADE;
+
+CREATE TABLE demo_orders (
+    order_id INT PRIMARY KEY,
+    customer_name VARCHAR(20)
 );
 
-ALTER TABLE employee
-ADD FOREIGN KEY(sup_id)
-REFERENCES employee(emp_id) ON DELETE SET NULL;      <- 主管離職,部屬的 sup_id 設為 NULL
-
-CREATE TABLE works_with(
-	...
-	FOREIGN KEY(emp_id) REFERENCES employee(emp_id) ON DELETE CASCADE,   <- 員工離職,銷售紀錄一起刪除
-	...
+CREATE TABLE demo_order_items (
+    item_id INT PRIMARY KEY,
+    order_id INT REFERENCES demo_orders(order_id) ON DELETE CASCADE, -- 連鎖刪除
+    item_name VARCHAR(50),
+    amount INT
 );
-*/
 
-/*小綠(emp_id=207)是行政部門的經理,也是小白、小藍的主管*/
-DELETE FROM employee
-WHERE name = '小綠';
+INSERT INTO demo_orders VALUES (101, '陳小華');
+INSERT INTO demo_order_items VALUES 
+    (1, 101, '經典美式咖啡', 85),
+    (2, 101, '肉桂黑糖可頌', 75);
 
-/*ON DELETE SET NULL:行政部門的 manager_id 變成 NULL*/
-SELECT *
-FROM branch;
+-- 刪除訂單 101
+DELETE FROM demo_orders WHERE order_id = 101;
 
-/*ON DELETE SET NULL:小白、小藍的 sup_id 變成 NULL*/
-SELECT *
-FROM employee;
+-- 驗證：demo_order_items 裡的那 2 筆明細已自動被連帶清空！
+SELECT * FROM demo_order_items; -- 結果：0 筆
 
-/*ON DELETE CASCADE:works_with 中小綠(emp_id=207)的銷售紀錄被刪除*/
-SELECT *
-FROM works_with;
+-- ==============================================================================
+-- 2. ON DELETE SET NULL (設為空值) 實戰
+-- 場景：當「會員」申請註銷帳號時，歷史訂單不能刪（公司要報稅），只需將會員欄位設為 NULL
+-- ==============================================================================
+
+DROP TABLE IF EXISTS demo_member_orders CASCADE;
+DROP TABLE IF EXISTS demo_members CASCADE;
+
+CREATE TABLE demo_members (
+    member_id INT PRIMARY KEY,
+    name VARCHAR(20)
+);
+
+CREATE TABLE demo_member_orders (
+    order_id INT PRIMARY KEY,
+    member_id INT REFERENCES demo_members(member_id) ON DELETE SET NULL, -- 設為 NULL
+    total_amount INT
+);
+
+INSERT INTO demo_members VALUES (1, '林志明');
+INSERT INTO demo_member_orders VALUES (888, 1, 350);
+
+-- 會員註銷帳號
+DELETE FROM demo_members WHERE member_id = 1;
+
+-- 驗證：訂單 888 依然保留，但 member_id 變成 NULL！
+SELECT * FROM demo_member_orders;
