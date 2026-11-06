@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="150" viewBox="0 0 960 150" font-family="'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- 外框背景 -->
+  <rect x="1" y="1" width="958" height="148" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- 第一大群組：個人本機篇 (x:16, w:346) -->
+  <g transform="translate(16, 12)">
+    <rect x="0" y="0" width="346" height="126" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="173" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#475569">【個人本機開發篇】</text>
+
+    <!-- 步驟 1: 唯讀 AI 查庫 -->
+    <g transform="translate(10, 32)">
+      <rect x="0" y="0" width="150" height="82" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2"/>
+      <rect x="8" y="8" width="134" height="22" rx="4" fill="#3b82f6"/>
+      <text x="75" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">1. 唯讀 AI 查庫工具</text>
+      <text x="75" y="49" text-anchor="middle" font-size="11" font-weight="600" fill="#1e40af">FastMCP 本機連線</text>
+      <text x="75" y="67" text-anchor="middle" font-size="11" fill="#64748b">自然語言中文查庫</text>
+    </g>
+
+    <!-- 箭頭 1 -> 2 -->
+    <line x1="164" y1="73" x2="182" y2="73" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 步驟 2: 安全交易寫入 -->
+    <g transform="translate(186, 32)">
+      <rect x="0" y="0" width="150" height="82" rx="8" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.2"/>
+      <rect x="8" y="8" width="134" height="22" rx="4" fill="#f59e0b"/>
+      <text x="75" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">2. 安全交易寫入</text>
+      <text x="75" y="49" text-anchor="middle" font-size="11" font-weight="600" fill="#92400e">Python 商業防呆</text>
+      <text x="75" y="67" text-anchor="middle" font-size="11" fill="#64748b">BEGIN...COMMIT</text>
+    </g>
+  </g>
+
+  <!-- 大箭頭：個人 -> 企業 -->
+  <line x1="366" y1="75" x2="384" y2="75" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 第二大群組：企業與伺服器篇 (x:388, w:356) -->
+  <g transform="translate(388, 12)">
+    <rect x="0" y="0" width="356" height="126" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="178" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#475569">【企業導入與伺服器篇】</text>
+
+    <!-- 步驟 3: 遠端 Token 門禁 -->
+    <g transform="translate(10, 32)">
+      <rect x="0" y="0" width="155" height="82" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.2"/>
+      <rect x="8" y="8" width="139" height="22" rx="4" fill="#10b981"/>
+      <text x="77" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">3. 遠端 Token 門禁</text>
+      <text x="77" y="49" text-anchor="middle" font-size="11" font-weight="600" fill="#166534">Bearer Token 驗證</text>
+      <text x="77" y="67" text-anchor="middle" font-size="11" fill="#64748b">HTTP 服務與稽核日誌</text>
+    </g>
+
+    <!-- 箭頭 3 -> 4 -->
+    <line x1="169" y1="73" x2="187" y2="73" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 步驟 4: 樹莓派 Docker 雙容器 -->
+    <g transform="translate(191, 32)">
+      <rect x="0" y="0" width="155" height="82" rx="8" fill="#fdf2f8" stroke="#f472b6" stroke-width="1.2"/>
+      <rect x="8" y="8" width="139" height="22" rx="4" fill="#db2777"/>
+      <text x="77" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">4. 樹莓派 Docker</text>
+      <text x="77" y="49" text-anchor="middle" font-size="11" font-weight="600" fill="#831843">雙容器直連常駐</text>
+      <text x="77" y="67" text-anchor="middle" font-size="11" fill="#64748b">PostgreSQL + MCP</text>
+    </g>
+  </g>
+
+  <!-- 大箭頭：企業 -> 範例集 -->
+  <line x1="748" y1="75" x2="766" y2="75" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 第三大區塊：企業各部門範例集 (x:770, w:174) -->
+  <g transform="translate(770, 12)">
+    <rect x="0" y="0" width="174" height="126" rx="10" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+    <text x="87" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#6b21a8">【企業範例實踐】</text>
+
+    <g transform="translate(10, 32)">
+      <rect x="0" y="0" width="154" height="82" rx="8" fill="#ffffff" stroke="#c084fc" stroke-width="1.2"/>
+      <rect x="8" y="8" width="138" height="22" rx="4" fill="#8b5cf6"/>
+      <text x="77" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">5. 多部門範例集</text>
+      <text x="77" y="49" text-anchor="middle" font-size="11" font-weight="600" fill="#581c87">門市・電商・歷史大盤</text>
+      <text x="77" y="67" text-anchor="middle" font-size="11" fill="#64748b">本機 / 遠端雙模隨選</text>
+    </g>
+  </g>
+</svg>

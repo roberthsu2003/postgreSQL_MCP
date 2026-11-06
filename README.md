@@ -82,13 +82,7 @@
 
 資料庫不能紙上談兵！我們針對上班族最常見的 5 大部門職能（會計、人資、總務、店長、業務），設計了最貼合工作實務的繁體中文範例庫：
 
-```mermaid
-flowchart LR
-    A["1. 混亂上班 Excel<br>(單一工作表/公式雜亂)"] --> B["2. 提問 AI (Prompt)<br>產生 3NF 關聯式 SQL 交易腳本"]
-    B --> C["3. 學生手動在 DBeaver 執行<br>確認 BEGIN...COMMIT 交易安全"]
-    C --> D["4. 練習手寫 SQL<br>SELECT / JOIN / GROUP BY"]
-    D --> E["5. 打造個人本機桌面 App<br>PyQt5 / Tkinter 專屬視窗"]
-```
+![Excel 到桌面 App 實戰流程](./mcp_server/images/excel_to_app_flow.svg)
 
 ### 🏢 五大職場核心職能範例庫
 
@@ -217,17 +211,7 @@ conn.close()
 
 本章採用大白話教學與循序漸進架構：**「從個人本機專屬助理 $\rightarrow$ 升級到具備 Token 門禁的企業級安全服務與樹莓派 Docker 雙容器常駐」**。
 
-```mermaid
-flowchart TD
-    subgraph 個人本機篇
-        M1["1. 唯讀 AI 查庫工具<br>(FastMCP 本機中文查詢)"] --> M2["2. 安全交易寫入<br>(封裝商業檢查與交易保護)"]
-    end
-    subgraph 企業與伺服器篇
-        M2 --> M3["3. 遠端 HTTP 與 Token 門禁<br>(Bearer Token 安全驗證與稽核日誌)"]
-        M3 --> M4["4. 樹莓派 Docker 雙容器<br>(PostgreSQL + MCP Server 內網直連常駐)"]
-    end
-    M4 --> M5["5. 企業多部門實戰範例集<br>(門市營運、電商客服、金融大盤等)"]
-```
+![AI 查庫與自訂 MCP 學習路線](./mcp_server/images/mcp_learning_path.svg)
 
 | 階段 | 單元模組 | 你的角色 | 學習重點與實作內容 |
 |:---:|---|:---:|---|

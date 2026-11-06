@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="130" viewBox="0 0 960 130" font-family="'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- 外框背景 -->
+  <rect x="1" y="1" width="958" height="128" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- 步驟 1: 混亂上班 Excel -->
+  <g transform="translate(16, 16)">
+    <rect x="0" y="0" width="160" height="98" rx="10" fill="#fff5f5" stroke="#fca5a5" stroke-width="1.5"/>
+    <rect x="12" y="10" width="136" height="24" rx="6" fill="#ef4444"/>
+    <text x="80" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1. 混亂上班 Excel</text>
+    <text x="80" y="58" text-anchor="middle" font-size="13" font-weight="600" fill="#991b1b">單一工作表雜亂</text>
+    <text x="80" y="80" text-anchor="middle" font-size="12" fill="#64748b">公式易壞・重複登記</text>
+  </g>
+
+  <!-- 箭頭 1 -> 2 -->
+  <line x1="180" y1="65" x2="198" y2="65" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 步驟 2: 提問 AI (Prompt) -->
+  <g transform="translate(202, 16)">
+    <rect x="0" y="0" width="160" height="98" rx="10" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5"/>
+    <rect x="12" y="10" width="136" height="24" rx="6" fill="#f59e0b"/>
+    <text x="80" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2. 提問 AI (Prompt)</text>
+    <text x="80" y="58" text-anchor="middle" font-size="13" font-weight="600" fill="#92400e">3NF 關聯正規化</text>
+    <text x="80" y="80" text-anchor="middle" font-size="12" fill="#64748b">產生 SQL 交易腳本</text>
+  </g>
+
+  <!-- 箭頭 2 -> 3 -->
+  <line x1="366" y1="65" x2="384" y2="65" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 步驟 3: DBeaver 手動執行 -->
+  <g transform="translate(388, 16)">
+    <rect x="0" y="0" width="160" height="98" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+    <rect x="12" y="10" width="136" height="24" rx="6" fill="#3b82f6"/>
+    <text x="80" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">3. DBeaver 手動執行</text>
+    <text x="80" y="58" text-anchor="middle" font-size="13" font-weight="600" fill="#1e40af">學生手動按 Alt+X</text>
+    <text x="80" y="80" text-anchor="middle" font-size="12" fill="#64748b">BEGIN...COMMIT 交易</text>
+  </g>
+
+  <!-- 箭頭 3 -> 4 -->
+  <line x1="552" y1="65" x2="570" y2="65" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 步驟 4: 練習手寫 SQL -->
+  <g transform="translate(574, 16)">
+    <rect x="0" y="0" width="160" height="98" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+    <rect x="12" y="10" width="136" height="24" rx="6" fill="#10b981"/>
+    <text x="80" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">4. 練習手寫 SQL</text>
+    <text x="80" y="58" text-anchor="middle" font-size="13" font-weight="600" fill="#166534">SELECT / JOIN</text>
+    <text x="80" y="80" text-anchor="middle" font-size="12" fill="#64748b">GROUP BY 業務統計</text>
+  </g>
+
+  <!-- 箭頭 4 -> 5 -->
+  <line x1="738" y1="65" x2="756" y2="65" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 步驟 5: 打造個人桌面小 App -->
+  <g transform="translate(760, 16)">
+    <rect x="0" y="0" width="184" height="98" rx="10" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+    <rect x="12" y="10" width="160" height="24" rx="6" fill="#8b5cf6"/>
+    <text x="92" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">5. 個人本機桌面 App</text>
+    <text x="92" y="58" text-anchor="middle" font-size="13" font-weight="600" fill="#6b21a8">PyQt5 / Tkinter</text>
+    <text x="92" y="80" text-anchor="middle" font-size="12" fill="#64748b">本機專屬獨立視窗</text>
+  </g>
+</svg>
