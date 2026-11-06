@@ -225,17 +225,6 @@ flowchart TD
 
 ---
 
-## 📚 推薦學習資源與官方文件
-
-- [PostgreSQL 官方文件 (v16)](https://www.postgresql.org/docs/current/)
-- [PostgreSQL Tutorial (Neon)](https://neon.com/postgresql/tutorial)
-- [psycopg2 官方文件](https://www.psycopg.org/docs/)
-- [PyQt5 官方參考手冊 (Riverbank)](https://www.riverbankcomputing.com/static/Docs/PyQt5/)
-- [Python 官方 Tkinter 模組指引](https://docs.python.org/3/library/tkinter.html)
-- [Model Context Protocol 官方規範](https://modelcontextprotocol.io/)
-
----
-
 <div align="center">
 <b>為自己的日常工作賦能，從手寫每一句 SQL 開始！</b>
 </div>
