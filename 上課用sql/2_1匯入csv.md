@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS 目前天氣(
 
 ### 建立關聯式資料表
 
+> 💡 **初學者提示**：本範例示範真實專案的資料表結構，其中出現的 `FOREIGN KEY`（外來鍵）與 `CASCADE` 屬於關聯約束，會在後續的「限制條件」與「FOREIGN KEY」章節詳細解析。在此單元中，你只需跟著語法建表，專注體驗 DBeaver 匯入 CSV 的流程即可！
+> 
 > 💡 欄位名稱沒有加雙引號時，PostgreSQL 會自動轉成小寫，例如 `stationCode` 實際上是 `stationcode`。
 
 #### 先刪除舊的資料表（如果需要重新建立）
