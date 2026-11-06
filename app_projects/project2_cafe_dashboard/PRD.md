@@ -1,58 +1,58 @@
-# 產品需求文件 (PRD)：連鎖咖啡門市營運與銷售分析看板
+# 產品需求文件 (PRD)：門市店長營運分析個人桌面小 App
 
-* **專案代號**：`CafeShop-BI-Dashboard`
+* **專案代號**：`CafeShop-Desktop-Manager`
 * **開發模式**：規格驅動開發 (SDD, Spec-Driven Development)
-* **資料庫環境**：PostgreSQL / Supabase (`cafe_shop.sql` 結構)
-* **前端框架**：Streamlit (線上商業看板) / PyQt 或 Tkinter (可選)
+* **資料庫環境**：PostgreSQL / Supabase (對應 `cafe_shop.sql`)
+* **前端框架**：Python 內建 **Tkinter** (個人桌面視窗 GUI) 或 **PyQt5**
+* **資料庫存取方式**：Python 原生手寫 SQL (`psycopg2`)，嚴禁使用 MCP 或 ORM 遮蔽 SQL
 
 ---
 
 ## 1. 專案背景與痛點
 
-連鎖咖啡品牌在全台有多家門市，過去各店店長每個月手動填寫 Excel 表格並以檔案管理，總部管理層若想跨月查詢「各店營業額成長率」、「明星商品排行」或「VIP 會員名單」，必須手動開多個檔案合併計算，容易出錯且耗費大量人力。
+連鎖門市店長或個人咖啡館經營者，過去每到月底就用 Excel 檔案記帳並手動計算各類報表：
+1. **跨月份報表繁瑣**：每個月開新工作表，計算第一季成長率時公式容易出錯。
+2. **缺乏即時查詢工具**：想查特定員工績效或熱門商品排行，必須在 Excel 裡一層層篩選。
 
-本專案旨在將已正規化儲存於 PostgreSQL 中的門市銷售資料，開發為一個**現代化、即時互動的商業智慧看板 (BI Dashboard)**，讓經營主管能一目了然掌握全台各店營運現況。
-
----
-
-## 2. 資料庫結構 (由 MCP 讀取驗證)
-
-資料庫已預先透過 [`cafe_shop.sql`](../../範例資料庫/中文範例資料庫/cafe_shop.sql) 建立完成，包含 7 張標準關聯表：
-1. **`stores`**：門市編號、門市名稱、所在區域 (北部/中部/南部)、地址、電話。
-2. **`staff`**：員工姓名、所屬門市、職稱 (店長/正職/工讀生)、月薪。
-3. **`categories`** 與 **`products`**：飲品與餐點分類、品名、售價、成本、上市日期。
-4. **`customers`**：會員姓名、電話、性別、加入日期。
-5. **`orders`**：銷售訂單主檔（日期、時間、門市、經手店員、會員ID、付款方式、狀態）。
-6. **`order_items`**：訂單明細（商品ID、數量、成交單價）。
+本專案旨在將已正規化儲存於 PostgreSQL 中的門市銷售資料（`cafe_shop.sql`），開發為一個**在個人電腦上獨立執行的桌面小 App（Desktop GUI）**，讓店長點擊圖示即可秒開，掌握全店營運指標！
 
 ---
 
-## 3. 前端介面與功能需求 (UI Requirements)
+## 2. 資料庫結構 (由學生在 DBeaver 執行 cafe_shop.sql 建立)
 
-使用 **Streamlit** 開發互動式儀表板：
+包含 7 張標準關聯表：
+1. **`stores`**：門市資訊 (store_id, name, city, address)
+2. **`staff`**：門市員工 (staff_id, store_id, name, position, salary)
+3. **`categories`** 與 **`products`**：分類與品項 (product_id, category_id, name, price, cost)
+4. **`customers`**：會員名冊 (customer_id, name, phone, gender)
+5. **`orders`**：銷售訂單 (order_id, store_id, staff_id, customer_id, order_date, payment_method, status)
+6. **`order_items`**：訂單明細 (item_id, order_id, product_id, quantity, unit_price)
 
-### 3.1 側邊欄過濾條件 (Sidebar Filters)
-- **門市篩選**：下拉選單（預設為「全門市」，可單選特定門市或依區域篩選）。
-- **日期區間**：月份切換（2024-01、2024-02、2024-03 或整季）。
-- **訂單狀態過濾**：可切換僅看「已完成」或包含「已退款」。
+---
 
-### 3.2 頂部核心營運指標 (KPI Cards)
-- 總營業額（總銷售金額）。
-- 總訂單筆數與總售出杯數/份數。
-- 平均客單價（總營收 / 總訂單數）。
-- 會員消費佔比（會員訂單數 / 總訂單數 %）。
+## 3. 前端介面與功能需求 (Tkinter 桌面視窗)
 
-### 3.3 數據圖表與分析模組 (Charts)
-1. **月營收趨勢圖 (Bar / Line Chart)**：展示各門市 1~3 月的營業額走勢，直觀看出 2 月春節旺季高峰。
-2. **熱銷商品排行 TOP 5 (Horizontal Bar Chart)**：哪款咖啡或甜點銷量最高、營收貢獻最大。
-3. **門市店員業績表現**：各店同仁經手的訂單總額與銷量統計。
-4. **忠實常客分析表 (VIP Table)**：利用 SQL `HAVING` 找出每個月都有消費的忠誠會員清單。
+使用 Python 內建 **Tkinter**（搭配 `ttk` 元件）設計個人桌面視窗：
+
+### 3.1 視窗頂部篩選工具列
+- **門市下拉選單 (`ttk.Combobox`)**：手寫 SQL 載入所有門市名稱，可選擇「全部門市」或指定分店。
+- **月份切換單選鈕 (`ttk.Radiobutton`)**：切換「2024-01」、「2024-02」、「2024-03」或「整季 Q1」。
+- **「查詢統計」按鈕**：點擊觸發手寫 SQL 查詢並刷新下方介面。
+
+### 3.2 營運 KPI 面板 (Summary Cards)
+- 總銷售金額（手寫 `SUM(quantity * unit_price)`）
+- 總訂單筆數（手寫 `COUNT(DISTINCT order_id)`）
+- 平均客單價 (AOV)
+
+### 3.3 核心分析表格 (`ttk.Treeview` 分頁展示)
+1. **熱銷商品排行分頁**：手寫 SQL 多表 JOIN，按銷量由高到低列出品名、分類、售出份數與營業額。
+2. **門市員工績效分頁**：手寫 SQL 統計各員工經手的訂單金額與件數。
+3. **VIP 常客名單分頁**：手寫 SQL 使用 `GROUP BY + HAVING` 篩選出回購 2 次以上的高價值會員。
 
 ---
 
 ## 4. 驗收標準 (Acceptance Criteria)
 
-- [ ] AI 能透過 MCP 查閱 `cafe_shop` 各資料表與外來鍵關聯。
-- [ ] 執行 `streamlit run app.py` 後，畫面能在 **0.5 秒內** 載入完成，切換門市與月份時圖表即時聯動。
-- [ ] 善用 SQL 聚合函式（`SUM`, `COUNT`, `GROUP BY`, `DATE_TRUNC`），避免在 Python 中做慢速的迴圈加總。
-
+- [ ] 資料表由學生在 DBeaver 親自執行 `cafe_shop.sql` 建立完畢。
+- [ ] 執行 `python app.py` 能立即跳出 Tkinter 本機視窗，不依賴網頁瀏覽器或遠端伺服器。
+- [ ] 所有按鈕動作皆透過 `psycopg2` 執行手寫原生 SQL，無任何 MCP 代勞。

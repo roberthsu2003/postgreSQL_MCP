@@ -13,7 +13,7 @@
 | **一** | [3. 自然語言查庫初體驗](#3-自然語言查庫初體驗免寫-sql) | 不用會寫 SQL！直接用中文向 AI 提問網路商店資料，體驗 AI 自動查庫的便利 | Antigravity + 專案級 MCP |
 | **二** | [4. SQL 語法與實戰練功](#4-sql-語法與實戰練功) | **講義與實戰題合一**：DDL/DML，每課搭配 prompt 讓 AI 做一次，章節尾端直接附實戰練習題 | DBeaver + Antigravity 對話 |
 | **三** | [5. Python 串接](#5-python-串接psycopg2) | **在 Antigravity 中寫程式**：用 psycopg2 從 Python 進行資料庫 CRUD 與交易管理 | Antigravity (Python) |
-| **三** | [6. 實戰專案開發](#6-實戰專案規格驅動開發-sdd) | 規格驅動開發 (SDD)，結合 Streamlit 打造 5 款商業 App 產品 | Antigravity + Streamlit |
+| **三** | [6. 實戰專案開發](#6-實戰專案規格驅動開發-sdd) | 規格驅動開發 (SDD)，結合 Python 內建 Tkinter / PyQt 打造 5 款個人桌面小 App | Antigravity + Tkinter / PyQt |
 | **四** | [7. 自訂 MCP Server](#7-自訂-mcp-server個人本機開發到企業容器化導入) | **壓軸單元**：打造自訂 MCP Server，封裝專屬商業邏輯與 Token 安全防護 | Antigravity + FastMCP |
 
 ---
@@ -38,10 +38,10 @@
 
 | 類別 | 範例內容 | 學習用途與產品落地 |
 |---|---|---|
-| 🏠 **自備 Excel 轉 SQL 交易檔** | 上班族真實 Excel ➡️ AI 提示詞 ➡️ 關聯式 SQL 交易檔 | **回家自主實作核心**：脫敏後給 AI 分析，產生 `BEGIN...COMMIT` 交易檔，無縫套用於後續 SQL 教學 |
-| ☕ **連鎖門市月報表** | 跨月銷售 Excel / CSV ➡️ `cafe_shop.sql` | 解決「每月複製一份 Excel」痛點，最終打造 **[連鎖門市營運分析 BI 看板](./app_projects/project2_cafe_dashboard/)** |
-| 🛒 **Excel 正規化對照範例** | 未正規化單表 Excel / CSV ➡️ 多表正規化 Excel | 體驗單表痛點與 3NF 正規化，對照 `shop.sql` 打造 **電商訂單履約與客戶 CRM 系統** |
-| ⭐ **繁體中文範例資料庫** | 咖啡門市、網路商店、學校選課、圖書館借閱、股市快取 | 執行單一 `.sql` 檔即完成建表與匯入，對照打造 5 大商業 App 產品 |
+| 🏠 **自備 Excel 轉 SQL 交易檔** | 上班族真實 Excel ➡️ AI 提示詞 ➡️ 關聯式 SQL 交易檔 | **回家自主實作核心**：脫敏後給 AI 分析，產生純文字 `BEGIN...COMMIT` 交易檔由學生手動執行，嚴禁 MCP 自動代勞 |
+| ☕ **連鎖門市月報表** | 跨月銷售 Excel / CSV ➡️ `cafe_shop.sql` | 解決「每月複製一份 Excel」痛點，最終打造 **[門市店長營運分析桌面小視窗](./app_projects/project2_cafe_dashboard/)** |
+| 🛒 **Excel 正規化對照範例** | 未正規化單表 Excel / CSV ➡️ 多表正規化 Excel | 體驗單表痛點與 3NF 正規化，對照 `shop.sql` 打造 **電商訂單履約與客戶 CRM 視窗工具** |
+| ⭐ **繁體中文範例資料庫** | 咖啡門市、網路商店、學校選課、圖書館借閱、股市快取 | 執行單一 `.sql` 檔即完成建表與匯入，對照打造 5 大個人桌面視窗小 App |
 | 🚀 **巨量資料產生器** | 1 秒自體生成 10 萬筆訂單明細腳本 | 零網路傳輸，用於索引優化 (INDEX) 與查詢計畫 (EXPLAIN ANALYZE) 效能壓測 |
 
 ---
@@ -141,13 +141,13 @@
 本階段採用現代 AI 軟體工程的 **規格驅動開發 (SDD, Spec-Driven Development)**：透過 `PRD.md` 規範需求，由 AI 透過 MCP 讀取真實資料庫結構並產生 `plan.md`，循序實作具備快取與視覺化的完整商業 App。  
 **本目錄 5 大實戰專案，100% 對應繁體中文範例資料庫！** 👉 [專案總覽](./app_projects/)
 
-| 專案 | 對應資料庫 | 介面 | 核心技術與說明 |
+| 專案 | 對應資料庫 | 介面 | 核心技術與手寫 SQL 說明 |
 |---|---|---|---|
-| ⭐ [股市即時監控與增量同步](./app_projects/project1_stock_market/) | `init_stock_db.sql` | Streamlit | **Cache-Aside 快取與增量同步**：無資料抓 yfinance、有資料走 DB、落後自動增量補齊 (Upsert) |
-| ☕ [連鎖門市營運分析看板](./app_projects/project2_cafe_dashboard/) | `cafe_shop.sql` | Streamlit | **跨月商業報表與 BI 看板**：銜接 Excel 月報表痛點教學，視覺化展示各門市營收、明星商品與 VIP 會員 |
-| 🛒 [電商訂單履約與客戶 CRM](./app_projects/project3_shop_crm/) | `shop.sql` | Streamlit | **訂單流水線履約與 RFM 分群**：訂單狀態 Kanban 追蹤、客戶 RFM 價值模型自動分群、熱門合購推薦 |
-| 🎓 [校園智慧選課與學分審查](./app_projects/project4_school_enrollment/) | `school.sql` | Streamlit | **選課防衝堂檢核與學分審查**：即時名額剩餘查詢、排課防衝堂防呆、畢業學分達成率進度條 |
-| 📚 [圖書館借閱與罰金系統](./app_projects/project5_library_system/) | `library.sql` | Streamlit | **館藏流通狀態與逾期罰款計算**：在館/借出即時標記、逾期天數與罰金動態結算、年度排行榜 (RANK) |
+| ⭐ [股市即時監控與增量同步](./app_projects/project1_stock_market/) | `init_stock_db.sql` | Tkinter + Matplotlib | **Cache-Aside 快取與增量同步**：無資料抓 yfinance、有資料走 DB、手寫 SQL `ON CONFLICT DO UPDATE` |
+| ☕ [連鎖門市營運分析桌面 App](./app_projects/project2_cafe_dashboard/) | `cafe_shop.sql` | Tkinter (Treeview) | **門市店長營運分析桌面小視窗**：多表手寫 JOIN、跨月營業額統計、HAVING VIP 常客篩選 |
+| 🛒 [電商訂單履約與客戶 CRM](./app_projects/project3_shop_crm/) | `shop.sql` | Tkinter (雙分頁) | **訂單流水線履約與 RFM 分群**：手寫 SQL 訂單狀態過濾、點擊訂單展開明細、RFM 模型自動分群 |
+| 🎓 [校園智慧選課與學分審查](./app_projects/project4_school_enrollment/) | `school.sql` | Tkinter (課表網格) | **選課防衝堂檢核與學分審查**：手寫 SQL 衝堂檢查、防呆彈出警告視窗、畢業學分達成率進度 |
+| 📚 [圖書館借閱與罰金系統](./app_projects/project5_library_system/) | `library.sql` | Tkinter (模糊搜尋) | **館藏流通狀態與逾期罰款計算**：LIKE 模糊搜尋、動態日期相減計算逾期罰金、年度排行 (RANK) |
 
 ---
 

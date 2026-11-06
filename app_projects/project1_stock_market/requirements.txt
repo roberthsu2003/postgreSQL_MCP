@@ -1,7 +1,5 @@
 psycopg2-binary>=2.9.9
-yfinance>=0.2.36
-streamlit>=1.31.0
-pandas>=2.2.0
-plotly>=5.18.0
-python-dotenv>=1.0.1
-
+yfinance>=0.2.35
+pandas>=2.1.0
+matplotlib>=3.8.0
+python-dotenv>=1.0.0

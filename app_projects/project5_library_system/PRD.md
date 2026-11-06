@@ -1,63 +1,58 @@
-# 產品需求文件 (PRD)：圖書館數位借閱與逾期罰金管理系統
+# 產品需求文件 (PRD)：圖書借閱與逾期罰金個人桌面小 App
 
-* **專案代號**：`Library-Circulation-System`
+* **專案代號**：`Library-Desktop-Circulation`
 * **開發模式**：規格驅動開發 (SDD, Spec-Driven Development)
 * **資料庫環境**：PostgreSQL / Supabase ([`library.sql`](../../範例資料庫/中文範例資料庫/library.sql) 結構)
-* **前端框架**：Streamlit (互動式 Web 應用)
-* **對應範例資料庫**：👉 [`範例資料庫/中文範例資料庫/library.sql`](../../範例資料庫/中文範例資料庫/library.sql)
+* **前端框架**：Python 內建 **Tkinter** (個人桌面視窗 GUI) 或 **PyQt5**
+* **資料庫存取方式**：Python 原生手寫 SQL (`psycopg2`)，嚴禁使用 MCP 或 ORM 遮蔽 SQL
 
 ---
 
 ## 1. 專案背景與痛點
 
-公共圖書館或企業內訓圖書室在管理書籍借還時，常有以下問題：
-1. **流通狀態不明**：讀者到館才發現熱門書籍已被借走，無法即時得知預計歸還日期。
-2. **逾期罰金手動計算繁瑣且容易算錯**：館員必須手動核對借出日、應還日與今日天數差，並排除閉館日。
-3. **缺少年度閱讀風雲榜**：主管無法獲取各類別（科技、文學、商業）借閱排行榜數據，難以規劃採購預算。
+小型圖書館館員、社區管理員或企業書庫負責人，過去用 Excel 登記借還書時最常頭痛：
+1. **逾期天數與罰款手動算錯**：每次還書都要手動算今天離應還日差幾天。
+2. **缺乏即時在庫搜尋視窗**：無法一鍵輸入關鍵字看出哪些書在庫、哪些書借出中。
 
-本專案旨在將已正規化儲存於 PostgreSQL 中的 `library.sql`，開發為一個**結合讀者借閱查詢、逾期天數與罰金自動結算、以及熱門書籍排行的數位圖書館系統**。
-
----
-
-## 2. 資料庫結構 (由 MCP 讀取驗證)
-
-資料庫已預先透過 [`library.sql`](../../範例資料庫/中文範例資料庫/library.sql) 建立完成，包含 5 張標準關聯表：
-1. **`publishers`**：出版社資訊（出版社編號、名稱、聯絡電話、地址）。
-2. **`authors`**：作者資料（作者編號、姓名、國籍）。
-3. **`books`**：書籍主檔（ISBN/圖書編號、書名、作者ID、出版社ID、出版年份、分類、館藏冊數）。
-4. **`members`**：圖書館讀者（借閱證號、姓名、身分別、聯絡電話、註冊日期）。
-5. **`borrow_records`**：借還記錄（紀錄ID、讀者編號、書籍編號、借出日期、應還日期、實際歸還日期、狀態）。
+本專案旨在將已正規化儲存於 PostgreSQL 中的 `library.sql`，開發為一個**在個人電腦上獨立運作的桌面小 App（Desktop GUI）**，支援館藏模糊查詢、逾期罰金自動計算與熱門借閱排行！
 
 ---
 
-## 3. 前端介面與功能需求 (UI Requirements)
+## 2. 資料庫結構 (由學生在 DBeaver 執行 library.sql 建立)
 
-使用 **Streamlit** 開發三大模組：
+包含 5 張標準關聯表：
+1. **`publishers`**：出版社 (publisher_id, name, phone, address)
+2. **`authors`**：作者名錄 (author_id, name, country)
+3. **`books`**：圖書主檔 (book_id, title, author_id, publisher_id, publish_year, category, total_copies)
+4. **`members`**：借閱會員 (member_id, name, member_type, phone)
+5. **`borrow_records`**：借還記錄 (record_id, member_id, book_id, borrow_date, due_date, return_date, status)
 
-### 3.1 館藏圖書即時查詢與流通狀態 (Book Catalog & Status)
-- **多條件搜尋**：書名關鍵字、作者、分類、出版社篩選。
-- **即時流通狀態標籤**：
-  - 🟢 **在館可借**（目前館藏數 > 借出中數量）
-  - 🔴 **已全部借出**（顯示最快預計歸還日期）
-- **詳細資訊抽屜/卡片**：展示 ISBN、作者簡介與同作者其他作品。
+---
 
-### 3.2 讀者借閱紀錄與逾期罰金計算機 (Circulation & Fines)
-- **讀者證號查詢**：輸入或下拉選擇會員證號，列出「目前借閱中」與「歷史借閱」紀錄。
-- **逾期天數即時動態比對**：
-  - 若 `CURRENT_DATE > due_date` 且尚未歸還，標示為 🚨 逾期。
-  - **自動計算逾期罰金**：逾期每日每本罰款 5 元，系統自動結算累計罰款金額。
-- **線上續借按鈕**：未逾期且無人預約時，允許點擊「延長借期 14 天」。
+## 3. 前端介面與功能需求 (Tkinter 桌面視窗)
 
-### 3.3 閱讀排行榜與採購分析 (Analytics & Ranking)
-- **年度最受歡迎圖書 TOP 10**：使用 PostgreSQL 視窗函式 `RANK() OVER (ORDER BY COUNT(*) DESC)` 產生借閱榜。
-- **讀者閱讀力排行榜**：借閱冊數最多的熱心讀者排行。
-- **各分類借閱熱度圓餅圖**：輔助館方進行下一季新書採購決策。
+使用 Python 內建 **Tkinter** 設計：
+
+### 3.1 館藏圖書即時搜尋 (`ttk.Treeview`)
+- **關鍵字搜尋框 (`Entry`)**：輸入書名或作者，手寫 SQL `LIKE %s` 即時過濾。
+- **在庫/借出狀態標籤**：
+  - 🟢 在館可借（館藏數 > 借出中數量）
+  - 🔴 全部借出中
+
+### 3.2 讀者借閱紀錄與逾期罰款計算機
+- 輸入會員證號，手寫 SQL 列出目前尚未歸還的書籍名單。
+- **動態罰金結算**：
+  - 手寫 SQL：`CASE WHEN CURRENT_DATE > due_date THEN (CURRENT_DATE - due_date) * 5 ELSE 0 END`
+  - 介面動態即時顯示逾期天數與應繳罰款金額。
+- **「還書登記」按鈕**：點擊更新 `return_date = CURRENT_DATE` 與狀態為「已歸還」。
+
+### 3.3 年度閱讀排行榜 (RANK)
+- 手寫 SQL 使用 PostgreSQL 視窗函式 `RANK() OVER (ORDER BY COUNT(*) DESC)` 列出借閱次數 TOP 10 書籍。
 
 ---
 
 ## 4. 驗收標準 (Acceptance Criteria)
 
-- [ ] AI 能透過 MCP 查閱 `library.sql` 各資料表與外來鍵關聯。
-- [ ] 執行 `streamlit run app.py` 後，畫面能在 **0.5 秒內** 載入，能正確呈現逾期天數與罰款總額。
-- [ ] 善用 SQL 日期計算函式（`AGE()`, `CURRENT_DATE`, 日期相減）與視窗函式（`RANK()`）。
-
+- [ ] 資料表由學生在 DBeaver 親自執行 `library.sql` 建立完畢。
+- [ ] 執行 `python app.py` 立即於個人電腦彈出桌面視窗。
+- [ ] 逾期天數、罰金與排行全數以手寫 SQL 在 `psycopg2` 中完成。
