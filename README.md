@@ -38,7 +38,7 @@
 
 | 類別 | 範例內容 | 學習用途與產品落地 |
 |---|---|---|
-| 🏠 **自備 Excel 轉 SQL 交易檔** | 上班族真實 Excel ➡️ AI 提示詞 ➡️ 關聯式 SQL 交易檔 | **回家自主實作核心**：脫敏後給 AI 分析，產生純文字 `BEGIN...COMMIT` 交易檔由學生手動執行，嚴禁 MCP 自動代勞 |
+| 🌟 **[自備 Excel 轉 SQL 實戰示範](./範例資料庫/excel範例/自備Excel轉SQL實戰示範/)** | 上傳「員工差旅報銷單.xlsx」➡️ AI Prompt ➡️ 產出「`expense_tracker.sql`」 | **回家自主實作核心**：完整實體 Excel 檔與產出 SQL 交易檔對照，學生在 DBeaver 親手執行，嚴禁 MCP 自動代勞 |
 | ☕ **連鎖門市月報表** | 跨月銷售 Excel / CSV ➡️ `cafe_shop.sql` | 解決「每月複製一份 Excel」痛點，最終打造 **[門市店長營運分析桌面小視窗](./app_projects/project2_cafe_dashboard/)** |
 | 🛒 **Excel 正規化對照範例** | 未正規化單表 Excel / CSV ➡️ 多表正規化 Excel | 體驗單表痛點與 3NF 正規化，對照 `shop.sql` 打造 **電商訂單履約與客戶 CRM 視窗工具** |
 | ⭐ **繁體中文範例資料庫** | 咖啡門市、網路商店、學校選課、圖書館借閱、股市快取 | 執行單一 `.sql` 檔即完成建表與匯入，對照打造 5 大個人桌面視窗小 App |
