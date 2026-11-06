@@ -61,22 +61,24 @@
 
 ### DDL：資料定義語言
 
-建立、修改資料庫與資料表的**結構**。 👉 [DDL 概念](./上課用sql/DDL%28定義資料語言%29.md)
+建立、修改資料庫與資料表的**結構**（Schema）。
 
 | # | 單元 | 內容 |
 |:---:|---|---|
-| 1 | [建立資料庫](./上課用sql/1建立資料庫.md) | `CREATE DATABASE` |
-| 2 | [資料表與基本型別](./上課用sql/2_0基本型別.md) | 數值、文字、日期等資料型別 |
-| 3 | [建立資料表](./上課用sql/2建立資料表.md) | `CREATE TABLE` |
-| 4 | [匯入 CSV](./上課用sql/2_1匯入csv.md) | 將 CSV 匯入資料表，包含台鐵進出站關聯資料庫 |
-| 5 | [限制](./上課用sql/4限制.md) | `PRIMARY KEY`、`NOT NULL`、`UNIQUE` |
+| 導讀 | [DDL 概念簡介](./上課用sql/DDL%28定義資料語言%29.md) | 什麼是資料定義語言？CREATE、ALTER、DROP 概念總覽 |
+| 1 | [建立資料庫](./上課用sql/1建立資料庫.md) | `CREATE DATABASE`、`DROP DATABASE` |
+| 2 | [資料表與基本型別](./上課用sql/2_0基本型別.md) | 數值、文字、日期時間等資料型別速查 |
+| 3 | [建立資料表](./上課用sql/2建立資料表.md) | `CREATE TABLE`、`ALTER TABLE`、欄位結構操作 |
+| 4 | [匯入 CSV](./上課用sql/2_1匯入csv.md) | 將 CSV 匯入資料表，包含單表與台鐵資料 |
+| 5 | [限制條件](./上課用sql/4限制.md) | `PRIMARY KEY`、`NOT NULL`、`UNIQUE`、`DEFAULT` |
 
 ### DML：資料操作語言
 
-新增、查詢、修改、刪除資料表裡的**資料**。 👉 [DML 概念](./上課用sql/DML%28資料操作語言%29.md)
+新增、查詢、修改、刪除資料表裡的**資料**（Data）。
 
 | # | 單元 | 內容 |
 |:---:|---|---|
+| 導讀 | [DML 概念簡介](./上課用sql/DML%28資料操作語言%29.md) | 什麼是資料操作語言？INSERT、SELECT、UPDATE、DELETE 概念總覽 |
 | 1 | [新增資料](./上課用sql/3新增資料.md) | `INSERT INTO` |
 | 2 | [取得資料](./上課用sql/6取得資料.md) | `SELECT`、`WHERE`、`ORDER BY` |
 | 3 | [修改和刪除](./上課用sql/5修改和刪除.md) | `UPDATE`、`DELETE` |
