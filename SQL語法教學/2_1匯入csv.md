@@ -1,182 +1,101 @@
 # PostgreSQL 匯入 CSV 檔案教學
 
-## 1. 匯入城市資料 - 使用 SQLite 建立的 city.sql
+在關聯式資料庫中，除了透過 SQL 的 `INSERT` 語法一筆筆新增資料外，實務上最常遇到的情境是**將外部既有的 CSV 檔案一次匯入資料表**。
 
-### 步驟說明
-1. 將 `city.csv` 透過 DB Browser for SQLite 匯入
-2. 透過 DB Browser for SQLite 匯出 `city.sql`
-3. [下載 city.sql 檔案](../範例資料庫/其它範例csv/city.sql)
-4. 使用 DBeaver 開啟 city.sql（**File → Open File**），選擇資料庫後按 `Alt + X` 執行
+本單元使用專門保留的練習範例：**[`目前天氣.csv`](../範例資料庫/其它範例csv/目前天氣.csv)**，帶你一步步完成資料表建立與 CSV 匯入！
 
-## 2. 匯入目前天氣資料
+---
 
-### 資料來源
-- [下載目前天氣.csv](../範例資料庫/其它範例csv/目前天氣.csv)
+## 📁 練習檔案準備
 
-### 建立資料表
+* **檔案名稱**：[`目前天氣.csv`](../範例資料庫/其它範例csv/目前天氣.csv)
+* **資料筆數**：22 筆（台灣 22 縣市）
+* **檔案大小**：1.9 KB（極為輕量，在 Supabase 或 DBeaver 都能 1 秒匯入完成）
+* **欄位結構**：
+  * `城市`：縣市名稱（如基隆市、臺北市）
+  * `啟始時間`：預報開始時間（含時區，例如 `2023-07-22T12:00:00+08:00`）
+  * `結束時間`：預報結束時間（含時區）
+  * `最高溫度`：浮點數數值（例如 `33.0`）
+  * `最低溫度`：浮點數數值（例如 `26.0`）
+  * `感覺`：舒適度文字描述（如悶熱、舒適）
+
+---
+
+## 1. 建立對應的資料表（DDL）
+
+在匯入 CSV 之前，資料庫中必須先有一張**欄位名稱與型別完全匹配**的資料表：
+
 ```sql
 /* 建立目前天氣資料表 */
 CREATE TABLE IF NOT EXISTS 目前天氣(
-    城市 VARCHAR(10),
-    啟始時間 TIMESTAMPTZ,  /* 資料含時間與時區,例如 2023-07-22T12:00:00+08:00 */
+    城市 VARCHAR(10) PRIMARY KEY,
+    啟始時間 TIMESTAMPTZ,  /* 含有時區的時間戳記 (Timestamp with Time Zone) */
     結束時間 TIMESTAMPTZ,
-    最高溫度 REAL,
+    最高溫度 REAL,         /* 浮點數型別 */
     最低溫度 REAL,
-    感覺 VARCHAR,
-    PRIMARY KEY(城市)
+    感覺 VARCHAR(20)
 );
 ```
 
-### 匯入步驟
+> 💡 **小技巧**：在 Supabase 中可直接在 **SQL Editor** 執行上述指令；在 DBeaver 中可在 SQL 編輯器按 `Ctrl + Enter` 執行。
 
-使用 DBeaver 匯入 `目前天氣.csv` 至資料表 `目前天氣`：
+---
 
-1. 左側選取資料庫按 `F5` 重新整理，找到 `目前天氣` 資料表
-2. 在 `目前天氣` 上按右鍵 → **Import Data**
-3. 選擇 **CSV** → **Next**，選擇 `目前天氣.csv`
-4. **Importer settings**：確認 **Header** 是 `top`（第一列是欄位名稱）、**Column delimiter** 是 `,`
-5. **Tables mapping**：CSV 的欄位名稱和資料表相同，會自動對應（mapping 顯示 `existing`）
-6. 按 **Proceed** 開始匯入，完成後在資料表按兩下 → **Data** 分頁確認有 22 筆
+## 2. 使用 DBeaver 匯入 CSV
 
-## 3. 匯入台鐵車站資訊和車站進出資料
+1. **重新整理**：左側導覽列選取你的資料庫，按 `F5` 重新整理，在 `Tables` 下找到剛建好的 `目前天氣` 資料表。
+2. **開啟匯入精靈**：在 `目前天氣` 資料表上按右鍵 → **Import Data**。
+3. **選擇來源**：選擇 **CSV** → 點擊 **Next**，選取電腦中的 `目前天氣.csv`。
+4. **設定格式（Importer Settings）**：
+   * **Header**：設定為 `top`（代表第一列為欄位名稱）。
+   * **Column delimiter**：設定為 `,`（半形逗號）。
+   * **Encoding**：確認為 `UTF-8`。
+5. **欄位對應（Tables mapping）**：
+   * CSV 的欄位名稱若與資料表一致，DBeaver 會自動對應（Mapping 狀態顯示為 `existing`）。
+6. **開始匯入**：點擊 **Proceed**，完成後在資料表上連按兩下 → 切換到 **Data** 分頁，確認 22 筆資料均已正確載入！
 
-### 資料來源
-- [台鐵車站資訊.csv](../範例資料庫/其它範例csv/台鐵車站資訊.csv)
-- [2019-2023進出資訊](../範例資料庫/其它範例csv/每日各站進出站人數20190423-20231231.zip)
+---
 
-### 建立關聯式資料表
+## 3. 查詢與驗證語法
 
-> 💡 **初學者提示**：本範例示範真實專案的資料表結構，其中出現的 `FOREIGN KEY`（外來鍵）與 `CASCADE` 屬於關聯約束，會在後續的「限制條件」與「FOREIGN KEY」章節詳細解析。在此單元中，你只需跟著語法建表，專注體驗 DBeaver 匯入 CSV 的流程即可！
-> 
-> 💡 欄位名稱沒有加雙引號時，PostgreSQL 會自動轉成小寫，例如 `stationCode` 實際上是 `stationcode`。
-
-#### 先刪除舊的資料表（如果需要重新建立）
+匯入完成後，執行以下 SQL 驗證成果：
 
 ```sql
--- 有 foreign key 時,要先刪除 child table,再刪除 parent table
-DROP TABLE IF EXISTS station_in_out;
-DROP TABLE IF EXISTS stations;
+-- 1. 查看全部 22 個縣市天氣
+SELECT * FROM 目前天氣;
+
+-- 2. 篩選最高溫超過 32 度的悶熱縣市
+SELECT 城市, 最高溫度, 感覺 
+FROM 目前天氣 
+WHERE 最高溫度 >= 32.0;
+
+-- 3. 依最高溫度由高到低排序
+SELECT 城市, 最高溫度, 最低溫度 
+FROM 目前天氣 
+ORDER BY 最高溫度 DESC;
 ```
-
-#### 車站資料表
-```sql
-CREATE TABLE IF NOT EXISTS stations(
-    id SERIAL PRIMARY KEY,
-    stationCode VARCHAR(5) UNIQUE NOT NULL,  /* 必須設定，因為是 foreign key 的 parent */
-    stationName VARCHAR(20) NOT NULL,
-    name VARCHAR(20),
-    stationAddrTw VARCHAR(50),
-    stationTel VARCHAR(20),
-    gps VARCHAR(30),
-    haveBike BOOLEAN   /* CSV 中的 Y/N 會自動轉成 true/false */
-);
-
--- 查詢資料
-SELECT * FROM stations;
-```
-
-> 匯入 `台鐵車站資訊.csv` 時，CSV 沒有 `id` 欄位，DBeaver 會依照欄位名稱對應，`id` 由 SERIAL 自動產生，不需要另外設定。
-
-#### 車站進出資料表
-```sql
-CREATE TABLE IF NOT EXISTS station_in_out(
-    date TIMESTAMP,
-    staCode VARCHAR(5) NOT NULL,
-    gateInComingCnt INTEGER,
-    gateOutGoingCnt INTEGER,
-    PRIMARY KEY (date, staCode),
-    FOREIGN KEY (staCode)  /* 可設可不設，有設可以保持資料的完整性 */
-        REFERENCES stations(stationCode)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-```
-
-> 進出站 CSV 的欄位名稱（`trnOpDate`、`staCode`、`gateInComingCnt`、`gateOutGoingCnt`）和資料表的欄位名稱不同。DBeaver 匯入時，在 **Tables mapping** 頁面按 **Columns...**，把每個 CSV 欄位對應到資料表的欄位（`trnOpDate` → `date`，其餘依序對應）。一定要**先匯入 stations**，否則會違反 foreign key。
-
-### 查詢範例
-
-#### JOIN 查詢
-```sql
-SELECT * 
-FROM station_in_out in_out 
-JOIN stations s ON in_out.staCode = s.stationCode;
-```
-
-#### 時間查詢語法
-```sql
--- 查詢特定日期
-SELECT * FROM table_name WHERE date_column = 'YYYY-MM-DD';
-
--- 查詢時間範圍
-SELECT * FROM table_name 
-WHERE timestamp_column BETWEEN 'start_timestamp' AND 'end_timestamp';
-
--- 查詢最近7天
-SELECT * FROM table_name 
-WHERE timestamp_column >= NOW() - INTERVAL '7 days';
-
--- 查詢未來7天
-SELECT * FROM tasks 
-WHERE task_due_date BETWEEN NOW() AND NOW() + INTERVAL '7 days';
-```
-
-#### 布林值查詢
-```sql
-SELECT * FROM table_name WHERE boolean_column = TRUE;
-```
-
-## 4. 匯入繁體中文範例資料庫
-
-網路商店、學校選課、圖書館借閱三個練習用資料庫，各只有一個 `.sql` 檔，在 DBeaver 開啟後按 `Alt + X` 執行即可匯入。
-
-👉 [繁體中文範例資料庫](../範例資料庫/中文範例資料庫/)
-
 
 ---
 
 ## 🤖 不寫 SQL，用 Prompt 完成
 
-> 在 Antigravity 使用[第 3 章](../MCP操作資料庫/2_用中文查詢資料庫/#6-準備第-4-章設定可寫入的連線)設定的 **`postgres-sql`**（可寫入，連到 `sql_tutorial` 資料庫）。
-> 每個 prompt 執行後，點開工具呼叫（`execute_sql`），**對照 AI 執行的 SQL 和上面學的是否一樣**。
+如果你使用 Antigravity 搭配 MCP 連線：
 
-### 1. 執行 city.sql
+1. 在對話框中請 AI 先建表：
+   > 請幫我建立「目前天氣」資料表：城市 VARCHAR(10) 是主鍵，啟始時間、結束時間是 TIMESTAMPTZ，最高溫度、最低溫度是 REAL，感覺是 VARCHAR(20)。
 
-在 Antigravity 的對話框**附加 [city.sql](../範例資料庫/其它範例csv/city.sql) 檔案**，然後說：
+2. 接著在對話框中**附加 [目前天氣.csv](../範例資料庫/其它範例csv/目前天氣.csv)** 檔案，並對 AI 說：
+   > 請讀取附件中的 CSV 內容，將這 22 筆資料完整寫入「目前天氣」資料表中，完成後回報寫入筆數。
 
-> 請用 postgres-sql 執行這個 SQL 檔的內容，然後告訴我 city 資料表有幾筆資料。
+3. 檢查 AI 產生的 SQL 與新增結果是否完全吻合！
 
-✅ 答案：274 筆。
+---
 
-> ⚠️ **再執行一次會變成 548 筆**。city.sql 用的是 `CREATE TABLE IF NOT EXISTS`，資料表已經存在時不會重建，但 INSERT 會再新增一次。問 AI「為什麼變成 548 筆？要怎麼避免？」
+## 4. 匯入繁體中文範例資料庫（一鍵建庫首選）
 
-### 2. 匯入目前天氣.csv
+除了手動匯入 CSV 之外，在平常學習 SQL 查詢與關聯語法時，最推薦直接使用**已經打包好結構與資料的 `.sql` 檔**，一秒完成建置：
 
-> 用 postgres-sql 建立「目前天氣」資料表：城市 VARCHAR(10) 是主鍵，啟始時間、結束時間是 TIMESTAMPTZ，最高溫度、最低溫度是 REAL，感覺是 VARCHAR。
-
-接著**附加 [目前天氣.csv](../範例資料庫/其它範例csv/目前天氣.csv)**：
-
-> 把這個 CSV 的資料全部新增到「目前天氣」資料表，完成後告訴我新增了幾筆。
-
-✅ 答案：22 筆。檢查 AI 產生的 INSERT 筆數和 CSV 是否相同。
-
-> 💡 Postgres MCP Pro 不能讀取你電腦上的檔案，所以要把檔案**附加到對話中**，由 AI 讀取後產生 INSERT。
-
-### 3. 台鐵資料：大量資料還是要用 DBeaver 匯入
-
-台鐵進出站資料有數十萬筆，不適合貼給 AI。**資料表可以請 AI 建立，資料用 DBeaver 的 Import Data 匯入**：
-
-> 用 postgres-sql 建立兩張資料表：
-> - stations：id 是 SERIAL 主鍵，stationCode VARCHAR(5) 不可重複且必填，stationName VARCHAR(20) 必填，name VARCHAR(20)，stationAddrTw VARCHAR(50)，stationTel VARCHAR(20)，gps VARCHAR(30)，haveBike BOOLEAN
-> - station_in_out：date TIMESTAMP，staCode VARCHAR(5) 必填，gateInComingCnt INTEGER，gateOutGoingCnt INTEGER，(date, staCode) 是主鍵，staCode 參考 stations 的 stationCode，刪除和更新時都 CASCADE
-
-✅ 對照上面的 `CREATE TABLE stations`、`CREATE TABLE station_in_out`。注意 AI 有沒有先建立 stations（parent），再建立 station_in_out（child）。
-
-用 DBeaver 匯入資料後，再用 prompt 查詢：
-
-> 查詢 2022 年 1 月 1 日每個車站的進站人數，顯示車站名稱，由多到少排序。
-
-> 有提供 YouBike 的車站有幾個？
+👉 [**繁體中文範例資料庫（連鎖咖啡門市、網路商店、學校選課、圖書館）**](../範例資料庫/中文範例資料庫/)
 
 ---
 
@@ -185,4 +104,3 @@ SELECT * FROM table_name WHERE boolean_column = TRUE;
 | ⬅️ 上一單元 | 🏠 返回目錄 | ➡️ 下一單元 |
 |:---|:---:|---:|
 | [單元 3：建立資料表](./2建立資料表.md) | [第 4 章：SQL 語法與 AI 輔助](../README.md#ddl資料定義語言) | [單元 5：限制條件](./4限制.md) |
-

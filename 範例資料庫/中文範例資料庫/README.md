@@ -1,53 +1,54 @@
 # 繁體中文範例資料庫
 
-三個小型的關聯式資料庫，內容全部是繁體中文。**每個資料庫只有一個 `.sql` 檔，執行一次就能建好資料表並匯入資料。**
+專為教學設計的小型關聯式資料庫，內容全部是繁體中文。**每個資料庫只有一個 `.sql` 檔，執行一次就能建好資料表並匯入資料。**
 
 | 資料庫 | 檔案 | 大小 | 資料表 | 資料量 | 適合練習 |
 |---|---|---|---|---|---|
+| ☕ **連鎖咖啡門市** *(首推)* | [cafe_shop.sql](./cafe_shop.sql) | 56 KB | 7 | 門市、員工、490 筆訂單、780+ 筆明細 | **上班族首選**：對照 Excel 月報表、跨月份 GROUP BY、門市業績 JOIN、HAVING |
 | 🛒 網路商店 | [shop.sql](./shop.sql) | 87 KB | 6 | 700 筆訂單、1,400+ 筆明細 | SELECT、WHERE、JOIN、GROUP BY、日期函式、自我連結 |
 | 🎓 學校選課 | [school.sql](./school.sql) | 48 KB | 5 | 200 位學生、1,000+ 筆選課 | 多對多 JOIN、LEFT JOIN、HAVING、子查詢、CASE WHEN |
 | 📚 圖書館借閱 | [library.sql](./library.sql) | 64 KB | 5 | 50 本書、900 筆借閱 | 日期計算、IS NULL、LEFT JOIN、視窗函式 RANK |
+| 🚀 巨量資料產生器 | [generate_100k_orders.sql](./generate_100k_orders.sql) | 3 KB | — | 1 秒瞬間自體生成 10 萬筆 | **進階效能練習**：免下載大檔案，體驗 INDEX 與 EXPLAIN ANALYZE |
 
 > - 資料表和欄位名稱使用**英文**（打 SQL 不用切換輸入法），資料內容是**繁體中文**。每張資料表都有中文註解（COMMENT），在 DBeaver 資料表的 **Properties** 分頁看得到。
-> - 三個檔案的資料表名稱不重複，可以**全部匯入同一個資料庫**。
 > - 檔案可以**重複執行**：會先刪除同名資料表再重建，學生把資料改壞了，重新執行一次就恢復原狀。
-> - 人名、書名、出版社都是虛構的，email 使用 `example.com`。
+> - 人名、門市名皆為虛構，電話皆使用測試編排號碼。
 
 ---
 
 ## 目錄
 
 - [匯入方式](#匯入方式)
+- [☕ 連鎖咖啡門市 cafe_shop](#-連鎖咖啡門市-cafe_shop)
 - [🛒 網路商店 shop](#-網路商店-shop)
 - [🎓 學校選課 school](#-學校選課-school)
 - [📚 圖書館借閱 library](#-圖書館借閱-library)
+- [🚀 巨量資料產生器](#-巨量資料產生器)
 - [重新產生資料](#重新產生資料)
 
 ---
 
 ## 匯入方式
 
-先建立一個資料庫（以下用 `practice` 為例）：在 DBeaver 連線底下的 **Databases** 按右鍵 → **Create New Database**，或在 SQL 編輯器執行：
+### 方法一：Supabase（最快，雲端 1 秒搞定）
 
-```sql
-CREATE DATABASE practice;
-```
+1. 開啟你的 Supabase 專案，點選左側選單的 **SQL Editor**。
+2. 開啟 `cafe_shop.sql`（或其它 `.sql` 檔），複製全部內容並貼上。
+3. 點擊右下角的 **Run** 按鈕，1 秒內建置完成！
 
-接著挑一種方式執行 `.sql` 檔：
+### 方法二：DBeaver
 
-### 方法一：DBeaver（最簡單）
+先建立一個資料庫（以下用 `practice` 為例）：在 DBeaver 連線底下的 **Databases** 按右鍵 → **Create New Database**。
 
-1. **File → Open File**，選擇 `shop.sql`
+1. **File → Open File**，選擇 `cafe_shop.sql`（或其它 `.sql`）
 2. 工具列的 **Active datasource** 選擇 `practice` 資料庫
-3. 按 `Alt + X`（**Execute SQL Script**）執行整個檔案，注意不是只執行一句的 `Ctrl + Enter`
-4. 在左側的 `practice` 按 `F5` 重新整理，就會看到新的資料表
+3. 按 `Alt + X`（**Execute SQL Script**）執行整個檔案
+4. 在左側的 `practice` 按 `F5` 重新整理，即可看到建立好的資料表
 
-> 看不到 `practice` 資料庫？在連線上按右鍵 → **Edit Connection** → **PostgreSQL** 分頁 → 勾選 **Show all databases**。
-
-### 方法二：psql 命令列
+### 方法三：psql 命令列
 
 ```bash
-psql -U postgres -d practice -f shop.sql
+psql -U postgres -d practice -f cafe_shop.sql
 ```
 
 ### 方法三：PostgreSQL 跑在 Docker 裡
@@ -67,6 +68,80 @@ SELECT relname AS 資料表, n_live_tup AS 筆數
 FROM pg_stat_user_tables
 ORDER BY relname;
 ```
+
+---
+
+## ☕ 連鎖咖啡門市 cafe_shop
+
+連鎖門市 2024 年第一季（1~3月）的完整門市、員工與銷售訂單明細，專門用來對照「上班族每個月 copy 一份 Excel」的痛點。
+
+```mermaid
+erDiagram
+    stores     ||--o{ staff : "門市員工"
+    stores     ||--o{ orders : "銷售門市"
+    staff      ||--o{ orders : "經手店員"
+    customers  ||--o{ orders : "會員購買"
+    categories ||--o{ products : "商品分類"
+    orders     ||--|{ order_items : "訂單包含"
+    products   ||--o{ order_items : "銷售品項"
+
+    stores {
+        int store_id PK "門市編號"
+        varchar name "門市名稱"
+        varchar region "區域(北部/中部/南部)"
+        varchar address "地址"
+        varchar phone "電話"
+    }
+    staff {
+        int staff_id PK "員工編號"
+        varchar name "員工姓名"
+        int store_id FK "所屬門市"
+        varchar title "職稱(店長/正職/工讀生)"
+        date hired_on "到職日"
+        int salary "月薪"
+    }
+    categories {
+        int category_id PK "分類編號"
+        varchar name "分類名稱"
+    }
+    products {
+        int product_id PK "商品編號"
+        int category_id FK "分類"
+        varchar name "商品名稱"
+        int price "售價"
+        int cost "成本"
+        date launched_on "上市日期"
+    }
+    customers {
+        int customer_id PK "會員編號"
+        varchar name "姓名"
+        varchar phone "電話"
+        char gender "性別"
+        date joined_on "加入日期"
+    }
+    orders {
+        int order_id PK "訂單編號"
+        date order_date "銷售日期"
+        time order_time "銷售時間"
+        int store_id FK "門市"
+        int staff_id FK "經手員工"
+        int customer_id FK "會員(可為NULL散客)"
+        varchar payment_method "付款方式"
+        varchar status "狀態(已完成/已退款)"
+    }
+    order_items {
+        int order_id PK,FK "訂單編號"
+        int product_id PK,FK "商品編號"
+        int quantity "數量"
+        int unit_price "當筆單價"
+    }
+```
+
+**設計好的教學情境**
+- **跨月比較（GROUP BY）**：包含 1、2、3 月資料，2 月過年檔期業績顯著提升，練習 `DATE_TRUNC` 或 `TO_CHAR(order_date, 'YYYY-MM')`。
+- **外來鍵與 NULL 觀念**：部分訂單為「散客」（`customer_id IS NULL`），練習如何使用 `LEFT JOIN` 統計會員 vs 散客佔比。
+- **新品上市時間差**：「冰滴咖啡」在 3 月上市、「草莓生乳千層」在 2 月上市，1 月沒有銷售紀錄 → 練習時間與品項分析。
+- **門市與員工排行**：結合 `stores`、`staff`、`orders`、`order_items` 四表關聯，練習多表 JOIN 與聚合。
 
 ---
 
