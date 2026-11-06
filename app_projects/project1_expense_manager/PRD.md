@@ -28,6 +28,40 @@
 3. **`expense_categories`**：費用分類 (category_id, name)（如：市區交通、長途交通、雲端服務、商務餐敘、差旅住宿等）
 4. **`expense_claims`**：報銷單主檔 (claim_id, claim_date, emp_id, category_id, invoice_no, amount, description, status)
 
+> [!NOTE]
+> **範例資料庫沒有預算資料。** 要做「部門預算消耗進度」，請先自己設計並建立 `expense_budgets` 資料表（部門、年度、預算金額），這是本專案的第一個手寫 DDL 任務。
+
+<details>
+<summary>卡住了再看參考答案（預算金額是自訂的示範值）</summary>
+
+```sql
+CREATE TABLE expense_budgets (
+    dept_id VARCHAR(10) NOT NULL REFERENCES expense_departments(dept_id),
+    year    INT NOT NULL,
+    amount  NUMERIC(12, 2) NOT NULL CHECK (amount >= 0),
+    PRIMARY KEY (dept_id, year)
+);
+
+INSERT INTO expense_budgets (dept_id, year, amount) VALUES
+    ('D01', 2024, 50000), ('D02', 2024, 60000), ('D03', 2024, 40000), ('D04', 2024, 20000);
+
+-- 各部門預算使用率（只算已撥款）
+SELECT
+    d.name AS 部門,
+    b.amount AS 預算,
+    COALESCE(SUM(x.amount), 0) AS 已撥款,
+    ROUND(COALESCE(SUM(x.amount), 0) / b.amount * 100, 1) AS 使用率
+FROM expense_budgets b
+JOIN expense_departments d ON b.dept_id = d.dept_id
+LEFT JOIN expense_employees e ON d.dept_id = e.dept_id
+LEFT JOIN expense_claims x ON e.emp_id = x.emp_id AND x.status = '已撥款'
+WHERE b.year = 2024
+GROUP BY d.dept_id, d.name, b.amount
+ORDER BY 使用率 DESC;
+```
+
+</details>
+
 ---
 
 ## 3. 前端介面與功能需求 (PyQt5 現代視窗)

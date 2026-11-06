@@ -1,64 +1,67 @@
-/* ==============================================================================
-   單元 15：外來鍵刪除連鎖動作 (ON DELETE CASCADE / SET NULL / RESTRICT)
-   (以繁體中文範例庫 cafe_shop / shop 為例)
-   ============================================================================== */
+/* 進階-9｜ON DELETE：刪資料前先看連帶後果
+   講義（含說明、執行結果、練習題）：15on_delete_action.md
+   請在 DBeaver 用 Ctrl/Cmd + Enter 一句一句執行，邊看結果邊對照講義。
+   本檔由講義內容產生，所有查詢都已實際執行驗證。 */
 
--- ==============================================================================
--- 1. ON DELETE CASCADE (連鎖刪除) 實戰
--- 場景：當一張「訂單」被刪除時，其所屬的「訂單明細」必須連帶全部刪除，不能留下幽靈孤兒資料！
--- ==============================================================================
+-- ======================================================
+-- 以下請在 DBeaver 工具列切換到資料庫：cafe_shop
+-- ======================================================
 
--- 建立測試用的迷你訂單與明細表
-DROP TABLE IF EXISTS demo_order_items CASCADE;
-DROP TABLE IF EXISTS demo_orders CASCADE;
+-- ▼ 1. 查出這個資料庫的所有規則
+SELECT
+    conrelid::regclass  AS 子表,
+    confrelid::regclass AS 父表,
+    CASE confdeltype
+        WHEN 'a' THEN 'NO ACTION（不准刪）'
+        WHEN 'r' THEN 'RESTRICT（不准刪）'
+        WHEN 'c' THEN 'CASCADE（一起刪）'
+        WHEN 'n' THEN 'SET NULL（變空值）'
+        WHEN 'd' THEN 'SET DEFAULT（變預設值）'
+    END AS 父資料被刪時
+FROM pg_constraint
+WHERE contype = 'f'
+ORDER BY conrelid::regclass::TEXT, confrelid::regclass::TEXT;
 
-CREATE TABLE demo_orders (
-    order_id INT PRIMARY KEY,
-    customer_name VARCHAR(20)
-);
+-- ▼ 2. 實測 CASCADE：刪訂單，明細跟著走
+BEGIN;
 
-CREATE TABLE demo_order_items (
-    item_id INT PRIMARY KEY,
-    order_id INT REFERENCES demo_orders(order_id) ON DELETE CASCADE, -- 連鎖刪除
-    item_name VARCHAR(50),
-    amount INT
-);
+-- ▼ 2. 實測 CASCADE：刪訂單，明細跟著走
+SELECT COUNT(*) AS 刪除前的明細 FROM order_items WHERE order_id = 1;
 
-INSERT INTO demo_orders VALUES (101, '陳小華');
-INSERT INTO demo_order_items VALUES 
-    (1, 101, '經典美式咖啡', 85),
-    (2, 101, '肉桂黑糖可頌', 75);
+-- ▼ 2. 實測 CASCADE：刪訂單，明細跟著走
+DELETE FROM orders WHERE order_id = 1;
 
--- 刪除訂單 101
-DELETE FROM demo_orders WHERE order_id = 101;
+SELECT COUNT(*) AS 刪除後的明細 FROM order_items WHERE order_id = 1;
 
--- 驗證：demo_order_items 裡的那 2 筆明細已自動被連帶清空！
-SELECT * FROM demo_order_items; -- 結果：0 筆
+-- ▼ 2. 實測 CASCADE：刪訂單，明細跟著走
+ROLLBACK;
 
--- ==============================================================================
--- 2. ON DELETE SET NULL (設為空值) 實戰
--- 場景：當「會員」申請註銷帳號時，歷史訂單不能刪（公司要報稅），只需將會員欄位設為 NULL
--- ==============================================================================
+-- ▼ 3. 實測 NO ACTION：刪商品被擋（故意示範錯誤，要體驗時請拿掉註解）
+-- DELETE FROM products WHERE product_id = 1;
 
-DROP TABLE IF EXISTS demo_member_orders CASCADE;
-DROP TABLE IF EXISTS demo_members CASCADE;
+-- ▼ 3. 實測 NO ACTION：刪商品被擋
+ALTER TABLE products ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
 
-CREATE TABLE demo_members (
-    member_id INT PRIMARY KEY,
-    name VARCHAR(20)
-);
+UPDATE products SET is_active = false WHERE product_id = 1;
 
-CREATE TABLE demo_member_orders (
-    order_id INT PRIMARY KEY,
-    member_id INT REFERENCES demo_members(member_id) ON DELETE SET NULL, -- 設為 NULL
-    total_amount INT
-);
+SELECT COUNT(*) AS 販售中商品 FROM products WHERE is_active;
 
-INSERT INTO demo_members VALUES (1, '林志明');
-INSERT INTO demo_member_orders VALUES (888, 1, 350);
+-- ▼ 4. 實測 SET NULL：會員註銷，訂單留著
+BEGIN;
 
--- 會員註銷帳號
-DELETE FROM demo_members WHERE member_id = 1;
+ALTER TABLE orders DROP CONSTRAINT orders_customer_id_fkey;
 
--- 驗證：訂單 888 依然保留，但 member_id 變成 NULL！
-SELECT * FROM demo_member_orders;
+ALTER TABLE orders
+    ADD CONSTRAINT orders_customer_id_fkey
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    ON DELETE SET NULL;
+
+SELECT COUNT(*) AS 刪除前散客單 FROM orders WHERE customer_id IS NULL;
+
+-- ▼ 4. 實測 SET NULL：會員註銷，訂單留著
+DELETE FROM customers WHERE customer_id = 1;
+
+SELECT COUNT(*) AS 刪除後散客單 FROM orders WHERE customer_id IS NULL;
+
+-- ▼ 4. 實測 SET NULL：會員註銷，訂單留著
+ROLLBACK;

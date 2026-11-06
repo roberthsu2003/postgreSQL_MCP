@@ -1,53 +1,69 @@
-/* ==============================================================================
-   單元 14：多表連接查詢實戰 (JOIN / INNER JOIN / LEFT JOIN)
-   (以繁體中文範例庫 cafe_shop 為例)
-   ============================================================================== */
+/* 進階-7｜綜合連結：一張報表跨四張表
+   講義（含說明、執行結果、練習題）：13連結.md
+   請在 DBeaver 用 Ctrl/Cmd + Enter 一句一句執行，邊看結果邊對照講義。
+   本檔由講義內容產生，所有查詢都已實際執行驗證。 */
 
--- 1. INNER JOIN (內連接)：取得每位員工姓名與所屬門市名稱
--- 只會列出雙方都有對應到的資料
-SELECT 
-    e.staff_id AS 員工代碼,
-    e.name AS 員工姓名,
-    e.position AS 職位,
-    s.name AS 門市名稱,
-    s.city AS 門市縣市
-FROM staff e
-INNER JOIN stores s ON e.store_id = s.store_id
-ORDER BY s.store_id, e.staff_id;
+-- ======================================================
+-- 以下請在 DBeaver 工具列切換到資料庫：cafe_shop
+-- ======================================================
 
--- 2. 指定表格別名 (AS)，讓欄位來源一目了然
-SELECT 
-    p.product_id AS 商品編號,
-    p.name AS 商品名稱,
-    c.name AS 分類名稱,
-    p.price AS 售價
-FROM products p
-JOIN categories c ON p.category_id = c.category_id
-ORDER BY c.category_id, p.price DESC;
-
--- 3. LEFT JOIN (左外連接)：列出所有門市及其 2024 年 3 月的訂單
--- 即使某些新門市在 3 月尚未產生任何訂單，門市名稱依然會被完整保留 (訂單欄位呈現 NULL)
-SELECT 
-    s.name AS 門市名稱,
-    s.city AS 城市,
-    o.order_id AS 訂單編號,
-    o.order_date AS 銷售日期,
-    o.status AS 狀態
-FROM stores s
-LEFT JOIN orders o ON s.store_id = o.store_id AND o.order_date BETWEEN '2024-03-01' AND '2024-03-31'
-ORDER BY s.store_id, o.order_date ASC;
-
--- 4. 跨 3 表連接：查詢訂單明細包含的商品名稱與單價
-SELECT 
-    o.order_id AS 訂單編號,
+-- ▼ 1. 把明細接回完整報表
+SELECT
     o.order_date AS 日期,
-    s.name AS 門市,
-    p.name AS 商品,
-    i.quantity AS 數量,
-    i.unit_price AS 單價,
-    (i.quantity * i.unit_price) AS 小計
+    s.name       AS 門市,
+    e.name       AS 經手,
+    p.name       AS 商品,
+    i.quantity   AS 數量,
+    i.quantity * i.unit_price AS 小計
 FROM order_items i
-JOIN orders o ON i.order_id = o.order_id
-JOIN stores s ON o.store_id = s.store_id
+JOIN orders o   ON i.order_id = o.order_id
+JOIN stores s   ON o.store_id = s.store_id
+JOIN staff e    ON o.staff_id = e.staff_id
 JOIN products p ON i.product_id = p.product_id
-LIMIT 20;
+WHERE o.status = '已完成'
+  AND o.order_date BETWEEN '2024-03-01' AND '2024-03-31'
+ORDER BY o.order_date, o.order_id, p.product_id
+LIMIT 5;
+
+-- ▼ 2. 會員是散客怎麼辦？
+SELECT '用 JOIN' AS 寫法, COUNT(*) AS 訂單數
+FROM orders o JOIN customers c ON o.customer_id = c.customer_id
+UNION ALL
+SELECT '用 LEFT JOIN', COUNT(*)
+FROM orders o LEFT JOIN customers c ON o.customer_id = c.customer_id;
+
+-- ▼ 3. 陷阱：條件放 ON 還是 WHERE？
+INSERT INTO stores (name, address, region)
+VALUES ('台南西門店', '台南市中西區西門路一段', '南部');
+
+-- ▼ 3. 陷阱：條件放 ON 還是 WHERE？
+SELECT s.name AS 門市, COUNT(o.order_id) AS 三月訂單數
+FROM stores s
+LEFT JOIN orders o ON s.store_id = o.store_id
+WHERE o.order_date BETWEEN '2024-03-01' AND '2024-03-31'
+GROUP BY s.store_id, s.name
+ORDER BY s.store_id;
+
+-- ▼ 3. 陷阱：條件放 ON 還是 WHERE？
+SELECT s.name AS 門市, COUNT(o.order_id) AS 三月訂單數
+FROM stores s
+LEFT JOIN orders o
+       ON s.store_id = o.store_id
+      AND o.order_date BETWEEN '2024-03-01' AND '2024-03-31'
+GROUP BY s.store_id, s.name
+ORDER BY s.store_id;
+
+-- ▼ 4. 從業績看員工
+SELECT
+    s.name AS 門市,
+    e.name AS 員工,
+    e.title AS 職稱,
+    COUNT(DISTINCT o.order_id) AS 訂單數,
+    SUM(i.quantity * i.unit_price) AS 業績
+FROM staff e
+JOIN stores s ON e.store_id = s.store_id
+JOIN orders o ON e.staff_id = o.staff_id AND o.status = '已完成'
+JOIN order_items i ON o.order_id = i.order_id
+GROUP BY s.store_id, s.name, e.staff_id, e.name, e.title
+ORDER BY 業績 DESC
+LIMIT 5;

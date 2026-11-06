@@ -36,7 +36,7 @@
 
 ## 3. 設定連線至您的 PostgreSQL
 
-請開啟專案中的 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)，依據您的資料庫來源填入對應的 `DATABASE_URI`：
+請開啟專案中的 [`.agents/mcp_config.json`](../.agents/mcp_config.json)，依據您的資料庫來源填入對應的 `DATABASE_URI`：
 
 ### 情境 A：連線至樹莓派（Raspberry Pi Docker）
 ```json
@@ -48,7 +48,7 @@
         "--with",
         "mcp<2",
         "postgres-mcp",
-        "--access-mode=unrestricted"
+        "--access-mode=restricted"
       ],
       "env": {
         "DATABASE_URI": "postgresql://postgres:yourpassword@<樹莓派IP或主機名稱>:5432/postgres"
@@ -69,7 +69,7 @@
         "--with",
         "mcp<2",
         "postgres-mcp",
-        "--access-mode=unrestricted"
+        "--access-mode=restricted"
       ],
       "env": {
         "DATABASE_URI": "postgresql://postgres.[PROJECT-REF]:[YOUR-PASSWORD]@[POOLER-HOST]:5432/postgres?sslmode=require"
@@ -81,7 +81,7 @@
 
 ---
 
-## 3. 在 Antigravity 中提問查庫（一般人模式，不用寫程式）
+## 4. 在 Antigravity 中提問查庫（一般人模式，不用寫程式）
 
 設定完成後，在 Antigravity 聊天框中，AI 就具備了操作 PostgreSQL 的 MCP 工具。
 
@@ -91,10 +91,13 @@
 2. **查詢特定業務數據**：
    * *「請幫我查詢最暢銷的商品前 5 名是哪些？各賣了幾件？」*
    * *「目前有哪些商品庫存低於 10 件？」*
-3. **讓 AI 協助建表或新增資料**：
-   * *「請在資料庫中建立一張會員資料表 members，包含姓名、Email 與註冊日期。」*
+3. **驗證唯讀保護**（AI 應該要拒絕）：
+   * *「請在資料庫中建立一張會員資料表 members。」*
 
-AI 會自動調用 MCP 工具在背後執行 SQL，並直接把整理好的表格與答案呈現給您！
+AI 會自動調用 MCP 工具在背後執行查詢，並把整理好的表格與答案呈現給您。
+
+> [!IMPORTANT]
+> 本課程一律使用 `--access-mode=restricted`（唯讀）。AI 只能查詢，建表、新增、修改都由你在 DBeaver 親手執行。
 
 ---
 

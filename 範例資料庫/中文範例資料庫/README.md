@@ -5,6 +5,10 @@
 | 資料庫 | 檔案 | 大小 | 資料表 | 資料量 | 適合練習 |
 |---|---|---|---|---|---|
 | ☕ **連鎖咖啡門市** *(首推)* | [cafe_shop.sql](./cafe_shop.sql) | 56 KB | 7 | 門市、員工、490 筆訂單、780+ 筆明細 | **上班族首選**：對照 Excel 月報表、跨月份 GROUP BY、門市業績 JOIN、HAVING |
+| 💼 費用報銷 | [expense_tracker.sql](./expense_tracker.sql) | 5 KB | 4 | 13 筆報銷單 | 會計：跨表統計、狀態分組 |
+| 👥 人資差勤 | [hr_attendance.sql](./hr_attendance.sql) | 5 KB | 5 | 6 位員工、打卡與請假紀錄 | 人資：`CASE WHEN`、加班統計 |
+| 🏢 資產耗材 | [assets_inventory.sql](./assets_inventory.sql) | 5 KB | 4 | 7 項資產、3 筆借用 | 總務：逾期追蹤、安全庫存 |
+| 📈 股市大盤 | [stock_market.sql](./stock_market.sql) | 2 KB | 2 | 14 筆行情 | 彙總與漲跌幅（第 6 章範例） |
 | 🛒 網路商店 | [shop.sql](./shop.sql) | 87 KB | 6 | 700 筆訂單、1,400+ 筆明細 | SELECT、WHERE、JOIN、GROUP BY、日期函式、自我連結 |
 | 🎓 學校選課 | [school.sql](./school.sql) | 48 KB | 5 | 200 位學生、1,000+ 筆選課 | 多對多 JOIN、LEFT JOIN、HAVING、子查詢、CASE WHEN |
 | 📚 圖書館借閱 | [library.sql](./library.sql) | 64 KB | 5 | 50 本書、900 筆借閱 | 日期計算、IS NULL、LEFT JOIN、視窗函式 RANK |
@@ -13,6 +17,11 @@
 > - 資料表和欄位名稱使用**英文**（打 SQL 不用切換輸入法），資料內容是**繁體中文**。每張資料表都有中文註解（COMMENT），在 DBeaver 資料表的 **Properties** 分頁看得到。
 > - 檔案可以**重複執行**：會先刪除同名資料表再重建，學生把資料改壞了，重新執行一次就恢復原狀。
 > - 人名、門市名皆為虛構，電話皆使用測試編排號碼。
+
+> [!IMPORTANT]
+> **`cafe_shop` 和 `shop` 有同名的資料表，匯入同一個資料庫時後者會覆蓋前者。**
+> - **第 4、5、7 章**：一個範例放一個資料庫，資料庫名稱和檔名相同（`cafe_shop`、`shop`…）
+> - **第 3、6 章**：用一個 `practice` 資料庫放 `shop`、`school`、`library`、`stock_market`，這幾個不會互相衝突
 
 ---
 
@@ -51,7 +60,7 @@
 psql -U postgres -d practice -f cafe_shop.sql
 ```
 
-### 方法三：PostgreSQL 跑在 Docker 裡
+### 方法四：PostgreSQL 跑在 Docker 裡
 
 ```bash
 # macOS / Linux / Windows cmd
@@ -529,6 +538,15 @@ ORDER BY 平均借閱天數 DESC;
 ```
 
 </details>
+
+---
+
+## 🚀 巨量資料產生器
+
+📄 [`generate_100k_orders.sql`](./generate_100k_orders.sql)：先匯入 `cafe_shop.sql`，再執行本檔，約 1～2 秒就會新增 5 萬筆訂單和 10 萬筆明細，用來體驗索引與 `EXPLAIN ANALYZE`。
+
+> [!NOTE]
+> 跑完之後的查詢結果會和第 4 章講義不同。要回到講義的數字，請重新執行 `cafe_shop.sql`。
 
 ---
 

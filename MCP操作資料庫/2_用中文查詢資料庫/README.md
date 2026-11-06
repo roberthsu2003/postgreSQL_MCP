@@ -5,8 +5,8 @@
 
 ## 事前準備
 
-- [x] 已依照第 2 章，把[網路商店 shop.sql](../../範例資料庫/中文範例資料庫/#-網路商店-shop) 匯入 `practice` 資料庫
-- [x] 已依照 [3-1](../1_antigravity設定.md) 在專案 `.agents/mcp_config.json` 設定好 `postgres`（連到 `practice`）
+- [ ] 已依照第 2 章，把[網路商店 shop.sql](../../範例資料庫/中文範例資料庫/#-網路商店-shop) 匯入 `practice` 資料庫
+- [ ] 已依照 [3-1](../1_antigravity設定.md) 在專案 `.agents/mcp_config.json` 設定好 `postgres`（連到 `practice`）
 
 > 💡 **免全域安裝**：只要在 Antigravity 中開啟本專案資料夾，專案專屬的 MCP 就會自動啟動，離開專案便不佔資源。
 
@@ -92,64 +92,60 @@ LIMIT 1;
 
 ---
 
-## 4. 準備第 4 章：設定 `sql_tutorial` 練習庫連線
+## 4. 準備第 4 章：多一條連到 `cafe_shop` 的唯讀連線
 
-第 4 章每一課最後，會自己手寫 SQL，並可讓 AI 協助在 `sql_tutorial` 練習庫中驗證建立資料表、新增與查詢資料。
+第 4 章會用 `cafe_shop` 練習，AI 助教要能看到它的結構，才能給你正確的建議。
 
-### 4.1 用 DBeaver 建立練習用的資料庫
+### 4.1 建立資料庫並匯入
 
-在連線底下的 **Databases** 按右鍵 → **Create New Database**，名稱輸入 `sql_tutorial`。或在 SQL 編輯器執行：
+在 DBeaver 建立資料庫 `cafe_shop`，再執行 [`cafe_shop.sql`](../../範例資料庫/中文範例資料庫/cafe_shop.sql)。
 
-```sql
-CREATE DATABASE sql_tutorial;
-```
+> [!IMPORTANT]
+> `cafe_shop` 和 `shop` 有同名的資料表，**不可以匯入同一個資料庫**，否則後者會覆蓋前者。
 
 ### 4.2 在專案 `.agents/mcp_config.json` 新增連線
 
-打開本專案目錄下的 `.agents/mcp_config.json`，在 `mcpServers` 中**保留**原本的 `postgres`，**另外新增**一個連到 `sql_tutorial` 的連線 `postgres-sql`：
+**保留**原本的 `postgres`，**另外新增** `postgres-cafe`：
 
 ```json
 {
   "mcpServers": {
     "postgres": {
       "command": "uvx",
-      "args": [
-        "--with",
-        "mcp<2",
-        "postgres-mcp",
-        "--access-mode=unrestricted"
-      ],
+      "args": ["--with", "mcp<2", "postgres-mcp", "--access-mode=restricted"],
       "env": {
         "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
       }
     },
-    "postgres-sql": {
+    "postgres-cafe": {
       "command": "uvx",
-      "args": [
-        "--with",
-        "mcp<2",
-        "postgres-mcp",
-        "--access-mode=unrestricted"
-      ],
+      "args": ["--with", "mcp<2", "postgres-mcp", "--access-mode=restricted"],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/sql_tutorial"
+        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/cafe_shop"
       }
     }
   }
 }
 ```
 
-| 連線名稱 | 模式 | 目標資料庫 | 主要用途 |
+| 連線名稱 | 模式 | 資料庫 | 主要用途 |
 |---|---|---|---|
-| `postgres` | unrestricted | practice | 查詢範例資料（網路商店、圖書館等） |
-| `postgres-sql` | unrestricted | sql_tutorial | 第 4 章自己練習手寫 SQL、建表、新增修改，並由 AI 輔助驗證 |
+| `postgres` | 唯讀 | `practice` | 查詢網路商店等範例資料 |
+| `postgres-cafe` | 唯讀 | `cafe_shop` | 第 4 章請 AI 助教看結構、批改你的 SQL |
 
-> 💡 **專案限定好處**：只會在開啟此專案時啟動，換到別的專案不會啟動，不佔用系統資源！
+存檔後問 AI：「用 postgres-cafe 列出有哪些資料表」，回答 7 張表就成功了。再請它「新增一張資料表」，它應該要**拒絕**，這才代表唯讀保護有效。
 
-存檔後，在 Antigravity 對話框問：「用 postgres-sql 列出 sql_tutorial 有哪些資料表」，AI 回答「目前沒有資料表」就代表設定成功！
+> [!NOTE]
+> 第 4 章的 SQL 都由你親手在 DBeaver 執行，AI 只負責解釋和批改。
+
+## ✅ 過關檢查
+
+- [ ] AI 回答的前 5 題，我都和上面的答案對過
+- [ ] 我看過 AI 執行的 SQL，也知道答案不同時要追問
+- [ ] AI 拒絕了寫入的要求
 
 ---
 
 ## 下一步
 
-👉 **[進入第 4 章：SQL 語法與 AI 輔助](../../SQL語法教學/)**：從基本型別、建立資料表開始，親自動手寫 SQL，體會人機協作的威力！
+👉 **[進入第 4 章：SQL 語法與實戰練功](../../SQL語法教學/README.md)**：從建立資料庫開始，親自動手寫 SQL。

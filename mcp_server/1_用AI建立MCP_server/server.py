@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-台鐵進出站查詢 MCP Server
-提供 Claude Desktop 查詢台鐵車站資訊和每日進出站人數的工具
+門市營運查詢 MCP Server
+提供 AI 查詢 cafe_shop 商品與門市銷售的工具（全部唯讀）
 """
 
 import os
@@ -14,26 +14,25 @@ import psycopg2
 import psycopg2.extras
 from mcp.server import MCPServer
 
-# 資料庫連線設定(從環境變數讀取,沒有設定時使用上課預設值)
-DATABASE_URI = os.environ.get(
-    "DATABASE_URI",
-    "postgresql://postgres:raspberry@localhost:5432/postgres",
-)
+# 資料庫連線字串從環境變數讀取，密碼不寫在程式裡
+DATABASE_URI = os.environ["DATABASE_URI"]
 
-# 建立 MCP Server,名稱會顯示在 Claude Desktop 中
-mcp = MCPServer("台鐵進出站查詢")
+# 建立 MCP Server，名稱會顯示在 AI 工具中
+mcp = MCPServer("門市營運查詢")
 
 
 def query(sql, params=None):
-    """執行唯讀查詢,回傳 list[dict]"""
-    with psycopg2.connect(DATABASE_URI) as conn:
-        # 設定為唯讀,即使 SQL 寫錯也不會修改資料
+    """執行唯讀查詢，回傳 list[dict]"""
+    conn = psycopg2.connect(DATABASE_URI)
+    try:
+        # 設定為唯讀，即使 SQL 寫錯也不會修改資料
         conn.set_session(readonly=True)
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute(sql, params)
             rows = cur.fetchall()
-    conn.close()
-    # 日期轉成字串,方便轉成 JSON 回傳給 AI
+    finally:
+        conn.close()
+    # 日期轉成字串，方便轉成 JSON 回傳給 AI
     return [
         {key: str(value) if hasattr(value, "isoformat") else value for key, value in row.items()}
         for row in rows
@@ -41,56 +40,66 @@ def query(sql, params=None):
 
 
 @mcp.tool()
-def search_stations(keyword: str) -> list[dict]:
-    """用關鍵字搜尋台鐵車站(車站名稱或地址),回傳車站代碼、名稱、地址、電話、是否有 YouBike"""
+def search_products(keyword: str) -> list[dict]:
+    """用關鍵字搜尋商品（商品名稱或分類名稱），回傳商品編號、名稱、分類、售價"""
     sql = """
-        SELECT "stationCode" AS 車站代碼,
-               "stationName" AS 車站名稱,
-               "stationAddrTw" AS 地址,
-               "stationTel" AS 電話,
-               "haveBike" AS 有youbike
-        FROM 台鐵車站資訊
-        WHERE "stationName" LIKE %s OR "stationAddrTw" LIKE %s
-        ORDER BY "stationCode"
+        SELECT p.product_id AS 商品編號,
+               p.name       AS 商品名稱,
+               c.name       AS 分類,
+               p.price      AS 售價
+        FROM products p
+        JOIN categories c ON p.category_id = c.category_id
+        WHERE p.name LIKE %s OR c.name LIKE %s
+        ORDER BY p.product_id
     """
     pattern = f"%{keyword}%"
     return query(sql, (pattern, pattern))
 
 
 @mcp.tool()
-def get_station_traffic(station_name: str, start_date: date, end_date: date) -> list[dict]:
-    """查詢某個車站在一段期間內每日的進站和出站人數。日期格式為 YYYY-MM-DD"""
+def get_store_sales(store_name: str, start_date: date, end_date: date) -> list[dict]:
+    """查詢某家門市在一段期間內每天的訂單數和營業額，只計算已完成的訂單。日期格式為 YYYY-MM-DD"""
     sql = """
-        SELECT p.日期, s."stationName" AS 車站名稱, p.進站人數, p.出站人數
-        FROM 每日各站進出站人數 p
-        JOIN 台鐵車站資訊 s ON p.車站代碼 = s."stationCode"
-        WHERE s."stationName" = %s
-          AND p.日期 BETWEEN %s AND %s
-        ORDER BY p.日期
+        SELECT o.order_date AS 日期,
+               COUNT(DISTINCT o.order_id) AS 訂單數,
+               SUM(i.quantity * i.unit_price) AS 營業額
+        FROM orders o
+        JOIN stores s ON o.store_id = s.store_id
+        JOIN order_items i ON o.order_id = i.order_id
+        WHERE s.name = %s
+          AND o.order_date BETWEEN %s AND %s
+          AND o.status = '已完成'
+        GROUP BY o.order_date
+        ORDER BY o.order_date
     """
-    return query(sql, (station_name, start_date, end_date))
+    return query(sql, (store_name, start_date, end_date))
 
 
 @mcp.tool()
-def top_stations(
-    year: int, limit: int = 10, order_by: Literal["進站人數", "出站人數"] = "進站人數"
+def top_products(
+    start_date: date,
+    end_date: date,
+    limit: int = 10,
+    order_by: Literal["銷量", "營業額"] = "銷量",
 ) -> list[dict]:
-    """查詢某一年總人數最多的車站排行,可以依進站人數或出站人數排序"""
-    # 欄位名稱不能用 %s 傳遞,所以用 Literal 限定只能是這兩個值,避免 SQL injection
+    """查詢一段期間內賣得最好的商品排行，可以依銷量或營業額排序，只計算已完成的訂單。日期格式為 YYYY-MM-DD"""
+    # 欄位名稱不能用 %s 傳遞，所以用 Literal 限定只能是這兩個值，避免 SQL Injection
     sql = f"""
-        SELECT s."stationName" AS 車站名稱,
-               SUM(p.進站人數) AS 進站人數,
-               SUM(p.出站人數) AS 出站人數
-        FROM 每日各站進出站人數 p
-        JOIN 台鐵車站資訊 s ON p.車站代碼 = s."stationCode"
-        WHERE EXTRACT(YEAR FROM p.日期) = %s
-        GROUP BY s."stationName"
+        SELECT p.name AS 商品名稱,
+               SUM(i.quantity) AS 銷量,
+               SUM(i.quantity * i.unit_price) AS 營業額
+        FROM order_items i
+        JOIN products p ON i.product_id = p.product_id
+        JOIN orders o ON i.order_id = o.order_id
+        WHERE o.order_date BETWEEN %s AND %s
+          AND o.status = '已完成'
+        GROUP BY p.name
         ORDER BY {order_by} DESC
         LIMIT %s
     """
-    return query(sql, (year, limit))
+    return query(sql, (start_date, end_date, limit))
 
 
 if __name__ == "__main__":
-    # 預設使用 stdio 傳輸,讓 Claude Desktop 啟動並溝通
+    # 預設使用 stdio 傳輸，由 AI 工具啟動並溝通
     mcp.run()

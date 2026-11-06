@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![PyQt5](https://img.shields.io/badge/GUI-PyQt5-41CD52?style=for-the-badge&logo=qt&logoColor=white)
 ![Tkinter](https://img.shields.io/badge/GUI-Tkinter-FFD43B?style=for-the-badge&logo=python&logoColor=3776AB)
@@ -29,6 +29,27 @@
 
 ---
 
+## 🚀 第一次來？這樣開始
+
+1. **選環境**：有樹莓派走 [Docker 方案](./raspberry_docker安裝/)，沒有就走 [Supabase 雲端方案](./supabase安裝/)（最快）。
+2. **照順序走**：第 1 章走到第 7 章，每一章都接著前一章。
+3. **每課都親手打**：看懂不等於會寫。每課結尾的 ✅ 過關檢查都打勾了，再往下走。
+4. **卡住了**：先看該課的「⚠️ 常見卡關」，再把 SQL 和錯誤訊息貼給 AI，問它「錯在哪裡，為什麼」。
+
+| 章 | 主題 | 預估時間 | 完成後你能 |
+|:---:|---|:---:|---|
+| 1 | [環境安裝](#1-環境安裝) | 1～2 小時 | 用 DBeaver 連上自己的資料庫 |
+| 2 | [範例資料庫](#2-範例資料庫) | 30 分鐘 | 匯入五大職場範例 |
+| 3 | [用中文查資料庫](#3-自然語言查庫初體驗免寫-sql) | 1 小時 | 不寫 SQL 也能問 AI 查資料 |
+| 4 | [SQL 語法與練功](#4-sql-語法與實戰練功) | 10 小時 | **親手寫出跨表報表，並抓出 AI 的錯** |
+| 5 | [Python 串接](#5-python-串接psycopg2) | 3 小時 | 用程式自動查詢，並防止資料庫被駭 |
+| 6 | [自訂 MCP Server](#6-讓自己的-ai-可以查詢自己的資料庫自訂-mcp-server) | 6～10 小時 | 讓 AI 只能呼叫你設計的工具 |
+| 7 | [桌面 App 專題](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app) | 每個 4～8 小時 | 做出工作用得上的小工具 |
+
+**只想學 SQL？** 做完第 1、2 章，直接跳到第 4 章。
+
+---
+
 ## 🗺️ 學習四階段路線
 
 ![學習四階段路線](./mcp_server/images/learning_roadmap.svg)
@@ -36,7 +57,7 @@
 | 階段 | 章節模組 | 你會學到與產出 | 使用工具與環境 |
 |:---:|---|---|---|
 | **一** | **[1. 環境安裝](#1-環境安裝)**<br>**[2. 範例資料庫](#2-範例資料庫)**<br>**[3. 自然語言查庫初體驗](#3-自然語言查庫初體驗免寫-sql)** | • 安裝 PostgreSQL（樹莓派 Docker / Supabase）與 DBeaver<br>• 匯入 5 大職場範例庫（報銷、差勤、資產、門市、CRM）<br>• 體驗自備 Excel 轉 SQL 交易檔流程與中文自然語言查庫 | Docker / Supabase / DBeaver / Antigravity |
-| **二** | **[4. SQL 語法與實戰練功](#4-sql-語法與實戰練功)** | • **講義與實戰題合一**：完整 DDL、DML、JOIN、JSONB<br>• 告別圖片死圖：全數採用 Mermaid 視覺化流程圖與關聯架構<br>• 每課附 AI Prompt 建議語法，學生手動複製至 DBeaver 執行 | DBeaver + Antigravity 對話 |
+| **二** | **[4. SQL 語法與實戰練功](#4-sql-語法與實戰練功)** | • **講義與實戰題合一**：完整 DDL、DML、JOIN、JSONB<br>• 每課都有職場情境、真實執行結果、常見卡關與附答案的練習<br>• 每課附 AI 提示詞，學生親手在 DBeaver 執行 | DBeaver + Antigravity 對話 |
 | **三** | **[5. Python 串接](#5-python-串接psycopg2)**<br>**[6. 讓 AI 查詢自己的資料庫](#6-讓自己的-ai-可以查詢自己的資料庫自訂-mcp-server)** | • 使用 `psycopg2` 進行參數化查詢（`%s` 防注入）與交易管理<br>• **讓 AI 查詢自己的資料庫**：用 FastMCP 寫幾行 Python，AI 就能用中文查庫<br>• 從個人本機查庫，進階到企業 Token 門禁與樹莓派 Docker 容器部署 | Python (`psycopg2`) + FastMCP + Docker |
 | **四** | **[7. 職場桌面 App 實戰開發](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app)** | • **全課程壓軸大專題**：規格驅動開發 (SDD)，手寫 SQL 貫穿<br>• 結合 **PyQt5** 與 **Tkinter** 打造 5 款職場個人獨立桌面視窗<br>• 會計報銷、人資排班、總務資產、門市營運、業務 CRM | PyQt5 / Tkinter |
 
@@ -52,6 +73,8 @@
 | ☁️ **Supabase（免費雲端託管）** | 免硬體！申請免費雲端託管 PostgreSQL、取得連線字串、DBeaver 直連設定 | 零硬體負擔、想隨開即用立即開始者 | [查看教學](./supabase安裝/) |
 
 > 💡 **連線字串格式範例**：`postgresql://使用者名稱:密碼@主機IP:5432/資料庫名稱`
+>
+> 📖 DBeaver 的常用操作，請見 [DBeaver 速查表](./raspberry_docker安裝/3_dbeaver連線.md#步驟-33dbeaver-常用操作速查表)。
 
 ---
 
@@ -77,6 +100,9 @@ flowchart LR
 | ☕ **店長 / 營運** | [`cafe_shop.sql`](./範例資料庫/中文範例資料庫/cafe_shop.sql) | 每月複製一份 Excel 難以跨月對比、明星商品與常客排行 | 門市營運分析與員工提成看板 | 🔵 **PyQt5** |
 | 🛒 **業務 / 電商** | [`shop.sql`](./範例資料庫/中文範例資料庫/shop.sql) | 客戶資料與訂單塞在同張表、訂單履約追蹤、RFM 客戶分群 | 客戶 CRM 與訂單履約系統 | 🟢 **Tkinter** |
 
+> [!IMPORTANT]
+> **一個範例放一個資料庫，資料庫名稱和檔名相同。** `cafe_shop` 和 `shop` 有同名的資料表，放在一起會互相覆蓋。詳見 [匯入方式](./範例資料庫/中文範例資料庫/#匯入方式)。
+
 * 🌟 **[自備 Excel 轉 SQL 實戰示範](./範例資料庫/excel範例/自備Excel轉SQL實戰示範/)**：附完整「員工差旅與費用報銷單.xlsx」，示範如何請 AI 產出具備 `BEGIN...COMMIT` 的 SQL 交易腳本，並手動在 DBeaver 成功匯入。
 * 🚀 **[巨量資料產生器](./範例資料庫/中文範例資料庫/generate_100k_orders.sql)**：免下載任何巨大檔案！PostgreSQL 內建指令 1 秒動態生成 10 萬筆訂單資料，專門用於索引（INDEX）與查詢效能壓測。
 
@@ -93,56 +119,55 @@ flowchart LR
 
 ## 4. SQL 語法與實戰練功
 
-本目錄所有單元均為**「觀念講義、Mermaid 結構圖與實戰練習合一」**：全數移除傳統圖片死圖，改用清晰的 Mermaid 視覺圖表；每一單元均附有標準 SQL 語法、AI Prompt 提示範例，以及單元練習題，讓學員看著講義就能一步步在 DBeaver 中親自動手練功！
+本章是課程的核心，**總時數約 10 小時**。全章跟著「暖光咖啡」總部的王經理，把每天的 Excel 問題變成一句 SQL。每一課都有：**職場情境 → 語法 → 真實執行結果 → 常見卡關 → 附答案的練習 → 問 AI 助教 → 過關檢查**。講義中的 SQL 都實際執行過，結果就是你應該看到的結果。
 
-### 📐 DDL：資料定義語言（建立與修改結構）
+👉 **[進入第 4 章目錄](./SQL語法教學/README.md)**：含課程地圖、資料庫對照表和 SQL 速查表。
 
-| # | 單元主題 | 核心內容與語法重點 | 視覺圖表 |
-|:---:|---|---|:---:|
-| 導讀 | [DDL 概念簡介](./SQL語法教學/DDL%28定義資料語言%29.md) | 什麼是資料定義語言？CREATE、ALTER、DROP 概念總覽 | - |
-| 1 | [建立資料庫](./SQL語法教學/1建立資料庫.md) | `CREATE DATABASE`、`DROP DATABASE`、字元編碼 UTF8 | 流程圖 |
-| 2 | [基本型別速查](./SQL語法教學/2_0基本型別.md) | 整數、數值 NUMERIC、文字 VARCHAR/TEXT、日期時間 TIMESTAMP | 心智圖 |
-| 3 | [建立資料表](./SQL語法教學/2建立資料表.md) | `CREATE TABLE`、欄位結構宣告、`ALTER TABLE` 新增修改欄位 | 類別圖 |
-| 4 | [匯入 CSV 資料](./SQL語法教學/2_1匯入csv.md) | DBeaver 圖形化匯入 CSV 與 psql `\copy` 指令速查 | 步驟圖 |
-| 5 | [資料表限制條件](./SQL語法教學/4限制.md) | `PRIMARY KEY`、`NOT NULL`、`UNIQUE`、`DEFAULT`、`CHECK` | 流程決策圖 |
+### 📐 DDL：蓋結構（約 2 小時）
 
-### 🔍 DML：資料操作語言（資料的新增、查詢、異動）
+| # | 單元主題 | 核心內容 |
+|:---:|---|---|
+| 導讀 | [DDL 是什麼](./SQL語法教學/DDL%28定義資料語言%29.md) | CREATE、ALTER、DROP、TRUNCATE |
+| 1 | [建立資料庫](./SQL語法教學/1建立資料庫.md) | `CREATE DATABASE`、切換資料庫、命名規則 |
+| 2 | [基本型別](./SQL語法教學/2_0基本型別.md) | 金額為什麼不能用 FLOAT、電話為什麼是文字 |
+| 3 | [建立資料表](./SQL語法教學/2建立資料表.md) | `CREATE TABLE`、`ALTER TABLE` |
+| 4 | [匯入 CSV](./SQL語法教學/2_1匯入csv.md) | DBeaver 匯入、驗筆數、亂碼處理 |
+| 5 | [限制條件](./SQL語法教學/4限制.md) | `PRIMARY KEY`、`NOT NULL`、`UNIQUE`、`CHECK`、`DEFAULT` |
 
-| # | 單元主題 | 核心內容與語法重點 | 實戰練習庫 |
-|:---:|---|---|:---:|
-| 導讀 | [DML 概念簡介](./SQL語法教學/DML%28資料操作語言%29.md) | INSERT、SELECT、UPDATE、DELETE 四大核心操作 | 觀念架構 |
-| 1 | [新增資料](./SQL語法教學/3新增資料.md) | `INSERT INTO ... VALUES` 單筆與批次新增、預設值寫入 | 門市與商品表 |
-| 2 | [取得資料與篩選](./SQL語法教學/6取得資料.md) | `SELECT`、`WHERE` 條件、`ORDER BY` 排序、`LIMIT / OFFSET` | 訂單與客戶表 |
-| 3 | [修改和刪除](./SQL語法教學/5修改和刪除.md) | `UPDATE ... SET`、`DELETE FROM`、**務必搭配 WHERE 防呆原則** | 庫存與狀態更動 |
-| 4 | [外來鍵 FOREIGN KEY](./SQL語法教學/7_0FOREIGN_KEY.md) | 什麼是外來鍵？父子表約束與參照完整性概念解析 | 實體關聯圖 |
-| 5 | [多表連結 JOIN](./SQL語法教學/JOIN.md) | INNER JOIN、LEFT JOIN、RIGHT JOIN、FULL JOIN、CROSS JOIN（Mermaid 圖解） | 跨表整合查詢 |
-| 6 | [JSON 與 JSONB 應用](./SQL語法教學/16json.md) | 半結構化資料儲存、`->` 與 `->>` 運算子、飲品客製化配方實作 | 咖啡飲品客製庫存 |
+### 🔍 DML：操作資料（約 3.5 小時）
 
----
+| # | 單元主題 | 核心內容 |
+|:---:|---|---|
+| 導讀 | [DML 是什麼](./SQL語法教學/DML%28資料操作語言%29.md) | **匯入 `cafe_shop`**，開工準備 |
+| 1 | [新增資料](./SQL語法教學/3新增資料.md) | `INSERT`、`RETURNING`、單引號的坑 |
+| 2 | [查詢資料](./SQL語法教學/6取得資料.md) | `SELECT`、`WHERE`、`ORDER BY`、`LIMIT` |
+| 3 | [修改與刪除](./SQL語法教學/5修改和刪除.md) | `UPDATE`、`DELETE`、保命三步驟與交易 |
+| 4 | [外來鍵](./SQL語法教學/7_0FOREIGN_KEY.md) | 父子表、`ON DELETE` 怎麼選 |
+| 5 | [JOIN](./SQL語法教學/JOIN.md) | SQL 版的 VLOOKUP：五種 JOIN |
+| 6 | [JSONB](./SQL語法教學/16json.md) | 飲料客製化、`->` 和 `->>` |
 
-### 💡 核心思維躍升：從「單一工作表」到「關聯式資料庫（正規化）」
+### 💡 思維躍升：從單一工作表到多張表（約 40 分鐘）
 
 > [!NOTE]
-> * **單表操作（上述 DDL/DML）**：相當於在 Excel 裡將所有資料硬塞在**同一個工作表（Sheet）**，極易發生「改了客戶電話要修改幾百列、刪除訂單連客戶資料一起不見」的慘劇。
-> * **關聯式多表（下方實戰）**：相當於 Excel 裡拆成多個乾淨工作表並透過 `VLOOKUP` / `XLOOKUP` 串連，在 SQL 裡即是以主鍵（Primary Key）與外來鍵（Foreign Key）構成的強大結構！
+> 單一工作表裡，客戶電話一改就要改幾百列，刪掉訂單連客戶資料都不見。拆成多張表，再用主鍵和外來鍵串起來，這些問題就消失了。
 
-👉 **[必讀觀念：從 Excel 到關聯式資料庫（正規化思維）](./範例資料庫/從Excel到關聯資料庫_正規化.md)**  
-👉 **[快速上手：適合初學者的關聯資料庫入門](./SQL語法教學/7.0適合初學者關聯資料庫.md)**
+- 👉 **[必讀觀念：從 Excel 到關聯式資料庫](./範例資料庫/從Excel到關聯資料庫_正規化.md)**
+- 👉 **[快速上手：一對多關聯](./SQL語法教學/7.0適合初學者關聯資料庫.md)**
 
-### 🧩 關聯資料庫進階實戰
+### 🧩 關聯資料庫進階實戰（約 5 小時）
 
-| # | 單元主題 | 核心語法與技術重點 | 參考連結 |
+| # | 單元主題 | 核心內容 | 練習腳本 |
 |:---:|---|---|:---:|
-| 1 | 創建關聯資料庫 | 7 張資料表完整 DDL、多對多關係設計與外來鍵關聯 | [7創建關聯資料庫.md](./SQL語法教學/7創建關聯資料庫.md) |
-| 2 | 關聯新增資料 | 依父子表順序安全寫入資料，維護外來鍵約束 | [8新增關聯資料庫資料.sql](./SQL語法教學/8新增關聯資料庫資料.sql) |
-| 3 | 關聯搜尋實戰 | 多表 INNER / LEFT JOIN 查詢出完整商業明細 | [9搜尋關聯資料庫.sql](./SQL語法教學/9搜尋關聯資料庫.sql) |
-| 4 | 聚合函式與群組 | `COUNT`、`SUM`、`AVG`、`GROUP BY` 與 `HAVING` 過濾 | [10聚合函式.sql](./SQL語法教學/10聚合函式.sql) |
-| 5 | 萬用字元與模糊搜尋 | `LIKE`、`ILIKE`（不分大小寫）、`%` 與 `_` 匹配 | [11萬用字元.sql](./SQL語法教學/11萬用字元.sql) |
-| 6 | 聯集操作 | `UNION` 與 `UNION ALL` 合併多組查詢結果集 | [12聯集.sql](./SQL語法教學/12聯集.sql) |
-| 7 | 綜合連結演練 | 複雜商業情境下的跨表多重 JOIN 練習題 | [13連結.sql](./SQL語法教學/13連結.sql) |
-| 8 | 子查詢 SubQuery | WHERE 子查詢、FROM 衍生資料表與關聯子查詢 | [14子查詢.sql](./SQL語法教學/14子查詢.sql) |
-| 9 | 串聯刪除約束 | `ON DELETE CASCADE`、`SET NULL`、`RESTRICT` | [15on_delete_action.sql](./SQL語法教學/15on_delete_action.sql) |
-| 10 | AI 助教操作示範 | 示範如何向 AI 提問以獲得建議 SQL 並手動驗證 | [關聯資料庫實作_用Prompt操作.md](./SQL語法教學/關聯資料庫實作_用Prompt操作.md) |
+| 1 | [建立七張表](./SQL語法教學/7創建關聯資料庫.md) | 親手蓋出 `cafe_shop`、多對多設計 | — |
+| 2 | [關聯新增](./SQL語法教學/8新增關聯資料庫資料.md) | 寫入順序、交易、SERIAL 撞號 | [.sql](./SQL語法教學/8新增關聯資料庫資料.sql) |
+| 3 | [關聯搜尋](./SQL語法教學/9搜尋關聯資料庫.md) | 拆解問題的三個步驟 | [.sql](./SQL語法教學/9搜尋關聯資料庫.sql) |
+| 4 | [聚合與分組](./SQL語法教學/10聚合函式.md) | SQL 版樞紐分析表：`GROUP BY`、`HAVING` | [.sql](./SQL語法教學/10聚合函式.sql) |
+| 5 | [模糊搜尋](./SQL語法教學/11萬用字元.md) | `LIKE`、`ILIKE`、`%`、`_` | [.sql](./SQL語法教學/11萬用字元.sql) |
+| 6 | [聯集](./SQL語法教學/12聯集.md) | `UNION`、`UNION ALL` | [.sql](./SQL語法教學/12聯集.sql) |
+| 7 | [綜合連結](./SQL語法教學/13連結.md) | 條件放 `ON` 還是 `WHERE` | [.sql](./SQL語法教學/13連結.sql) |
+| 8 | [子查詢](./SQL語法教學/14子查詢.md) | `WITH`、`EXISTS`、`NOT IN` 遇到 NULL 的大坑 | [.sql](./SQL語法教學/14子查詢.sql) |
+| 9 | [ON DELETE](./SQL語法教學/15on_delete_action.md) | 查規則、預測後果、軟刪除 | [.sql](./SQL語法教學/15on_delete_action.sql) |
+| 10 | [AI 助教與結業挑戰](./SQL語法教學/關聯資料庫實作_用Prompt操作.md) | 抓出 AI 的錯、五大職務實戰、結業五題 | — |
 
 ---
 
@@ -151,22 +176,29 @@ flowchart LR
 學會 SQL 語法後，我們使用 Python 官方標準驅動套件 `psycopg2` 進行連線。本章節著重於**程式架構安全與交易完整性**，引導學員建立穩健的資料庫應用習慣：
 
 ```python
+import os
 import psycopg2
 from dotenv import load_dotenv
-import os
 
-load_dotenv()
+load_dotenv()  # 從 .env 讀取連線資訊，密碼不寫在程式裡
 
-# 使用 with 語法自動管理連線與交易（安全防呆、自動 commit / rollback）
-with psycopg2.connect(os.getenv("DATABASE_URL")) as conn:
+conn = psycopg2.connect(
+    host=os.getenv("DB_HOST"), port=os.getenv("DB_PORT"), dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"), password=os.getenv("DB_PASSWORD"),
+)
+
+# with conn：成功自動 commit，出錯自動 rollback
+with conn:
     with conn.cursor() as cur:
-        # 嚴禁字串拼接！一律採用 %s 參數化查詢防止 SQL Injection
-        sql = "SELECT order_id, order_date, total_amount FROM orders WHERE member_id = %s;"
-        cur.execute(sql, (101,))
-        rows = cur.fetchall()
-        for row in rows:
+        # 嚴禁字串拼接！一律用 %s 參數化，防止 SQL Injection
+        cur.execute("SELECT order_id, order_date, status FROM orders WHERE store_id = %s LIMIT 3;", (1,))
+        for row in cur.fetchall():
             print(row)
+
+conn.close()
 ```
+
+👉 **[進入第 5 章目錄](./python/)**
 
 1. [安裝與環境設定](./python/安裝和介紹)：使用 `.env` 保管帳密，建立虛擬環境與安裝 `psycopg2-binary`。
 2. [基本查詢與操作](./python/basic_module_usage)：執行 `SELECT` 撈取資料與游標（Cursor）運用。

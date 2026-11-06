@@ -1,43 +1,34 @@
-/* ==============================================================================
-   單元 12：萬用字元與字串模糊比對 (LIKE / ILIKE)
-   
-   【規則速查】：
-   • % 代表 0 個或多個任意字元
-   • _ 代表剛好 1 個任意字元
-   • LIKE 區分英文字母大小寫；ILIKE 不區分大小寫 (PostgreSQL 專有特異功能)
-   ============================================================================== */
+/* 進階-5｜模糊搜尋：只記得一部分也找得到
+   講義（含說明、執行結果、練習題）：11萬用字元.md
+   請在 DBeaver 用 Ctrl/Cmd + Enter 一句一句執行，邊看結果邊對照講義。
+   本檔由講義內容產生，所有查詢都已實際執行驗證。 */
 
--- 1. 取得品名開頭是「拿鐵」的所有商品 (例如：拿鐵咖啡、拿鐵風味燕麥奶)
-SELECT name, price 
-FROM products 
-WHERE name LIKE '拿鐵%';
+-- ======================================================
+-- 以下請在 DBeaver 工具列切換到資料庫：cafe_shop
+-- ======================================================
 
--- 2. 取得品名包含「手沖」關鍵字的所有品項
-SELECT name, price 
-FROM products 
-WHERE name LIKE '%手沖%';
+-- ▼ 1. 三種最常用的寫法
+SELECT name, price
+FROM products
+WHERE name LIKE '%拿鐵%';
 
--- 3. 取得地址位於「台北市」的門市
-SELECT name, city, address, phone 
-FROM stores 
+-- ▼ 1. 三種最常用的寫法
+SELECT name, address
+FROM stores
 WHERE address LIKE '台北市%';
 
--- 4. 取得門市名稱包含「忠孝」字眼的分店
-SELECT name, address 
-FROM stores 
-WHERE name LIKE '%忠孝%';
+-- ▼ 1. 三種最常用的寫法
+SELECT name FROM products WHERE name LIKE '%咖啡';
 
--- 5. 取得會員電話開頭是 0912 的會員資料
-SELECT name, phone 
-FROM customers 
-WHERE phone LIKE '0912%';
+-- ▼ 2. % 的位置有差
+SELECT COUNT(*) AS 開頭是拿鐵 FROM products WHERE name LIKE '拿鐵%';
 
--- 6. 取得會員姓名為「陳」開頭，且剛好是 3 個字的名字 (一個底線 _ 代表剛好一字)
-SELECT name, phone, gender 
-FROM customers 
+-- ▼ 3. 底線：指定字數
+SELECT DISTINCT name
+FROM customers
 WHERE name LIKE '陳__';
 
--- 7. 使用 ILIKE 不區分大小寫搜尋 (例如搜尋英文品牌或規格)
-SELECT name, address 
-FROM stores 
-WHERE address ILIKE '%sec%';
+-- ▼ 4. ILIKE：不分大小寫
+SELECT DISTINCT payment_method, 'LIKE' AS 方法 FROM orders WHERE payment_method LIKE 'line%'
+UNION ALL
+SELECT DISTINCT payment_method, 'ILIKE' FROM orders WHERE payment_method ILIKE 'line%';

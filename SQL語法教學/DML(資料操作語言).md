@@ -1,60 +1,70 @@
-# DML(資料操作語言)
+# DML 導讀：倉庫蓋好了，開始進出貨
 
-SQL的DML（資料操作語言，Data Manipulation Language）是用來**操作資料庫中資料的語言**，主要涵蓋對資料的查詢、新增、更新和刪除等操作。
+> ⏱️ **10 分鐘** ｜ 💻 DBeaver ｜ 🎯 先把環境準備好，後面的課才跑得動
 
-### DML的主要功能與指令
+## 一句話看懂
 
-- **SELECT**：查詢資料庫中的資料，用來取得資料。（有些教材會把 SELECT 另外歸類為 DQL，資料查詢語言）
-- **INSERT**：向資料表中插入新的資料列。
-- **UPDATE**：更新資料表中已存在的資料。
-- **DELETE**：刪除資料表中的資料。
+DDL 蓋好倉庫，**DML 負責每天的進出貨**。四個動作對應 Excel 的日常操作：
 
-DML是使用者與資料庫互動時最常用的語言類型，負責處理資料內容的增刪改查，是日常資料操作的核心。
+| SQL | 白話 | Excel 裡的你 | 例子 |
+|---|---|---|---|
+| `INSERT` | 新增 | 在最下面打一列新資料 | 開了新門市 |
+| `SELECT` | 查詢 | 篩選、排序、看報表 | 找出高價商品 |
+| `UPDATE` | 修改 | 改儲存格 | 商品調價 |
+| `DELETE` | 刪除 | 刪掉整列 | 商品下架 |
 
-### 特點
+> [!NOTE]
+> 有些書把 `SELECT` 單獨歸類為 DQL（資料查詢語言）。名字不重要，會用才重要。
 
-- DML操作的是資料本身，而非資料庫結構（結構操作屬於DDL）。
-- DML指令通常會影響資料的狀態，且可搭配交易控制語言（TCL）來確保資料的一致性與完整性。
-- DML是資料庫應用程式中最頻繁使用的SQL語言類型。
+## ⚙️ 開工前準備：匯入 `cafe_shop`
 
-### 簡單示例
+後面要用**真實規模的資料**練習，請匯入連鎖咖啡範例：7 張表、490 筆訂單、782 筆明細。
+
+1. 在 DBeaver 建立新資料庫 `cafe_shop`（方法同 [DDL-1](./1建立資料庫.md)）
+2. **File → Open File** 開啟 [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)
+3. 工具列切換到 `cafe_shop` 資料庫，按 `Alt + X`（Mac：`Opt + X`）執行整個檔案
+4. 跑下面這句確認：
 
 ```sql
--- 查詢users資料表中所有資料
-SELECT * FROM users;
-
--- 新增一筆資料
-INSERT INTO users (id, name, email) VALUES (1, 'Alice', 'alice@example.com');
-
--- 更新資料
-UPDATE users SET email = 'alice_new@example.com' WHERE id = 1;
-
--- 刪除資料
-DELETE FROM users WHERE id = 1;
+SELECT
+    (SELECT COUNT(*) FROM stores)      AS 門市,
+    (SELECT COUNT(*) FROM products)    AS 商品,
+    (SELECT COUNT(*) FROM customers)   AS 會員,
+    (SELECT COUNT(*) FROM orders)      AS 訂單,
+    (SELECT COUNT(*) FROM order_items) AS 明細;
 ```
 
-總結來說，**DML是操作資料庫中資料的語言，包含查詢、插入、更新和刪除，是資料庫應用中不可或缺的指令集。**
+**執行結果**
 
+| 門市 | 商品 | 會員 | 訂單 | 明細 |
+|---:|---:|---:|---:|---:|
+| 5 | 18 | 50 | 490 | 782 |
+
+數字一樣就成功了。
+
+> [!IMPORTANT]
+> **一個範例庫放一個資料庫**。`cafe_shop` 和 `shop` 有同名的表（`orders`、`products`…），匯入同一個資料庫時，後者會**直接蓋掉**前者。所以資料庫名稱請和檔名相同。
+
+> [!TIP]
+> **把資料改壞了也不怕**：重新執行一次 `cafe_shop.sql`，資料就恢復原狀了。放心練習！
+
+## 本段用到哪個資料庫？
+
+| 課程 | 資料庫 | 為什麼 |
+|---|---|---|
+| DML-1 新增 | `cafe_db` | 接續自己建的 `stores` 表 |
+| DML-2 查詢 | `cafe_shop` | 資料夠多才查得出東西 |
+| DML-3 修改與刪除 | `cafe_shop` | 改壞了可以重匯 |
+| DML-4 外來鍵 | `cafe_db` 加其他範例庫 | 自己建小表，再看真實資料 |
+| DML-5 JOIN | `cafe_db` 加 `cafe_shop` | 先看小例子，再做真題 |
+| DML-6 JSON | `cafe_db` | 自己建小表 |
+
+## 🤖 問 AI 助教
+
+> 請用人資打卡紀錄當例子，說明 SELECT、INSERT、UPDATE、DELETE 分別會在什麼情境用到。請只給我 SQL 和說明，我會自己在 DBeaver 執行。另外提醒我 UPDATE 和 DELETE 最容易犯什麼錯。
 
 ---
 
-## 🤖 運用 AI 助教：建議 DML 語法 (學生手動執行)
-
-> 💡 **核心教學原則**：  
-> 本專案的 MCP Server 採用**安全唯讀保護模式 (`--access-mode=restricted`)**，嚴禁 AI 在背後直接代勞新增、修改或刪除資料！  
-> 正確的學習方式：向 AI 請教建議語法與邏輯解析，**親自將 SQL 複製到 DBeaver 中手動執行**，看懂每筆資料的變化。
-
-**Prompt 1：請 AI 解析職場日常 DML（以人資差勤打卡為例）**
-
-> 「請以公司人資的『員工打卡記錄 (attendance_logs)』資料表為例（包含 log_id、employee_id、clock_in、clock_out、status 欄位），分別寫出 SELECT 查詢、INSERT 新增打卡、UPDATE 補卡、DELETE 刪除異常資料的標準 SQL，並特別提醒我 UPDATE 與 DELETE 忘記加 WHERE 的災難後果。請給我純 SQL 程式碼區塊，我會在 DBeaver 中手動執行。」
-
-✅ 對照「簡單示例」。注意 AI 寫的 UPDATE 和 DELETE **是否都有加 WHERE 條件**。
-
----
-
-## 🧭 課程導覽
-
-| ⬅️ 上一階段 | 🏠 返回目錄 | ➡️ 下一單元 |
+| 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [單元 5：限制條件](./4限制.md) | [第 4 章：SQL 語法與實戰練功](../README.md#dml資料操作語言資料的新增查詢異動) | [DML 單元 1：新增資料](./3新增資料.md) |
-
+| [⬅️ DDL-5 限制條件](./4限制.md) | [🏠 第 4 章目錄](./README.md) | [DML-1 新增資料 ➡️](./3新增資料.md) |

@@ -1,6 +1,6 @@
 # 範例 4：🚲 台北市 YouBike 查詢
 
-程式：[youbike.py](./youbike.py)　資料來源：[實戰專案：台北市 YouBike](../../tutorial_container/範例/2taipei_youbike/)　[← 回範例集](./README.md)
+程式：[youbike.py](./youbike.py)　資料來源：本課程未附 YouBike 資料，請先自備 `youbike` 資料表，或把這份當作閱讀範例　[← 回範例集](./README.md)
 
 ## 情境
 

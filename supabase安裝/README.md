@@ -1,5 +1,9 @@
 # Supabase 雲端 PostgreSQL 資料庫申請、DBeaver 連線與 MCP Server 設定
 
+> ⏱️ **約 40 分鐘** ｜ 🎯 學完你會：擁有一個雲端 PostgreSQL，並用 DBeaver 和 AI 助教連上它
+>
+> 💡 DBeaver 的快捷鍵和常用操作，請見 [DBeaver 速查表](../raspberry_docker安裝/3_dbeaver連線.md#步驟-33dbeaver-常用操作速查表)。
+
 [Supabase](https://supabase.com) 提供免費的雲端託管 PostgreSQL 資料庫，免自己準備硬體或樹莓派，適合隨時隨地練習，也支援透過 AI（Claude Desktop + MCP）進行自然語言查詢。
 
 ---
@@ -92,7 +96,7 @@
 > 2. args 指定使用本專案虛擬環境 `--python .venv`，指定版本 `postgres-mcp==0.3.0`，並啟用唯讀保護模式 `--access-mode=restricted`
 > 3. DATABASE_URI 設定為：`postgresql://postgres.[PROJECT-REF]:<您的密碼>@[POOLER-HOST]:5432/postgres?sslmode=require`」
 
-* **AI 自動化成果**：Antigravity 會自動在專案中建立或更新 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)，內容如下（供檢閱確認）：
+* **AI 自動化成果**：Antigravity 會自動在專案中建立或更新 [`.agents/mcp_config.json`](../.agents/mcp_config.json)，內容如下（供檢閱確認）：
 
 ```json
 {
@@ -217,3 +221,11 @@
    * 請確認使用的是 **Session pooler (IPv4)** 的主機位址，而非 Direct connection (IPv6)。
 3. **密碼安全性提醒：**
    * `.agents/mcp_config.json` 包含資料庫密碼，切勿將含真實密碼的檔案推送到公開的 GitHub Repository。
+
+## ✅ 過關檢查
+
+- [ ] DBeaver 的 **Test Connection** 顯示 `Connected`
+- [ ] 在 SQL 編輯器執行 `SELECT version();` 有結果
+- [ ] AI 拒絕了寫入的要求，唯讀保護有效
+
+👉 **下一步：[第 2 章：匯入範例資料庫](../範例資料庫/)**

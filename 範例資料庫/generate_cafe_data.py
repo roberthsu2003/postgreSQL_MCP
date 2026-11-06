@@ -84,7 +84,7 @@ CUSTOMERS = []
 for cid in range(1, 51):
     cname = SURNAMES[(cid * 3) % len(SURNAMES)] + FIRSTNAMES[(cid * 7) % len(FIRSTNAMES)]
     cphone = f"09{rng.randint(10, 89):02d}-{rng.randint(100, 999):03d}-{rng.randint(100, 999):03d}"
-    cgender = "女" if cid % 2 == 0 else "男"
+    cgender = "女" if cname in {"張美玲", "楊雅婷", "曾怡君", "林佩珊", "王淑芬", "周思妤", "廖佳穎", "郭雨萱", "劉欣宜"} else "男"  # 性別配合姓名，避免資料看起來不合理
     cjoin = date(2023, 1, 1) + timedelta(days=(cid * 17) % 360)
     CUSTOMERS.append((cid, cname, cphone, cgender, cjoin.isoformat()))
 

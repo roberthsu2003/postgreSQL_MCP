@@ -52,9 +52,12 @@ flowchart LR
 
 所有範例 `.sql` 檔均收錄於：👉 **[`中文範例資料庫/`](./中文範例資料庫/)**
 
-1. 在 DBeaver 連線底下的 **Databases** 按右鍵 → **Create New Database**（例如 `practice_db`）。
-2. **File → Open File** 開啟上述任一 `.sql` 檔（如 `expense_tracker.sql` 或 `cafe_shop.sql`）。
-3. 確認工具列連線為 `practice_db`，按下 `Alt + X` 執行整個檔案，1 秒內建庫完成！
+1. 在 DBeaver 連線底下的 **Databases** 按右鍵 → **Create New Database**，**名稱和檔名相同**（例如 `cafe_shop`）。
+2. **File → Open File** 開啟對應的 `.sql` 檔。
+3. 確認工具列已切換到該資料庫，按下 `Alt + X`（Mac：`Opt + X`）執行整個檔案。
+
+> [!IMPORTANT]
+> `cafe_shop` 和 `shop` 有同名的資料表，匯入同一個資料庫時，後者會**直接覆蓋**前者。第 4、5、7 章請一個範例放一個資料庫。
 
 ---
 
@@ -65,3 +68,11 @@ flowchart LR
 利用 PostgreSQL 內建的 `generate_series()` 引擎：
 * **零網路傳輸**：完全不需要下載或上傳大檔案。
 * **極速生成**：在 DBeaver 執行此腳本，**僅需 1~2 秒**，即可動態產生 5 萬筆訂單與 10 萬筆商品明細，專門用來練習索引（INDEX）優化與 EXPLAIN 效能分析！
+
+## ✅ 過關檢查
+
+- [ ] `cafe_shop` 已匯入，`SELECT COUNT(*) FROM orders;` 回傳 490
+- [ ] 我知道為什麼 `cafe_shop` 和 `shop` 不能放在同一個資料庫
+- [ ] 資料改壞了，我知道重新執行 `.sql` 檔就能恢復
+
+👉 **下一步：[第 3 章：用中文查詢資料庫](../MCP操作資料庫/)**

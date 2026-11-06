@@ -1,106 +1,201 @@
-# 單元 16：PostgreSQL 的 JSON / JSONB 彈性應用
+# DML-6｜JSONB：飲料客製化這種「每筆都不一樣」的資料
 
-在關聯式資料庫中，標準欄位（如姓名、價格、日期）結構嚴謹。但現代商業應用中，常有**「非固定欄位」**的需求——例如：每位顧客點咖啡時的**客製化備註**（甜度、冰塊、加料、自備環保杯等）。  
-如果每有一種客製化就在資料表加一個欄位，表格會變得無比臃腫。  
-**PostgreSQL 領先其他資料庫的超強特色，就是原生支援高效率的 `JSONB` 欄位！**
+> ⏱️ **25 分鐘** ｜ 💻 DBeaver（資料庫：`cafe_db`）｜ 🎯 學完你會：存 JSON、取值、用條件查詢，也知道什麼時候不該用
 
----
+## 🎬 情境
 
-## 1. JSON 與 JSONB 的關鍵差異
+點飲料時，每杯的要求都不同：
 
-| 型別名稱 | 儲存機制 | 查詢速度 | 索引支援 | 建議使用場景 |
-|---|---|---|---|---|
-| **`JSON`** | 原封不動存成字串 | 慢（每次查詢需重新解析字串） | 否 | 僅用於日誌紀錄 (Log) |
-| **`JSONB`** | 轉為二進位 (Binary) 格式儲存 | **極速**（直接透過二進位跳轉讀取） | **支援 GIN 索引** | **所有商業業務首選！** |
+- 拿鐵：半糖、微冰、換燕麥奶、自備環保杯
+- 美式：無糖、正常冰
+- 黑糖拿鐵：全糖、熱的、加肉桂粉和雙倍濃縮
 
----
+如果每種要求都開一個欄位，表會多出幾十個幾乎都是空的欄位。這種**每筆內容都不同**的資料，適合放進 `JSONB` 欄位。
 
-## 2. ☕ 連鎖門市實戰：飲品客製化與外帶備註
+## 1. JSON 長什麼樣？
 
-在訂單明細表 (`order_items`) 中加入一個 `customization JSONB` 欄位：
+就是一組「名稱：內容」：
 
-```sql
-DROP TABLE IF EXISTS demo_coffee_orders CASCADE;
-
-CREATE TABLE demo_coffee_orders (
-    order_id SERIAL PRIMARY KEY,
-    item_name VARCHAR(50) NOT NULL,
-    base_price INT NOT NULL,
-    customization JSONB  -- 存放各類彈性客製化設定
-);
+```json
+{"sugar": "半糖", "ice": "微冰", "bring_cup": true}
 ```
 
-### 寫入各具特色的客製化 JSON 資料
+PostgreSQL 有兩種型別：**選 `JSONB` 就對了**。
+
+| 型別 | 儲存方式 | 查詢速度 | 建議 |
+|---|---|---|---|
+| `JSON` | 原文照存 | 較慢 | 只想原樣保留內容時才用 |
+| `JSONB` | 轉成二進位 | 快，還可建索引 | **一般都用這個** |
+
+## 2. 建表與寫入
 
 ```sql
-INSERT INTO demo_coffee_orders (item_name, base_price, customization) VALUES
-(
-    '原味拿鐵咖啡', 120, 
-    '{"sugar": "半糖", "ice": "微冰", "milk": "燕麥奶", "bring_cup": true}'
-),
-(
-    '經典美式咖啡', 85, 
-    '{"sugar": "無糖", "ice": "正常冰", "bring_cup": false}'
-),
-(
-    '黑糖風味拿鐵', 135, 
-    '{"sugar": "全糖", "ice": "熱", "toppings": ["肉桂粉", "雙倍濃縮"], "bring_cup": true}'
+CREATE TABLE coffee_orders (
+    order_id      SERIAL PRIMARY KEY,
+    item_name     VARCHAR(50) NOT NULL,
+    base_price    INT NOT NULL,
+    customization JSONB
 );
+
+INSERT INTO coffee_orders (item_name, base_price, customization) VALUES
+('經典拿鐵', 95,  '{"sugar": "半糖", "ice": "微冰", "milk": "燕麥奶", "bring_cup": true}'),
+('美式咖啡', 70,  '{"sugar": "無糖", "ice": "正常冰", "bring_cup": false}'),
+('黑糖拿鐵', 135, '{"sugar": "全糖", "ice": "熱", "toppings": ["肉桂粉", "雙倍濃縮"], "bring_cup": true}');
 ```
 
----
+## 3. 取值：-> 和 ->>
 
-## 3. 查詢 JSONB 資料的兩大核心運算子
-
-PostgreSQL 提供了強大的符號來提取 JSON 內部的值：
-
-| 運算子 | 說明 | 回傳型別 | 範例語法 | 輸出結果 |
-|:---:|---|:---:|---|:---:|
-| **`->`** | 依鍵名取出物件（保留雙引號） | `JSONB` | `customization->'sugar'` | `"半糖"` |
-| **`->>`** | 依鍵名取出**純文字**（去除引號） | `TEXT` | `customization->>'sugar'` | `半糖` |
-
-### 實用查詢範例
+| 符號 | 回傳 | 記法 |
+|---|---|---|
+| `->` | JSON（文字會帶雙引號） | 一個箭頭，還是 JSON |
+| `->>` | 純文字 | 兩個箭頭，取到底 |
 
 ```sql
--- 1. 取出飲品名稱、甜度與冰塊設定 (轉為純文字呈現)
-SELECT 
-    item_name AS 飲品,
-    customization->>'sugar' AS 甜度,
-    customization->>'ice' AS 冰塊,
-    customization->>'milk' AS 換奶選擇
-FROM demo_coffee_orders;
+SELECT
+    item_name,
+    customization->'sugar'  AS 一個箭頭,
+    customization->>'sugar' AS 兩個箭頭,
+    customization->>'milk'  AS 換奶
+FROM coffee_orders;
+```
 
--- 2. 使用 WHERE 過濾：找出所有「自備環保杯 (bring_cup = true)」可享有 5 元折價的訂單
-SELECT item_name, base_price, customization->>'sugar' AS 甜度
-FROM demo_coffee_orders
-WHERE (customization->>'bring_cup')::boolean = true;
+**執行結果**
 
--- 3. 檢查 JSON 陣列或屬性是否存在 (使用 ? 運算子)
--- 找出客製化中有額外加料 (toppings) 的飲品
-SELECT item_name, customization->'toppings' AS 加料清單
-FROM demo_coffee_orders
+| item_name | 一個箭頭 | 兩個箭頭 | 換奶 |
+|---|---|---|---|
+| 經典拿鐵 | 半糖 | 半糖 | 燕麥奶 |
+| 美式咖啡 | 無糖 | 無糖 | *NULL* |
+| 黑糖拿鐵 | 全糖 | 全糖 | *NULL* |
+
+沒有 `milk` 的那幾筆顯示 `NULL`，不會報錯。
+
+## 4. 用 JSON 內容當條件
+
+**自備環保杯的訂單**，可以折 5 元。`->>` 取出來是文字，要用 `::BOOLEAN` 轉型：
+
+```sql
+SELECT item_name, base_price - 5 AS 折扣後
+FROM coffee_orders
+WHERE (customization->>'bring_cup')::BOOLEAN = true;
+```
+
+**執行結果**
+
+| item_name | 折扣後 |
+|---|---:|
+| 經典拿鐵 | 90 |
+| 黑糖拿鐵 | 130 |
+
+**有加料的訂單**：`?` 用來檢查某個名稱是否存在：
+
+```sql
+SELECT item_name, customization->'toppings' AS 加料
+FROM coffee_orders
 WHERE customization ? 'toppings';
 ```
 
+**執行結果**
+
+| item_name | 加料 |
+|---|---|
+| 黑糖拿鐵 | `["肉桂粉", "雙倍濃縮"]` |
+
+## 5. 修改 JSON 裡的一個值
+
+顧客改成去冰。`jsonb_set` 可以只改其中一項：
+
+```sql
+UPDATE coffee_orders
+SET customization = jsonb_set(customization, '{ice}', '"去冰"')
+WHERE order_id = 1
+RETURNING customization->>'ice' AS 冰塊;
+```
+
+**執行結果**
+
+| 冰塊 |
+|---|
+| 去冰 |
+
+新值要寫成 JSON 格式，所以文字外面是 `'"去冰"'`，單引號裡面還有雙引號。
+
+## 6. 什麼時候不該用 JSONB？
+
+| 情況 | 建議 |
+|---|---|
+| 每筆都有，而且常拿來篩選或計算（金額、日期） | ❌ 開正常欄位 |
+| 要和其他表關聯 | ❌ 開正常欄位加外來鍵 |
+| 內容不固定，每筆差很多（客製備註、設定值） | ✅ 用 `JSONB` |
+
+> [!TIP]
+> 不確定時，先用正常欄位。JSONB 是處理例外情況的工具，不是用來偷懶省略資料表設計的。
+
+## ⚠️ 常見卡關
+
+| 問題 | 原因 | 怎麼解 |
+|---|---|---|
+| `invalid input syntax for type json` | JSON 裡用了單引號，或多了逗號 | JSON 內部一律雙引號，外層才用單引號 |
+| `operator does not exist: text > integer` | `->>` 取出來是文字 | 加上轉型，如 `(x->>'qty')::INT` |
+| 比對不到值 | 用了 `->` 比對文字 | 改用 `->>` |
+| DBeaver 把 `?` 當成參數 | 工具把 `?` 當佔位符 | 改用 `jsonb_exists(customization, 'toppings')` |
+
+## ✍️ 動手練
+
+**第 1 題**：查出所有「無糖」的訂單品名。
+
+<details>
+<summary>看答案</summary>
+
+```sql
+SELECT item_name
+FROM coffee_orders
+WHERE customization->>'sugar' = '無糖';
+```
+
+**執行結果**
+
+| item_name |
+|---|
+| 美式咖啡 |
+
+</details>
+
+**第 2 題**：統計自備環保杯的杯數和總杯數。
+
+<details>
+<summary>看答案</summary>
+
+```sql
+SELECT
+    COUNT(*) FILTER (WHERE (customization->>'bring_cup')::BOOLEAN) AS 自備杯數,
+    COUNT(*) AS 總杯數
+FROM coffee_orders;
+```
+
+**執行結果**
+
+| 自備杯數 | 總杯數 |
+|---:|---:|
+| 2 | 3 |
+
+`FILTER` 的意思是「只算符合條件的」。
+
+</details>
+
+## 🤖 問 AI 助教
+
+> 我們要記錄設備的規格，筆電有 CPU 和記憶體，投影機有流明和解析度，規格差很多。請分析這適不適合用 JSONB，並比較另外開欄位的做法，給我建表語法讓我自己執行。
+
+## ✅ 過關檢查
+
+- [ ] 我分得清楚 `->` 和 `->>`
+- [ ] 我知道 `->>` 取出來是文字，比較數字要轉型
+- [ ] 我能判斷一個欄位該不該用 JSONB
+
+> 🎉 **DML 全部完成！** 休息一下。接著要學把 Excel 拆成多張表的思維。
+
 ---
 
-## 🤖 助教提示詞：運用 MCP 產生建議 SQL（學生手動執行）
-
-> 💡 **學習規範**：  
-> 請直接在對話框中發問。AI 會透過 MCP 檢查資料表欄位，並為你產生**建議的測試 SQL 語法**；請將語法**複製到 DBeaver 手動執行**！
-
-### 練習 1：請 AI 產生統計環保杯訂單比例的 SQL
-> **Prompt 範例**：  
-> 「在包含 `customization JSONB` 的咖啡訂單表中，如何統計出『有多少比例的顧客選擇自備環保杯』？請給我標準的 SQL 語法，我會在 DBeaver 中手動執行驗證。」
-
-### 練習 2：請 AI 示範使用 jsonb_set 修改 JSON 內部的值
-> **Prompt 範例**：  
-> 「如果顧客臨時想要把微冰改成『去冰』，在 PostgreSQL 中如何使用 `jsonb_set` 直接修改 JSON 欄位內的某個 key？請給我 UPDATE 範例 SQL。」
-
----
-
-## 🧭 課程導覽
-
-| ⬅️ 上一單元 | 🏠 返回目錄 | ➡️ 下一單元 |
+| 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [單元 15：外來鍵連鎖動作](./15on_delete_action.sql) | [第 4 章：SQL 語法與實戰練功](../README.md#dml資料操作語言) | [第 5 章：Python 串接教學](../python/) |
+| [⬅️ DML-5 JOIN](./JOIN.md) | [🏠 第 4 章目錄](./README.md) | [觀念：Excel 到正規化 ➡️](./../範例資料庫/從Excel到關聯資料庫_正規化.md) |

@@ -1,4 +1,6 @@
-# 3-1：安裝與設定 Postgres MCP Pro
+# 3-1（補充）：用 Claude Desktop 設定 Postgres MCP Pro
+
+> 💡 本課程主線使用 [Antigravity 的專案級設定](../1_antigravity設定.md)。使用 Claude Desktop 的同學再看這一篇。
 
 > **本單元目標**：安裝**別人寫好的** MCP Server，體驗「AI 直接查詢資料庫」是什麼感覺，並學會在 Claude Desktop 設定 MCP Server。
 > 你的角色是**使用者**。　[← 回第 3 章](../)
@@ -135,7 +137,7 @@ flowchart LR
     class U,WARN danger
 ```
 
-> **建議**:上課時先使用 `restricted`,避免 AI 誤刪資料。需要讓 AI 幫忙建立資料表或新增資料時,再改成 `unrestricted`。
+> **本課程規範**:學習階段一律使用 `restricted`,建立資料表和新增資料都由你親手在 DBeaver 執行。`unrestricted` 留待結業後、在自己的開發環境再考慮。
 
 ## 6. Postgres MCP Pro 提供的工具
 
@@ -210,7 +212,6 @@ sequenceDiagram
 	psql "postgresql://postgres.[PROJECT-REF]:[YOUR-PASSWORD]@[POOLER-HOST]:5432/postgres?sslmode=require" -f shop.sql
 	```
 
-- **台鐵 CSV**:先在 Supabase 的 **SQL Editor** 執行[建立進出站的ddl.sql](../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/建立進出站的ddl.sql),再用 DBeaver 或 `psql` 的 `\copy` 匯入 CSV(進出站資料約 40 萬筆,Table Editor 網頁上傳可能會逾時)
 
 ### 8.3 Claude Desktop 同時連接本機和 Supabase
 
@@ -228,7 +229,7 @@ sequenceDiagram
         "-e",
         "DATABASE_URI",
         "crystaldba/postgres-mcp",
-        "--access-mode=unrestricted"
+        "--access-mode=restricted"
       ],
       "env": {
         "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
@@ -253,9 +254,9 @@ sequenceDiagram
 }
 ```
 
-- 本機用 `unrestricted`,可以練習讓 AI 建立資料表、新增資料
+- 學習階段本機也用 `restricted`,確認了解風險後才在自己的開發環境改用 `unrestricted`
 - **雲端一律用 `restricted`**:雲端資料被 AI 誤刪很難救回
-- 提問時指定要用哪一個,例如「用 postgres-supabase 查詢 2022 年進站人數前 5 名」
+- 提問時指定要用哪一個,例如「用 postgres-supabase 查詢最貴的 5 項商品」
 
 > **安全提醒**:`claude_desktop_config.json` 內有資料庫密碼,不要放進 git repo 或分享給別人。講義與作業中的密碼一律寫成 `[YOUR-PASSWORD]`。
 

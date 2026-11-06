@@ -1,6 +1,6 @@
 # 單元 3：企業導入：遠端 MCP Server 與 Token 門禁
 
-> **本單元目標**：將原本只在本機執行的 MCP Server 升級為 **Streamable HTTP 遠端服務**，讓多位員工在 Antigravity（或 Claude Desktop）**帶著自己的 Token** 連線，並即時記錄每個人查了什麼。　[← 回第 8 章](../)
+> **本單元目標**：將原本只在本機執行的 MCP Server 升級為 **Streamable HTTP 遠端服務**，讓多位員工在 Antigravity（或 Claude Desktop）**帶著自己的 Token** 連線，並即時記錄每個人查了什麼。　[← 回第 6 章](../)
 
 ## 目錄
 
@@ -199,7 +199,7 @@ sequenceDiagram
     end
 ```
 
-編輯本專案的 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)（或 `claude_desktop_config.json`）：
+編輯本專案的 [`.agents/mcp_config.json`](../../.agents/mcp_config.json)（或 `claude_desktop_config.json`）：
 
 ```json
 {

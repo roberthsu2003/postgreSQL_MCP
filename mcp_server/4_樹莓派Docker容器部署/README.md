@@ -1,6 +1,6 @@
 # 單元 4：正式上線：部署至 Raspberry Pi Docker 雙容器
 
-> **本單元目標**：把[單元 3](../3_企業導入_遠端MCP與token/) 做好的遠端 Token 版 MCP Server 打包成 Docker 容器，放進 **Raspberry Pi（樹莓派）** 與 PostgreSQL 組成**雙容器架構**，實現 24 小時常駐、資料庫密碼不外洩的企業共用環境。　[← 回第 8 章](../)
+> **本單元目標**：把[單元 3](../3_企業導入_遠端MCP與token/) 做好的遠端 Token 版 MCP Server 打包成 Docker 容器，放進 **Raspberry Pi（樹莓派）** 與 PostgreSQL 組成**雙容器架構**，實現 24 小時常駐、資料庫密碼不外洩的企業共用環境。　[← 回第 6 章](../)
 
 參考設定檔：[Dockerfile](./Dockerfile)、[docker-compose.yml](./docker-compose.yml)
 
@@ -237,7 +237,7 @@ my-mcp-server  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C 
 
 ### 步驟 4.1：設定專案級 `.agents/mcp_config.json`
 
-在個人電腦開啟本專案的 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)，加入連線至樹莓派 `8000` 埠的設定：
+在個人電腦開啟本專案的 [`.agents/mcp_config.json`](../../.agents/mcp_config.json)，加入連線至樹莓派 `8000` 埠的設定：
 
 ```json
 {

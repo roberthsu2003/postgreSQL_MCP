@@ -1,275 +1,395 @@
-# 單元 14：多表連接查詢全指南 (JOIN)
+# DML-5｜JOIN：SQL 版的 VLOOKUP
 
-在關聯式資料庫中，資料被正規化拆分存放在不同的資料表（例如：常態菜單表、本期促銷表、門市表、訂單表）。  
-`JOIN` 指令就是用來**依據指定的關聯鍵，將多張資料表的資料橫向拼接合併為一張完整報表**的核心武器！
+> ⏱️ **60 分鐘** ｜ 💻 DBeaver（`cafe_db` 加 `cafe_shop`）｜ 🎯 學完你會：INNER、LEFT、RIGHT、FULL、CROSS JOIN，以及何時用哪一種
 
----
+## 🎬 情境
 
-## 1. 準備示範資料庫：咖啡菜單 vs 本月促銷
+訂單表只記門市**編號**，王經理卻想看門市**名稱**。在 Excel 你會用 `VLOOKUP`，在 SQL 就是 `JOIN`：**用共同的欄位，把兩張表左右拼起來。**
 
-為了最直觀地理解 7 種不同的 JOIN 行為，我們先建立兩張簡單易懂的對照表：
-* **`menu_items` (常態菜單表)**：店內常規販售的咖啡
-* **`promo_items` (本月促銷表)**：本月享有特價折扣的商品
+本課先用一個超小的例子看懂差別，再做真題。
+
+## 1. 準備範例：菜單與本月促銷
 
 ```sql
-DROP TABLE IF EXISTS promo_items CASCADE;
-DROP TABLE IF EXISTS menu_items CASCADE;
-
--- 常態菜單表 (左表)
 CREATE TABLE menu_items (
     item_id INT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name    VARCHAR(50) NOT NULL
 );
 
--- 本月促銷表 (右表)
 CREATE TABLE promo_items (
-    promo_id INT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
+    promo_id       INT PRIMARY KEY,
+    name           VARCHAR(50) NOT NULL,
     discount_price INT NOT NULL
 );
 
-INSERT INTO menu_items (item_id, name) VALUES
-    (1, '美式咖啡'),
-    (2, '拿鐵咖啡'),
-    (3, '卡布奇諾'),
-    (4, '焦糖瑪奇朵');
+INSERT INTO menu_items VALUES
+    (1, '美式咖啡'), (2, '拿鐵咖啡'), (3, '卡布奇諾'), (4, '焦糖瑪奇朵');
 
-INSERT INTO promo_items (promo_id, name, discount_price) VALUES
-    (101, '拿鐵咖啡', 99),
-    (102, '美式咖啡', 69),
-    (103, '西西里檸檬咖啡', 89),
-    (104, '燕麥奶拿鐵', 109);
+INSERT INTO promo_items VALUES
+    (101, '拿鐵咖啡', 99), (102, '美式咖啡', 69),
+    (103, '西西里檸檬咖啡', 89), (104, '燕麥奶拿鐵', 109);
 ```
 
-### 資料現況對照
+兩張表的關係：
 
-| `menu_items` (常態菜單/左表) | `promo_items` (本月促銷/右表) |
-|---|---|
-| 1: 美式咖啡 | 101: 拿鐵咖啡 (特價 99) |
-| 2: 拿鐵咖啡 | 102: 美式咖啡 (特價 69) |
-| 3: 卡布奇諾 | 103: 西西里檸檬咖啡 (特價 89) |
-| 4: 焦糖瑪奇朵 | 104: 燕麥奶拿鐵 (特價 109) |
+| 只在菜單（左） | 兩邊都有 | 只在促銷（右） |
+|:---:|:---:|:---:|
+| 卡布奇諾、焦糖瑪奇朵 | **美式咖啡、拿鐵咖啡** | 西西里檸檬咖啡、燕麥奶拿鐵 |
 
----
+> 寫在 `FROM` 後面的是**左表**，寫在 `JOIN` 後面的是**右表**。
 
-## 2. INNER JOIN (內連接 / 交集)
+## 2. INNER JOIN：兩邊都有才留下
 
-只保留**兩張表都有匹配成功**的資料列（交集部分）。
-
-```mermaid
-flowchart LR
-    subgraph INNER JOIN 兩表交集
-        direction LR
-        L["常態菜單 (menu_items)"] --- M(("交集品項<br>★ 美式咖啡<br>★ 拿鐵咖啡")) --- R["本月促銷 (promo_items)"]
-    end
-    style M fill:#d1fae5,stroke:#059669,stroke-width:2px;
-```
+「菜單上的品項，哪些本月有促銷？」
 
 ```sql
-SELECT 
-    m.item_id,
-    m.name AS 菜單商品,
-    p.promo_id,
-    p.name AS 促銷商品,
-    p.discount_price AS 特價
+SELECT m.name AS 菜單品項, p.discount_price AS 特價
 FROM menu_items m
 INNER JOIN promo_items p ON m.name = p.name;
 ```
 
-**查詢結果**：
-| item_id | 菜單商品 | promo_id | 促銷商品 | 特價 |
-|:---:|---|:---:|---|:---:|
-| 1 | 美式咖啡 | 102 | 美式咖啡 | 69 |
-| 2 | 拿鐵咖啡 | 101 | 拿鐵咖啡 | 99 |
+**執行結果**
 
----
+| 菜單品項 | 特價 |
+|---|---:|
+| 美式咖啡 | 69 |
+| 拿鐵咖啡 | 99 |
 
-## 3. LEFT JOIN (左外連接 / 保留左表全部)
+逐段看懂：
 
-**完整保留左表 (`menu_items`) 的所有資料**。右表有對應就顯示特價，若無對應則填補 `NULL`。
+| 片段 | 白話 |
+|---|---|
+| `menu_items m` | 幫表取短名字（別名）`m`，少打字 |
+| `INNER JOIN promo_items p` | 接上促銷表，別名 `p` |
+| `ON m.name = p.name` | **對照規則**：品名相同的配成一列 |
+| `m.name` | `name` 兩邊都有，要指明是哪張表的 |
 
-```mermaid
-flowchart LR
-    subgraph LEFT JOIN 保留左表全部
-        direction LR
-        L["常態菜單 (全部保留)<br>• 美式咖啡<br>• 拿鐵咖啡<br>• 卡布奇諾<br>• 焦糖瑪奇朵"] --> M["比對促銷"]
-        M --> R["右表無特價者<br>自動填補 NULL"]
-    end
-    style L fill:#dbeafe,stroke:#2563eb,stroke-width:2px;
-```
+`INNER` 可以省略，只寫 `JOIN` 就是 `INNER JOIN`。
+
+## 3. LEFT JOIN：左表全留
+
+「**全部**菜單品項都列出來，有促銷的顯示特價。」
 
 ```sql
-SELECT 
-    m.item_id,
-    m.name AS 菜單商品,
-    p.promo_id,
-    p.discount_price AS 特價
+SELECT m.name AS 菜單品項, p.discount_price AS 特價
 FROM menu_items m
-LEFT JOIN promo_items p ON m.name = p.name;
+LEFT JOIN promo_items p ON m.name = p.name
+ORDER BY m.item_id;
 ```
 
-**查詢結果**：
-| item_id | 菜單商品 | promo_id | 特價 | 說明 |
-|:---:|---|:---:|:---:|---|
-| 1 | 美式咖啡 | 102 | 69 | 有促銷特價 |
-| 2 | 拿鐵咖啡 | 101 | 99 | 有促銷特價 |
-| 3 | 卡布奇諾 | *NULL* | *NULL* | 無促銷（維持原價） |
-| 4 | 焦糖瑪奇朵 | *NULL* | *NULL* | 無促銷（維持原價） |
+**執行結果**
 
----
+| 菜單品項 | 特價 |
+|---|---:|
+| 美式咖啡 | 69 |
+| 拿鐵咖啡 | 99 |
+| 卡布奇諾 | *NULL* |
+| 焦糖瑪奇朵 | *NULL* |
 
-## 4. LEFT JOIN + WHERE IS NULL (只在左表、不在右表)
+對不到的地方會顯示 `NULL`，就像 VLOOKUP 的 `#N/A`。實務上最常用的就是 `INNER` 和 `LEFT`。
 
-找出「屬於常態商品，但**本月沒有任何促銷特價**」的品項（差集）。
+## 4. 找「沒有對應」的資料：LEFT JOIN + IS NULL
 
-```mermaid
-flowchart LR
-    subgraph 差集：只在左表
-        L["卡布奇諾<br>焦糖瑪奇朵"] --- X["排除有促銷者 (p.promo_id IS NULL)"]
-    end
-    style L fill:#fee2e2,stroke:#dc2626,stroke-width:2px;
-```
+「哪些品項**沒有**促銷？」這個技巧超級實用，可以找沒下單的會員、沒賣出的商品：
 
 ```sql
-SELECT 
-    m.item_id,
-    m.name AS 未特價常態商品
+SELECT m.name AS 沒促銷的品項
 FROM menu_items m
 LEFT JOIN promo_items p ON m.name = p.name
 WHERE p.promo_id IS NULL;
 ```
 
----
+**執行結果**
 
-## 5. RIGHT JOIN (右外連接 / 保留右表全部)
+| 沒促銷的品項 |
+|---|
+| 卡布奇諾 |
+| 焦糖瑪奇朵 |
 
-**完整保留右表 (`promo_items`) 的所有資料**。用來檢查本期促銷活動中，有哪些是「促銷限定新品（常態菜單未登錄）」。
+## 5. RIGHT JOIN：右表全留
+
+「全部促銷都列出來，哪些是菜單上沒有的限定新品？」
 
 ```sql
-SELECT 
-    m.item_id,
-    m.name AS 菜單品名,
-    p.name AS 促銷活動品名,
-    p.discount_price AS 特價
+SELECT m.item_id AS 菜單編號, p.name AS 促銷品項, p.discount_price AS 特價
 FROM menu_items m
-RIGHT JOIN promo_items p ON m.name = p.name;
+RIGHT JOIN promo_items p ON m.name = p.name
+ORDER BY p.promo_id;
 ```
 
-**查詢結果**：
-| item_id | 菜單品名 | 促銷活動品名 | 特價 | 說明 |
-|:---:|---|---|:---:|---|
-| 2 | 拿鐵咖啡 | 拿鐵咖啡 | 99 | 常規品有特價 |
-| 1 | 美式咖啡 | 美式咖啡 | 69 | 常規品有特價 |
-| *NULL* | *NULL* | 西西里檸檬咖啡 | 89 | 促銷限定新品！ |
-| *NULL* | *NULL* | 燕麥奶拿鐵 | 109 | 促銷限定新品！ |
+**執行結果**
 
----
+| 菜單編號 | 促銷品項 | 特價 |
+|---:|---|---:|
+| 2 | 拿鐵咖啡 | 99 |
+| 1 | 美式咖啡 | 69 |
+| *NULL* | 西西里檸檬咖啡 | 89 |
+| *NULL* | 燕麥奶拿鐵 | 109 |
 
-## 6. FULL OUTER JOIN (全外連接 / 兩表聯集全收)
+> [!TIP]
+> `A RIGHT JOIN B` 等於 `B LEFT JOIN A`。大多數人習慣都寫成 `LEFT JOIN`，比較好讀。
 
-無論左表或右表，**只要存在任一張表中，全部列出對照**；對應不到的欄位補 `NULL`。
+## 6. FULL OUTER JOIN：兩邊全留
+
+「菜單和促銷對帳，全部攤開來看。」
 
 ```sql
-SELECT 
-    m.name AS 菜單商品,
-    p.name AS 促銷商品,
-    p.discount_price AS 特價
+SELECT m.name AS 菜單品項, p.name AS 促銷品項
 FROM menu_items m
-FULL OUTER JOIN promo_items p ON m.name = p.name;
+FULL OUTER JOIN promo_items p ON m.name = p.name
+ORDER BY m.item_id, p.promo_id;
 ```
 
----
+**執行結果**
 
-## 🤖 助教提示詞：運用 MCP 產生建議 SQL（學生手動執行）
+| 菜單品項 | 促銷品項 |
+|---|---|
+| 美式咖啡 | 美式咖啡 |
+| 拿鐵咖啡 | 拿鐵咖啡 |
+| 卡布奇諾 | *NULL* |
+| 焦糖瑪奇朵 | *NULL* |
+| *NULL* | 西西里檸檬咖啡 |
+| *NULL* | 燕麥奶拿鐵 |
 
-> 💡 **學習規範**：  
-> 請直接在對話框中發問。AI 會透過 MCP 檢查資料表結構，並為你產生**建議的測試 SQL 語法**；請將語法**複製到 DBeaver 手動執行**！
+## 7. CROSS JOIN：所有組合
 
-### 練習 1：請 AI 產生連鎖咖啡門市跨 3 表 JOIN 的 SQL
-> **Prompt 範例**：  
-> 「在目前的 `cafe_shop` 資料庫中，我想查詢每張訂單明細包含的：門市名稱、下單日期、經手員工、購買商品名稱、購買數量、成交金額。請透過 MCP 檢查外來鍵關聯後，給我標準的四表 JOIN SQL，我會在 DBeaver 中手動執行。」
+每種飲料配每種甜度，用來產生組合清單。不需要 `ON`。
 
-### 練習 2：用 LEFT JOIN 找出潛水未消費會員
-> **Prompt 範例**：  
-> 「請給我一條使用 `LEFT JOIN ... WHERE ... IS NULL` 的標準 SQL，從 `customers` 與 `orders` 中抓出註冊至今從未下單過的會員名單，我會在 DBeaver 中親自執行驗證。」
-
----
-
-## 🛠️ 實戰演練：連鎖咖啡門市 (`cafe_shop`) 多表關聯手寫題
-
-> 💡 **資料來源**：在資料庫匯入 [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)。
-
-請在 DBeaver 開啟 SQL 編輯器，親自動手挑戰以下經典題目：
-
-### 題目 1：查詢「台北市」門市在 2024 年 3 月份的所有已完成訂單
 ```sql
-SELECT 
-    o.order_id AS 訂單編號,
-    o.order_date AS 銷售日期,
-    s.name AS 門市名稱,
-    o.payment_method AS 付款方式
+SELECT m.name AS 飲料, s.sugar AS 甜度
+FROM menu_items m
+CROSS JOIN (VALUES ('無糖'), ('半糖')) AS s(sugar)
+WHERE m.item_id <= 2
+ORDER BY m.item_id;
+```
+
+**執行結果**
+
+| 飲料 | 甜度 |
+|---|---|
+| 美式咖啡 | 無糖 |
+| 美式咖啡 | 半糖 |
+| 拿鐵咖啡 | 無糖 |
+| 拿鐵咖啡 | 半糖 |
+
+## 一張表記住五種 JOIN
+
+| JOIN | 保留什麼 | 白話 | 常見用途 |
+|---|---|---|---|
+| `INNER` | 兩邊都有的 | 配對成功才留 | 訂單配門市名稱 |
+| `LEFT` | 左表全部 | VLOOKUP | 列出所有門市，含沒訂單的 |
+| `RIGHT` | 右表全部 | 反向 LEFT | 少用 |
+| `FULL OUTER` | 兩邊全部 | 對帳 | 比對兩份名單差異 |
+| `CROSS` | 所有組合 | 排列組合 | 產生規格表 |
+
+## 8. 真題：回到 `cafe_shop`
+
+切換到 `cafe_shop`。看一下這些表怎麼連：
+
+```mermaid
+flowchart LR
+    stores -->|store_id| orders
+    customers -->|customer_id| orders
+    staff -->|staff_id| orders
+    orders -->|order_id| order_items
+    products -->|product_id| order_items
+    categories -->|category_id| products
+```
+
+**訂單配上門市名稱**（兩張表）
+
+```sql
+SELECT o.order_id AS 訂單, o.order_date AS 日期, s.name AS 門市, o.payment_method AS 付款
 FROM orders o
 JOIN stores s ON o.store_id = s.store_id
-WHERE s.city = '台北市'
-  AND o.order_date BETWEEN '2024-03-01' AND '2024-03-31'
+WHERE s.region = '中部'
   AND o.status = '已完成'
-ORDER BY o.order_date ASC;
+ORDER BY o.order_date, o.order_id
+LIMIT 3;
 ```
 
-### 題目 2：跨 3 表 JOIN（明細 ➡️ 商品 ➡️ 門市）
+**執行結果**
+
+| 訂單 | 日期 | 門市 | 付款 |
+|---:|---|---|---|
+| 29 | 2024-01-01 | 台中逢甲店 | 街口支付 |
+| 97 | 2024-01-01 | 台中逢甲店 | 信用卡 |
+| 109 | 2024-01-01 | 台中逢甲店 | LINE Pay |
+
+**每筆明細的門市、商品、小計**（四張表，一路接下去）
+
 ```sql
-SELECT 
-    o.order_id AS 訂單編號,
-    s.name AS 門市,
-    p.name AS 商品名稱,
-    i.quantity AS 購買數量,
-    i.unit_price AS 成交單價,
-    (i.quantity * i.unit_price) AS 小計
+SELECT
+    o.order_id AS 訂單,
+    s.name     AS 門市,
+    p.name     AS 商品,
+    i.quantity AS 數量,
+    i.quantity * i.unit_price AS 小計
 FROM order_items i
-JOIN orders o ON i.order_id = o.order_id
-JOIN stores s ON o.store_id = s.store_id
+JOIN orders o   ON i.order_id = o.order_id
+JOIN stores s   ON o.store_id = s.store_id
 JOIN products p ON i.product_id = p.product_id
-ORDER BY o.order_id ASC, i.item_id ASC;
+ORDER BY o.order_id, p.product_id
+LIMIT 5;
 ```
 
-### 題目 3：會計實戰 (expense_tracker) - 員工報銷跨表查詢（部門 ➡️ 員工 ➡️ 單據 ➡️ 類別）
+**執行結果**
+
+| 訂單 | 門市 | 商品 | 數量 | 小計 |
+|---:|---|---|---:|---:|
+| 1 | 台北信義店 | 經典拿鐵 | 1 | 95 |
+| 1 | 台北信義店 | 靜岡抹茶歐蕾 | 1 | 110 |
+| 2 | 台北信義店 | 焦糖瑪奇朵 | 1 | 120 |
+| 3 | 台北信義店 | 燕麥奶拿鐵 | 1 | 130 |
+| 4 | 台中逢甲店 | 珍珠醇奶茶 | 1 | 65 |
+
+> [!TIP]
+> **多表 JOIN 的寫法**：順著關係圖一次接一張。每多接一張，就先跑一次看結果對不對，不要一口氣寫完才執行。
+
+## ⚠️ 常見卡關
+
+| 問題 | 原因 | 怎麼解 |
+|---|---|---|
+| `column reference "name" is ambiguous` | 兩張表都有 `name` | 寫成 `s.name` |
+| `missing FROM-clause entry for table "s"` | 用了沒定義的別名 | 檢查 `FROM` 和 `JOIN` 的別名 |
+| 筆數暴增好幾倍 | `ON` 條件寫錯或太寬 | 檢查 `ON` 是否連對欄位 |
+| `LEFT JOIN` 變得和 `INNER` 一樣 | `WHERE` 篩了右表欄位 | 把條件移到 `ON` 後面 |
+
+## ✍️ 動手練
+
+**第 1 題（`cafe_shop`）**：列出每位員工的姓名、職稱和所屬門市名稱，依門市編號排序。
+
+<details>
+<summary>看答案</summary>
+
 ```sql
--- 需先在 DBeaver 執行 expense_tracker.sql
-SELECT 
-    d.name AS 部門,
-    e.name AS 員工姓名,
-    c.claim_id AS 報銷單號,
-    cat.name AS 費用類別,
-    i.amount AS 明細金額,
-    c.status AS 審核狀態
-FROM expense_items i
-JOIN expense_claims c ON i.claim_id = c.claim_id
-JOIN employees e ON c.employee_id = e.employee_id
-JOIN departments d ON e.department_id = d.department_id
-JOIN expense_categories cat ON i.category_id = cat.category_id
-WHERE c.status = '待審核'
-ORDER BY d.name, c.claim_id;
+SELECT e.name AS 員工, e.title AS 職稱, s.name AS 門市
+FROM staff e
+JOIN stores s ON e.store_id = s.store_id
+ORDER BY s.store_id, e.staff_id;
 ```
 
-### 題目 4：總務實戰 (assets_inventory) - 耗材領用歷程跨表查詢（部門 ➡️ 耗材品項）
+**執行結果**
+
+| 員工 | 職稱 | 門市 |
+|---|---|---|
+| 張志明 | 店長 | 台北信義店 |
+| 陳美玲 | 正職咖啡師 | 台北信義店 |
+| 林家豪 | 工讀生 | 台北信義店 |
+| 黃雅婷 | 店長 | 台北車站店 |
+
+<sub>（只列前 4 筆，實際共 12 筆）</sub>
+
+</details>
+
+**第 2 題（`cafe_shop`）**：列出每項商品和它的分類名稱。
+
+<details>
+<summary>看答案</summary>
+
 ```sql
--- 需先在 DBeaver 執行 assets_inventory.sql
-SELECT 
-    l.log_date AS 領用日期,
-    l.department AS 領用部門,
-    l.recipient_name AS 領用人,
-    c.name AS 耗材名稱,
-    l.quantity AS 領用數量,
-    c.current_stock AS 目前剩餘庫存
-FROM consumable_logs l
-JOIN consumables c ON l.consumable_id = c.consumable_id
-ORDER BY l.log_date DESC;
+SELECT c.name AS 分類, p.name AS 商品, p.price AS 售價
+FROM products p
+JOIN categories c ON p.category_id = c.category_id
+ORDER BY c.category_id, p.price DESC;
 ```
+
+**執行結果**
+
+| 分類 | 商品 | 售價 |
+|---|---|---:|
+| 義式咖啡 | 冰滴咖啡 | 150 |
+| 義式咖啡 | 燕麥奶拿鐵 | 130 |
+| 義式咖啡 | 焦糖瑪奇朵 | 120 |
+| 義式咖啡 | 摩卡咖啡 | 115 |
+
+<sub>（只列前 4 筆，實際共 18 筆）</sub>
+
+</details>
+
+**第 3 題（`cafe_shop`）**：先新增一位會員「新來的」，再用 `LEFT JOIN ... IS NULL` 找出沒下過單的會員。
+
+<details>
+<summary>看答案</summary>
+
+```sql
+INSERT INTO customers (name, phone, gender, joined_on)
+VALUES ('新來的', '0900-000-000', '女', '2024-04-01');
+
+SELECT c.name AS 沒下單的會員
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+```
+
+**執行結果**
+
+| 沒下單的會員 |
+|---|
+| 新來的 |
+
+</details>
+
+**第 4 題（`expense_tracker`，會計）**：列出所有「待審核」報銷單的部門、員工、費用類別和金額。
+
+<details>
+<summary>看答案</summary>
+
+```sql
+SELECT
+    d.name AS 部門, e.name AS 員工, c.name AS 費用類別,
+    x.claim_id AS 單號, x.amount AS 金額
+FROM expense_claims x
+JOIN expense_employees e   ON x.emp_id = e.emp_id
+JOIN expense_departments d ON e.dept_id = d.dept_id
+JOIN expense_categories c  ON x.category_id = c.category_id
+WHERE x.status = '待審核'
+ORDER BY d.name, x.claim_id;
+```
+
+**執行結果**
+
+| 部門 | 員工 | 費用類別 | 單號 | 金額 |
+|---|---|---|---|---:|
+| 業務部 | 陳小華 | 市區交通 | EXP20240313 | 320.00 |
+| 行銷部 | 黃雅婷 | 商務餐敘 | EXP20240312 | 2500.00 |
+
+</details>
+
+**第 5 題（`assets_inventory`，總務）**：列出還沒歸還的設備、借用人和應還日期。
+
+<details>
+<summary>看答案</summary>
+
+```sql
+SELECT a.name AS 設備, l.borrower_name AS 借用人, l.expected_return_date AS 應還日
+FROM asset_borrow_logs l
+JOIN assets a ON l.asset_id = a.asset_id
+WHERE l.actual_return_date IS NULL
+ORDER BY l.expected_return_date;
+```
+
+**執行結果**
+
+| 設備 | 借用人 | 應還日 |
+|---|---|---|
+| 無線便攜雷射投影機 | 黃雅婷 | 2024-03-12 |
+| MacBook Pro 14吋 M3 | 林志明 | 2024-03-15 |
+
+</details>
+
+## 🤖 問 AI 助教
+
+> 我寫了這段 JOIN，結果筆數比預期多很多，請幫我找原因，用「VLOOKUP」的概念解釋。請不要幫我執行：（貼上你的 SQL）
+
+## ✅ 過關檢查
+
+- [ ] 我能用自己的話解釋 INNER 和 LEFT 的差別
+- [ ] 我會用 `LEFT JOIN ... IS NULL` 找「沒有對應」的資料
+- [ ] 我能依關係圖寫出三張表以上的 JOIN
 
 ---
 
-## 🧭 課程導覽
-
-| ⬅️ 上一單元 | 🏠 返回目錄 | ➡️ 下一單元 |
+| 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [單元 9.2：完整商業關聯庫實戰](./7創建關聯資料庫.md) | [第 4 章：SQL 語法與實戰練功](../README.md#關聯資料庫實作案例) | [單元 15：聚合函式與分組](./10聚合函式.sql) |
+| [⬅️ DML-4 外來鍵](./7_0FOREIGN_KEY.md) | [🏠 第 4 章目錄](./README.md) | [DML-6 JSON ➡️](./16json.md) |

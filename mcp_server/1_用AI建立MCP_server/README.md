@@ -1,6 +1,6 @@
 # 單元 1：用 AI 建立自己的 MCP Server
 
-> **本單元目標**：結合前面學到的 SQL 與 Python 知識，在 **Antigravity** 中建立一個查詢台鐵進出站資料的自訂 MCP Server，並透過專案級設定掛載。
+> **本單元目標**：結合前面學到的 SQL 與 Python 知識，在 **Antigravity** 中建立一個查詢門市營運資料（`cafe_shop`）的自訂 MCP Server，並透過專案級設定掛載。
 > 你的角色是**需求設計者**和**驗收者**。
 
 ## 目錄
@@ -11,7 +11,7 @@
 - [步驟 2：請 AI 寫程式](#步驟-2請-ai-寫程式)
 - [步驟 3：看懂 AI 寫的程式](#步驟-3看懂-ai-寫的程式)
 - [步驟 4：用 MCP Inspector 測試](#步驟-4用-mcp-inspector-測試)
-- [步驟 5：在專案中掛載 MCP Server](#步驟-5在專案中掛載-mcp-server)
+- [步驟 5：在專案中掛載 MCP Server](#步驟-5在專案中掛載-mcp-server免全域安裝)
 - [步驟 6：請 AI 修改和除錯](#步驟-6請-ai-修改和除錯)
 - [實作練習](#實作練習)
 
@@ -43,7 +43,7 @@ flowchart LR
 
 ## 為什麼要自己建立 MCP Server？
 
-[第 3 章的 Postgres MCP Pro](../../MCP操作資料庫/1_postgres_mcp_pro/) 把**整個資料庫**交給 AI，AI 可以自己寫任何 SQL。
+[第 3 章的 Postgres MCP](../../MCP操作資料庫/) 把**整個資料庫**交給 AI，AI 可以自己寫任何 SQL。
 自己建立的 MCP Server 則只提供**你設計好的幾個工具**，AI 只能呼叫這些工具。
 
 | | Postgres MCP Pro（別人寫的） | 自建 MCP Server |
@@ -57,9 +57,9 @@ flowchart LR
 flowchart LR
     subgraph B["自建 MCP Server"]
         direction LR
-        AI2["AI"] --> T1["search_stations"] --> DB2[("資料庫")]
-        AI2 --> T2["get_station_traffic"] --> DB2
-        AI2 --> T3["top_stations"] --> DB2
+        AI2["AI"] --> T1["search_products"] --> DB2[("資料庫")]
+        AI2 --> T2["get_store_sales"] --> DB2
+        AI2 --> T3["top_products"] --> DB2
     end
     subgraph A["Postgres MCP Pro"]
         direction LR
@@ -78,7 +78,7 @@ flowchart LR
 
 | 項目 | 說明 |
 |---|---|
-| 台鐵資料庫 | 匯入 `台鐵車站資訊`、`每日各站進出站人數` 兩張資料表 👉 [資料與 DDL](../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/) |
+| 範例資料庫 | 建立資料庫 `cafe_shop` 並匯入 👉 [cafe_shop.sql](../../範例資料庫/中文範例資料庫/cafe_shop.sql) |
 | uv | Python 套件管理工具 👉 [安裝說明](https://docs.astral.sh/uv/getting-started/installation/) |
 | Antigravity | 本課程統一使用的 AI 助手，支援專案級 MCP、終端機與 AI 輔助開發 |
 
@@ -92,9 +92,9 @@ flowchart LR
 
 | 工具名稱 | 用途 | 使用者可能會這樣問 | 參數 | 回傳 |
 |---|---|---|---|---|
-| `search_stations` | 搜尋車站 | 「花蓮有哪些車站？」「哪些站有 YouBike？」 | 關鍵字 | 車站代碼、名稱、地址、電話、有無 YouBike |
-| `get_station_traffic` | 查某站每日人數 | 「臺北車站 1/1 到 1/7 每天進站多少人？」 | 站名、開始日期、結束日期 | 每日的進站、出站人數 |
-| `top_stations` | 年度排行 | 「2022 年進站人數最多的 5 個車站」 | 年份、筆數、依進站或出站排序 | 車站名稱、進站、出站總人數 |
+| `search_products` | 搜尋商品 | 「有哪些拿鐵？」「茶飲有哪些？」 | 關鍵字 | 商品編號、名稱、分類、售價 |
+| `get_store_sales` | 查門市每日業績 | 「台北信義店 3/1 到 3/7 每天賣多少？」 | 門市名稱、開始日期、結束日期 | 每日的訂單數、營業額 |
+| `top_products` | 商品排行 | 「第一季賣最好的 5 項商品」 | 開始日期、結束日期、筆數、依銷量或營業額排序 | 商品名稱、銷量、營業額 |
 
 > 💡 **設計原則**
 > - 一個工具只做一件事，名稱用英文、看得出用途
@@ -105,9 +105,9 @@ flowchart LR
 
 AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（擇一）：
 
-- 直接使用 [建立進出站的ddl.sql](../../範例資料庫/其它範例csv/台鐵車站進出資訊_全部整合/建立進出站的ddl.sql)
+- 參考 [cafe_shop 的關係圖](../../範例資料庫/中文範例資料庫/#-連鎖咖啡門市-cafe_shop)
 - 在 DBeaver 對資料表按右鍵 → **Generate SQL → DDL**
-- 在 Antigravity 對話框問：「列出台鐵車站資訊、每日各站進出站人數兩張資料表的欄位與型別」
+- 在 Antigravity 對話框問：「列出 products、categories、stores、orders、order_items 的欄位與型別」
 
 ---
 
@@ -121,7 +121,7 @@ AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（�
 請幫我用 Python 建立一個 MCP Server。
 
 ## 目的
-【讓一般員工用自然語言查詢台鐵各車站的資訊與每日進出站人數】
+【讓店長用自然語言查詢商品、門市每日業績與商品銷售排行】
 
 ## 技術規定
 - 使用 MCP 官方 Python SDK(mcp 套件 2.x 版),用 `from mcp.server import MCPServer` 建立 server,以 stdio 執行
@@ -161,7 +161,7 @@ AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（�
 |:---:|---|---|---|
 | 1 | 工具有沒有註冊 | `@mcp.tool()` | 沒有這行，AI 看不到這個工具 |
 | 2 | 工具說明寫清楚了嗎 | 函式下方的 `"""說明"""` | **這是給 AI 看的**，AI 依照它決定什麼時候呼叫哪個工具 |
-| 3 | 密碼沒有寫死 | `os.environ.get("DATABASE_URI")` | 程式會被分享、放上 git，密碼寫在裡面就外洩了 |
+| 3 | 密碼沒有寫死 | `os.environ["DATABASE_URI"]` | 程式會被分享、放上 git，密碼寫在裡面就外洩了 |
 | 4 | 唯讀連線 | `set_session(readonly=True)` | 就算 SQL 寫錯，也不會改到或刪掉資料 |
 | 5 | 參數化查詢 | SQL 裡用 `%s`，值另外傳入 | 防止 SQL Injection（見下方說明） |
 
@@ -170,12 +170,12 @@ AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（�
 ```python
 from mcp.server import MCPServer
 
-mcp = MCPServer("台鐵進出站查詢")          # 名稱會顯示在 Antigravity 中
+mcp = MCPServer("門市營運查詢")            # 名稱會顯示在 Antigravity 中
 
 
 @mcp.tool()                                # ① 註冊成 AI 可以呼叫的工具
-def search_stations(keyword: str) -> list[dict]:
-    """用關鍵字搜尋台鐵車站(車站名稱或地址),回傳車站代碼、名稱、地址、電話、是否有 YouBike"""   # ② 給 AI 看的說明
+def search_products(keyword: str) -> list[dict]:
+    """用關鍵字搜尋商品（商品名稱或分類名稱），回傳商品編號、名稱、分類、售價"""   # ② 給 AI 看的說明
     ...
 
 
@@ -188,14 +188,17 @@ if __name__ == "__main__":
 ### 3–4. 連線設定
 
 ```python
-DATABASE_URI = os.environ.get("DATABASE_URI", "postgresql://postgres:raspberry@localhost:5432/postgres")  # ③
+DATABASE_URI = os.environ["DATABASE_URI"]   # ③ 沒設定環境變數就直接報錯，提醒你去設定
 
 def query(sql, params=None):
-    with psycopg2.connect(DATABASE_URI) as conn:
-        conn.set_session(readonly=True)                                                  # ④
+    conn = psycopg2.connect(DATABASE_URI)
+    try:
+        conn.set_session(readonly=True)                                      # ④
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute(sql, params)
             ...
+    finally:
+        conn.close()
 ```
 
 ### 5. 防止 SQL Injection
@@ -206,24 +209,24 @@ AI 傳進來的參數也是「使用者輸入」，可能被惡意操控，一�
 
 ```python
 # ✅ 正確:值用 %s,另外傳入
-cur.execute("SELECT * FROM 台鐵車站資訊 WHERE \"stationName\" LIKE %s", (pattern,))
+cur.execute("SELECT * FROM products WHERE name LIKE %s", (pattern,))
 
 # ❌ 危險:把字串直接接進 SQL
-cur.execute(f"SELECT * FROM 台鐵車站資訊 WHERE \"stationName\" LIKE '{keyword}'")
+cur.execute(f"SELECT * FROM products WHERE name LIKE '{keyword}'")
 ```
 
-**欄位名稱**（例如 `ORDER BY 進站人數`）不能用 `%s` 傳遞，這時候要用 `Literal` 限定只能傳入特定的值：
+**欄位名稱**（例如 `ORDER BY 銷量`）不能用 `%s` 傳遞，這時候要用 `Literal` 限定只能傳入特定的值：
 
 ```python
 @mcp.tool()
-def top_stations(
-    year: int, limit: int = 10, order_by: Literal["進站人數", "出站人數"] = "進站人數"
+def top_products(
+    start_date: date, end_date: date, limit: int = 10, order_by: Literal["銷量", "營業額"] = "銷量"
 ) -> list[dict]:
 ```
 
 ```mermaid
 flowchart LR
-    IN["AI 傳入 order_by"] --> C{"是「進站人數」<br/>或「出站人數」？"}
+    IN["AI 傳入 order_by"] --> C{"是「銷量」<br/>或「營業額」？"}
     C -->|是| RUN["執行 SQL"]
     C -->|不是| STOP["SDK 直接回傳錯誤<br/>函式完全不會執行"]
 
@@ -236,7 +239,7 @@ flowchart LR
 如果有人傳入 `order_by="x; DROP TABLE a"`，SDK 會在執行函式**之前**就擋下來：
 
 ```
-Input should be '進站人數' or '出站人數'
+Input should be '銷量' or '營業額'
 ```
 
 > 💡 **不確定 AI 有沒有做到？直接問 AI：**「請逐一檢查這份程式是否符合以下 5 項安全規定，並指出對應的程式碼行數：……」
@@ -253,27 +256,27 @@ uv pip install -r requirements.txt
 uv run mcp dev server.py
 ```
 
-> 如果資料庫的帳號、密碼和預設值不同，先設定環境變數：
-> - macOS / Linux：`export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/postgres"`
-> - Windows PowerShell：`$env:DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/postgres"`
+> **啟動前一定要先設定環境變數**，否則會出現 `KeyError: 'DATABASE_URI'`：
+> - macOS / Linux：`export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/cafe_shop"`
+> - Windows PowerShell：`$env:DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/cafe_shop"`
 
 瀏覽器會開啟 Inspector：
 
 1. 按 **Connect**
 2. 切換到 **Tools** 分頁 → **List Tools**，會看到 3 個工具
-3. 選擇 `top_stations`，輸入 `year = 2022`、`limit = 3`，按 **Run Tool**
+3. 選擇 `top_products`，輸入 `start_date = 2024-01-01`、`end_date = 2024-03-31`、`limit = 3`，按 **Run Tool**
 
 預期結果：
 
 ```json
 [
-  {"車站名稱": "臺北", "進站人數": 16565031, "出站人數": 16354305},
-  {"車站名稱": "桃園", "進站人數": 7548521, "出站人數": 7748746},
-  {"車站名稱": "臺南", "進站人數": 7172009, "出站人數": 7319528}
+  {"商品名稱": "翡翠檸檬綠", "銷量": 78, "營業額": 4680},
+  {"商品名稱": "焦糖瑪奇朵", "銷量": 65, "營業額": 7800},
+  {"商品名稱": "珍珠醇奶茶", "銷量": 61, "營業額": 3965}
 ]
 ```
 
-**驗收方式**：工具規劃表裡的每一個工具都要測過，並故意輸入錯誤的值（例如不存在的站名、錯誤的日期格式），看看會發生什麼事。
+**驗收方式**：工具規劃表裡的每一個工具都要測過，並故意輸入錯誤的值（例如不存在的門市、錯誤的日期格式），看看會發生什麼事。
 
 ---
 
@@ -284,7 +287,7 @@ uv run mcp dev server.py
 ```json
 {
   "mcpServers": {
-    "taiwan_railway": {
+    "cafe_ops": {
       "command": "uv",
       "args": [
         "run",
@@ -295,7 +298,7 @@ uv run mcp dev server.py
         "/完整路徑/mcp_server/1_用AI建立MCP_server/server.py"
       ],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/postgres"
+        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/cafe_shop"
       }
     }
   }
@@ -318,9 +321,9 @@ uv run mcp dev server.py
 | 狀況 | 給 AI 的提示詞範例 |
 |---|---|
 | 出現錯誤訊息 | 「執行 `uv run mcp dev server.py` 時出現以下錯誤，請找出原因並修正：（貼上完整錯誤訊息）」 |
-| AI 選錯工具 | 「我問『臺北站上週每天多少人』，AI 呼叫了 top_stations 而不是 get_station_traffic，請改善兩個工具的 docstring，讓 AI 更容易分辨」 |
-| 要新增工具 | 「請新增工具 monthly_traffic(station_name, year)，用 GROUP BY 回傳某車站某一年每個月的進出站總人數，遵守原本的技術規定」 |
-| 回傳資料太多 | 「請幫 top_stations 的 limit 加上最多 50 筆的限制，避免一次取回太多資料」 |
+| AI 選錯工具 | 「我問『台北信義店上週每天賣多少』，AI 呼叫了 top_products 而不是 get_store_sales，請改善兩個工具的 docstring，讓 AI 更容易分辨」 |
+| 要新增工具 | 「請新增工具 monthly_sales(store_name)，用 GROUP BY 回傳某門市每個月的營業額，遵守原本的技術規定」 |
+| 回傳資料太多 | 「請幫 top_products 的 limit 加上最多 50 筆的限制，避免一次取回太多資料」 |
 | 檢查安全性 | 「請用步驟 3 的 5 項檢查清單審查這份程式，列出不符合的地方」 |
 
 > 💡 **錯誤訊息要完整貼上**，不要只說「不能跑」。詳細日誌與錯誤訊息可直接在 Antigravity 終端機或輸出面板中查看。
@@ -333,18 +336,18 @@ uv run mcp dev server.py
 
 在 Antigravity 對話框提問，觀察 AI 呼叫了哪個工具、傳入什麼參數：
 
-- 「花蓮有哪些火車站？哪些有 YouBike？」
-- 「臺北車站 2023 年 1 月 1 日到 1 月 7 日每天的進站人數」
-- 「2021 年出站人數最多的前 5 個車站」
-- 「比較 2020 和 2022 年進站人數前 3 名的車站，有什麼變化？」
+- 「有哪些拿鐵？多少錢？」
+- 「台北信義店 2024 年 3 月 1 日到 3 月 7 日每天的營業額」
+- 「第一季營業額最高的前 5 項商品」
+- 「比較 1 月和 2 月銷量前 3 名的商品，有什麼變化？」
 
 ### 練習二：用 AI 擴充功能
 
 用[步驟 6](#步驟-6請-ai-修改和除錯) 的方式請 AI 完成，每完成一項都要用 Inspector 驗收：
 
-1. 新增工具 `monthly_traffic(station_name, year)`：某車站某一年每個月的進出站總人數
-2. 新增工具 `compare_stations(station_a, station_b, year)`：比較兩個車站一整年的進出站人數
-3. 為 `top_stations` 的 `limit` 加上上限（最多 50 筆）
+1. 新增工具 `monthly_sales(store_name)`：某門市每個月的營業額
+2. 新增工具 `compare_stores(store_a, store_b, start_date, end_date)`：比較兩家門市一段期間的業績
+3. 為 `top_products` 的 `limit` 加上上限（最多 50 筆）
 
 ### 練習三：從零開始
 

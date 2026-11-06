@@ -74,7 +74,7 @@ graph LR
 > 2. 未來在此專案中如果設定或執行 MCP Server（使用 `uvx` 工具），一律必須指定在專案虛擬環境中執行（必須加上 `--python .venv` 參數）。
 > 3. MCP 必須啟用唯讀保護模式（`--access-mode=restricted`），AI 定位為『SQL 學習助教』，僅供查詢結構與資料，嚴禁直接執行修改或刪除，所有 SQL 寫入與修改需引導學生在 DBeaver 中親自練習執行。」
 
-* **AI 自動化成果**：Antigravity 會在專案根目錄自動產出 [`GEMINI.md`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/GEMINI.md)，內容範例如下（供檢閱）：
+* **AI 自動化成果**：Antigravity 會在專案根目錄自動產出 [`GEMINI.md`](../GEMINI.md)，內容範例如下（供檢閱）：
 
 ```markdown
 # 專案規範與環境設定
@@ -103,7 +103,7 @@ graph LR
 > 2. args 指定使用本專案虛擬環境 `--python .venv`，指定版本 `postgres-mcp==0.3.0`，並啟用唯讀保護模式 `--access-mode=restricted`
 > 3. DATABASE_URI 設定為：`postgresql://postgres:<您的密碼>@<樹莓派IP>:5432/postgres`」
 
-* **AI 自動化成果**：Antigravity 會自動在專案中建立或更新 [`.agents/mcp_config.json`](file:///Users/roberthsu2003/Documents/GitHub/postgreSQL_MCP/.agents/mcp_config.json)，內容如下（供檢閱確認）：
+* **AI 自動化成果**：Antigravity 會自動在專案中建立或更新 [`.agents/mcp_config.json`](../.agents/mcp_config.json)，內容如下（供檢閱確認）：
 
 ```json
 {

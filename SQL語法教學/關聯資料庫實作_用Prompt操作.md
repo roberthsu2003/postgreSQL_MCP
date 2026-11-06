@@ -1,134 +1,445 @@
-# 關聯資料庫實作：運用 MCP 產生建議 SQL (學生手動執行)
+# 進階-10｜AI 助教：問得好，還要驗得出來
 
-> 💡 **核心教學規範**：  
-> 本篇貫穿使用繁體中文範例庫 **[`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)**。  
-> 學生在學習每一課的 SQL 後，可複製下方的 Prompt 向 AI 提問。AI 會透過 MCP 檢查資料庫真實結構，為你**提供標準建議 SQL 與邏輯解說**；學生需**親自將 SQL 複製到 DBeaver 手動執行並驗證結果**，達到真正扎實的 SQL 練功目的！
+> ⏱️ **45 分鐘** ｜ 💻 DBeaver 加上 AI 工具 ｜ 🎯 學完你會：寫出好的提問、抓出 AI 的錯誤，並完成第 4 章結業挑戰
 
----
+## 🎬 情境
 
-## 目錄
+SQL 學完了，以後大可以叫 AI 寫。但 **AI 會寫錯，而且錯的 SQL 看起來跟對的一樣**。這一課就是要你當得了 AI 的主管。
 
-- [8. 新增關聯資料](#8-新增關聯資料)
-- [9. 搜尋關聯資料](#9-搜尋關聯資料)
-- [10. 聚合函式與分組 (GROUP BY & HAVING)](#10-聚合函式與分組-group-by--having)
-- [11. 萬用字元模糊比對 (LIKE)](#11-萬用字元模糊比對-like)
-- [12. 聯集 (UNION)](#12-聯集-union)
-- [13. 多表連接 (JOIN)](#13-多表連接-join)
-- [14. 子查詢 (Subquery)](#14-子查詢-subquery)
-- [15. 外來鍵連鎖動作 (ON DELETE)](#15-外來鍵連鎖動作-on-delete)
+## 1. 提問公式
 
----
+| 元素 | 範例 |
+|---|---|
+| **資料庫** | 我的 `cafe_shop` 資料庫，請先用 MCP 查看結構 |
+| **問題** | 各門市 3 月的營業額 |
+| **條件** | 只算已完成的訂單 |
+| **輸出** | 依營業額由高到低，欄位用中文 |
+| **規範** | 只給 SQL 和逐行說明，我自己在 DBeaver 執行 |
 
-## 8. 新增關聯資料
+```text
+❌ 不好的問法：幫我查業績。
 
-📖 對照單元：[`8新增關聯資料庫資料.sql`](./8新增關聯資料庫資料.sql)
+✅ 好的問法：我的 cafe_shop 資料庫，請先用 MCP 查看結構。
+請寫出 2024 年 3 月各門市的營業額，只算已完成的訂單，
+依金額由高到低排序，欄位用中文。
+請只給我 SQL 和逐行說明，我會自己在 DBeaver 執行。
+```
 
-### Prompt 1：觀察外來鍵順序錯誤
-> **提問 Prompt**：  
-> 「在目前的 `cafe_shop` 資料庫中，如果我直接新增一筆訂單明細 `order_items`，但該訂單編號或商品編號根本不存在，PostgreSQL 會回傳什麼錯誤？請透過 MCP 檢查外來鍵後，給我一段測試的錯誤 INSERT SQL，由我在 DBeaver 中手動執行體會防呆保護。」
+## 2. 驗收四問
 
-### Prompt 2：依正確關聯順序新增一整組訂單
-> **提問 Prompt**：  
-> 「顧客『陳小華』今天在『台北忠孝店』向『張店長』點了 2 杯『拿鐵咖啡』與 1 個『肉桂可頌』，以信用卡結帳。請給我一份完整的 SQL 交易區塊（包含 BEGIN; 新增 orders、新增 order_items、最後 COMMIT;），我會在 DBeaver 中親自執行驗證。」
+拿到 AI 的 SQL 後，**先問這四題再執行**：
 
----
+1. **表和欄位真的存在嗎？** AI 常用猜的，例如 `city`、`total_amount`。
+2. **條件有寫對嗎？** 退款有沒有排除？`UPDATE`、`DELETE` 有 `WHERE` 嗎？
+3. **JOIN 有放大資料嗎？** 訂單接明細後，訂單數還對嗎？
+4. **結果合理嗎？** 用另一種方式驗算，或和 Excel 比對。
 
-## 9. 搜尋關聯資料
+## 3. 抓錯遊戲
 
-📖 對照單元：[`9搜尋關聯資料庫.sql`](./9搜尋關聯資料庫.sql)
+下面每一段都是 AI 可能給的答案。**先自己找錯，再看解析。**
 
-| # | 學生提問 Prompt 範例 | AI 建議 SQL 核心重點 | 驗證目標 |
-|:---:|---|---|---|
-| 1 | 「請給我查詢全台灣所有門市名稱、所在縣市與聯絡電話的 SQL。」 | `SELECT name, city, phone FROM stores;` | 掌握特定欄位選取 |
-| 2 | 「請給我查詢所有商品並按售價由高到低排行的 SQL 前 5 名。」 | `ORDER BY price DESC LIMIT 5;` | 掌握降冪排序與筆數限制 |
-| 3 | 「顧客在我們門市使用過哪些不重複的付款方式？」 | `SELECT DISTINCT payment_method FROM orders;` | 掌握 `DISTINCT` 去重 |
+### 第 1 關：「各門市有幾張訂單？」
 
----
+```sql
+SELECT s.city, COUNT(*) FROM orders o JOIN stores s ON o.store_id = s.store_id GROUP BY s.city;
+```
 
-## 10. 聚合函式與分組 (GROUP BY & HAVING)
+<details>
+<summary>哪裡錯了？</summary>
 
-📖 對照單元：[`10聚合函式.sql`](./10聚合函式.sql)
+`stores` 沒有 `city` 欄位，只有 `region`。AI 沒看結構就用猜的。解法：提問時要求「先用 MCP 查看結構」。
 
-### Prompt 1：各門市營收排行
-> **提問 Prompt**：  
-> 「請給我一條 SQL，計算出 2024 年 Q1 各門市的『總銷售金額』與『總訂單數』，並依營收由高到低排序，我會在 DBeaver 中手動執行。」
+</details>
 
-### Prompt 2：使用 HAVING 抓出熱門商品
-> **提問 Prompt**：  
-> 「如何使用 `GROUP BY` 與 `HAVING`，篩選出全季累計售出超過 50 份的熱門商品清單？請給我建議語法。」
+### 第 2 關：「第一季總營業額多少？」
 
----
+```sql
+SELECT SUM(quantity * unit_price) AS 總營業額 FROM order_items;
+```
 
-## 11. 萬用字元模糊比對 (LIKE)
+**執行結果**
 
-📖 對照單元：[`11萬用字元.sql`](./11萬用字元.sql)
+| 總營業額 |
+|---:|
+| 97655 |
 
-### Prompt 1：模糊搜尋拿鐵商品
-> **提問 Prompt**：  
-> 「我想搜尋商品名稱中所有『拿鐵』系列的飲品，不論字位在前面或中間。請給我使用 `LIKE` 萬用字元的 SQL 查詢語法。」
+<details>
+<summary>哪裡錯了？</summary>
 
-### Prompt 2：搜尋特定縣市門市
-> **提問 Prompt**：  
-> 「門市地址欄位中，如何篩選出位於『台北市』且路名包含『忠孝』的分店？請給我標準 SQL 語法。」
+可以執行，數字也很漂亮，但**把退款也算進去了**。正確答案：
 
----
+```sql
+SELECT SUM(i.quantity * i.unit_price) AS 總營業額
+FROM order_items i
+JOIN orders o ON i.order_id = o.order_id
+WHERE o.status = '已完成';
+```
 
-## 12. 聯集 (UNION)
+**執行結果**
 
-📖 對照單元：[`12聯集.sql`](./12聯集.sql)
+| 總營業額 |
+|---:|
+| 80985 |
 
-### Prompt：合併通訊錄
-> **提問 Prompt**：  
-> 「我想將 `staff` 表中的員工電話與 `customers` 表中的會員電話，合併為一張包含『名稱、電話、身分』的大通訊錄，並使用 `UNION ALL`。請給我建議的 SQL 語法。」
+差了不少。最危險的錯誤，就是這種**不會報錯**的錯。
 
----
+</details>
 
-## 13. 多表連接 (JOIN)
+### 第 3 關：「每張訂單平均幾項商品？」
 
-📖 對照單元：[`JOIN.md`](./JOIN.md) 與 [`13連結.sql`](./13連結.sql)
+```sql
+SELECT ROUND(AVG(cnt), 2) AS 平均品項數
+FROM (SELECT o.order_id, COUNT(*) AS cnt FROM orders o, order_items i GROUP BY o.order_id) x
+LIMIT 1;
+```
 
-### Prompt 1：跨 3 表查詢訂單明細
-> **提問 Prompt**：  
-> 「請給我一條將 `order_items`、`orders`、`stores`、`products` 串連在一起的四表 JOIN 查詢，列出每筆明細的訂單編號、門市名稱、商品名稱、數量與小計，我會在 DBeaver 中手動執行。」
+**執行結果**
 
-### Prompt 2：找出從未消費過的會員 (LEFT JOIN)
-> **提問 Prompt**：  
-> 「如何用 `LEFT JOIN ... WHERE ... IS NULL` 抓出資料庫中註冊至今從未下單過的幽靈會員名單？請給我建議語法。」
+| 平均品項數 |
+|---:|
+| 782.00 |
 
----
+<details>
+<summary>哪裡錯了？</summary>
 
-## 14. 子查詢 (Subquery)
+`FROM orders o, order_items i` 沒有連接條件，變成 CROSS JOIN：每張訂單配上全部 782 筆明細，所以算出 782。正確寫法：
 
-📖 對照單元：[`14子查詢.sql`](./14子查詢.sql)
+```sql
+SELECT ROUND(AVG(cnt), 2) AS 平均品項數
+FROM (SELECT order_id, COUNT(*) AS cnt FROM order_items GROUP BY order_id) x;
+```
 
-### Prompt 1：高於全體平均的優質訂單
-> **提問 Prompt**：  
-> 「請給我一條使用子查詢的 SQL，找出訂單金額大於全店『平均訂單金額』的高價值訂單清單。」
+**執行結果**
 
-### Prompt 2：找出從未被購買過的冷門商品
-> **提問 Prompt**：  
-> 「如何使用 `WHERE product_id NOT IN (SELECT product_id FROM order_items)` 找出完全沒賣出過的品項？請給我建議 SQL。」
+| 平均品項數 |
+|---:|
+| 1.60 |
 
----
+**看到不合常理的數字，就要懷疑。**
 
-## 15. 外來鍵連鎖動作 (ON DELETE)
+</details>
 
-📖 對照單元：[`15on_delete_action.sql`](./15on_delete_action.sql)
+### 第 4 關：「沒消費過的會員」
 
-### Prompt：連鎖刪除驗證
-> **提問 Prompt**：  
-> 「請為我設計一組迷你測試資料表，示範在 `orders` 與 `order_items` 之間設定 `ON DELETE CASCADE`。當我手動在 DBeaver 執行 `DELETE FROM orders WHERE order_id = 101` 時，該訂單的商品明細會如何自動被連鎖清除？請給我完整 DDL 與測試 SQL。」
+```sql
+SELECT name FROM customers WHERE customer_id NOT IN (SELECT customer_id FROM orders);
+```
 
----
+<details>
+<summary>哪裡錯了？</summary>
 
-## 🏢 五大職場核心範例庫提問錦囊
+`orders.customer_id` 有 `NULL`，`NOT IN` 永遠查不到資料。要改用 `NOT EXISTS`，請見 [進階-8](./14子查詢.md)。
 
-學員若要針對自己的工作領域進行 SQL 練功，可直接複製以下職場專屬 Prompt 向 AI 請教：
+</details>
 
-| 職場職務 | 對應資料庫檔案 | 學生可複製提問的 Prompt 範例 |
+## 4. 各職務的練習
+
+每一題都已實測可執行。先自己寫，或請 AI 寫，再對答案。
+
+### ☕ 店長（`cafe_shop`）：跨月營收並排
+
+<details>
+<summary>看答案</summary>
+
+```sql
+SELECT
+    s.name AS 門市,
+    SUM(i.quantity * i.unit_price) FILTER (WHERE EXTRACT(MONTH FROM o.order_date) = 1) AS 一月,
+    SUM(i.quantity * i.unit_price) FILTER (WHERE EXTRACT(MONTH FROM o.order_date) = 2) AS 二月,
+    SUM(i.quantity * i.unit_price) FILTER (WHERE EXTRACT(MONTH FROM o.order_date) = 3) AS 三月
+FROM orders o
+JOIN stores s ON o.store_id = s.store_id
+JOIN order_items i ON o.order_id = i.order_id
+WHERE o.status = '已完成'
+GROUP BY s.store_id, s.name
+ORDER BY s.store_id;
+```
+
+**執行結果**
+
+| 門市 | 一月 | 二月 | 三月 |
+|---|---:|---:|---:|
+| 台北信義店 | 3690 | 8005 | 4475 |
+| 台北車站店 | 4425 | 5500 | 4290 |
+| 新竹巨城店 | 2780 | 7440 | 5145 |
+| 台中逢甲店 | 6205 | 6675 | 5915 |
+| 高雄巨蛋店 | 4620 | 6520 | 5300 |
+
+</details>
+
+### 💼 會計（`expense_tracker`）：各部門各狀態的金額
+
+<details>
+<summary>看答案</summary>
+
+```sql
+SELECT
+    d.name AS 部門,
+    SUM(x.amount) FILTER (WHERE x.status = '待審核') AS 待審核,
+    SUM(x.amount) FILTER (WHERE x.status = '已撥款') AS 已撥款,
+    SUM(x.amount) AS 合計
+FROM expense_claims x
+JOIN expense_employees e   ON x.emp_id = e.emp_id
+JOIN expense_departments d ON e.dept_id = d.dept_id
+GROUP BY d.dept_id, d.name
+ORDER BY 合計 DESC;
+```
+
+**執行結果**
+
+| 部門 | 待審核 | 已撥款 | 合計 |
+|---|---:|---:|---:|
+| 技術部 | *NULL* | 8350.00 | 11950.00 |
+| 行銷部 | 2500.00 | 8780.00 | 11280.00 |
+| 業務部 | 320.00 | 3430.00 | 8930.00 |
+| 人事部 | *NULL* | 1200.00 | 1200.00 |
+
+</details>
+
+### 👥 人資（`hr_attendance`）：用 CASE WHEN 判斷出勤
+
+<details>
+<summary>看答案</summary>
+
+```sql
+SELECT
+    e.name AS 員工,
+    a.work_date AS 日期,
+    CASE
+        WHEN a.is_late AND a.overtime_hours > 0 THEN '遲到但有加班'
+        WHEN a.is_late THEN '遲到'
+        WHEN a.overtime_hours > 0 THEN '加班'
+        ELSE '正常'
+    END AS 判定
+FROM hr_attendance_records a
+JOIN hr_employees e ON a.emp_id = e.emp_id
+ORDER BY a.work_date, e.emp_id;
+```
+
+**執行結果**
+
+| 員工 | 日期 | 判定 |
 |---|---|---|
-| 💼 **會計 / 出納** | [`expense_tracker.sql`](../範例資料庫/中文範例資料庫/expense_tracker.sql) | 「我在 DBeaver 匯入了 `expense_tracker` 資料庫，請給我一條 SQL，計算出 2024 年各部門核准報銷總金額，並與部門年度預算比對，篩選出預算使用率超過 80% 的部門清單。」 |
-| 👥 **人資 (HR)** | [`hr_attendance.sql`](../範例資料庫/中文範例資料庫/hr_attendance.sql) | 「請以 `hr_attendance` 資料庫為例，寫出一條使用 `CASE WHEN` 統計每位員工當月『遲到次數』與『總加班時數』的 SQL，我會在 DBeaver 中執行。」 |
-| 🏢 **總務 / 倉管** | [`assets_inventory.sql`](../範例資料庫/中文範例資料庫/assets_inventory.sql) | 「請以 `assets_inventory` 資料庫為例，寫出找出『目前借出中且已超過應歸還日期的設備與借用人清單』，以及計算目前逾期天數的 SQL 語法。」 |
-| ☕ **店長 / 營運** | [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql) | 「請給我一條將 2024 年各門市營業額按月份展開（跨月樞紐或分組），並統計各商品銷售佔比的 SQL。」 |
-| 🛒 **業務 / 電商** | [`shop.sql`](../範例資料庫/中文範例資料庫/shop.sql) | 「請以 `shop` 資料庫為例，寫出一條 SQL，計算出各客戶的最後下單日期、下單總次數與總消費金額（RFM 模型），我會在 DBeaver 中手動驗證。」 |
+| 陳小華 | 2024-03-01 | 正常 |
+| 林志明 | 2024-03-01 | 遲到但有加班 |
+| 黃雅婷 | 2024-03-01 | 正常 |
+| 張大同 | 2024-03-01 | 正常 |
+| 陳小華 | 2024-03-04 | 加班 |
+
+`CASE WHEN` 就是 Excel 的 `IF`。
+
+</details>
+
+### 🏢 總務（`assets_inventory`）：需要補貨的清單
+
+<details>
+<summary>看答案</summary>
+
+```sql
+SELECT
+    name AS 品項,
+    current_stock AS 庫存,
+    safety_stock AS 安全存量,
+    safety_stock - current_stock AS 至少補貨量,
+    location AS 位置
+FROM assets
+WHERE current_stock < safety_stock
+ORDER BY 至少補貨量 DESC;
+```
+
+**執行結果**
+
+| 品項 | 庫存 | 安全存量 | 至少補貨量 | 位置 |
+|---|---:|---:|---:|---|
+| Double A A4 70g 影印紙(箱) | 3 | 5 | 2 | 3F 總務庫房 B-01 |
+| MacBook Pro 14吋 M3 | 0 | 1 | 1 | 4F IT庫房 |
+| 無線便攜雷射投影機 | 0 | 1 | 1 | 5F 貴賓會議室 |
+| HP LaserJet 原廠黑色碳粉匣 | 1 | 2 | 1 | 3F 總務庫房 C-03 |
+
+</details>
+
+### 🛒 業務（`shop`）：RFM 客戶分析
+
+<details>
+<summary>看答案</summary>
+
+```sql
+SELECT
+    c.name AS 客戶,
+    MAX(o.order_date) AS 最近下單,
+    COUNT(DISTINCT o.order_id) AS 下單次數,
+    SUM(i.quantity * i.unit_price) AS 消費總額
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+JOIN order_items i ON o.order_id = i.order_id
+WHERE o.status = '已完成'
+GROUP BY c.customer_id, c.name
+ORDER BY 消費總額 DESC
+LIMIT 5;
+```
+
+**執行結果**
+
+| 客戶 | 最近下單 | 下單次數 | 消費總額 |
+|---|---|---:|---:|
+| 徐淑宜 | 2025-12-08 | 20 | 41369 |
+| 曾恩志 | 2025-12-30 | 18 | 33663 |
+| 李宏彥 | 2025-12-23 | 21 | 31594 |
+| 江美瑜 | 2025-12-23 | 15 | 28796 |
+| 陳偉建 | 2025-12-10 | 16 | 27297 |
+
+R（最近一次）、F（頻率）、M（金額）是業務常用的客戶分級方法。
+
+</details>
+
+## 🏆 第 4 章結業挑戰
+
+王經理要在季度會議上報告，請寫出下面五題。全部答對，第 4 章就過關了！
+
+**1.** 第一季各門市的已完成訂單數和營業額，由高到低。
+
+**2.** 第一季賣得最好的 5 項商品（看數量）。
+
+**3.** 會員和散客各貢獻多少營業額？
+
+**4.** 哪位店員的業績最高？任職於哪一家門市？
+
+**5.** 哪些商品的毛利率（`(售價 - 成本) / 售價`）超過 70%？
+
+<details>
+<summary>第 1 題答案</summary>
+
+```sql
+SELECT s.name AS 門市, COUNT(DISTINCT o.order_id) AS 訂單數, SUM(i.quantity * i.unit_price) AS 營業額
+FROM orders o
+JOIN stores s ON o.store_id = s.store_id
+JOIN order_items i ON o.order_id = i.order_id
+WHERE o.status = '已完成'
+GROUP BY s.name
+ORDER BY 營業額 DESC;
+```
+
+**執行結果**
+
+| 門市 | 訂單數 | 營業額 |
+|---|---:|---:|
+| 台中逢甲店 | 91 | 18795 |
+| 高雄巨蛋店 | 79 | 16440 |
+| 台北信義店 | 82 | 16170 |
+| 新竹巨城店 | 77 | 15365 |
+| 台北車站店 | 83 | 14215 |
+
+</details>
+
+<details>
+<summary>第 2 題答案</summary>
+
+```sql
+SELECT p.name AS 商品, SUM(i.quantity) AS 銷量
+FROM order_items i
+JOIN products p ON i.product_id = p.product_id
+JOIN orders o ON i.order_id = o.order_id
+WHERE o.status = '已完成'
+GROUP BY p.name
+ORDER BY 銷量 DESC
+LIMIT 5;
+```
+
+**執行結果**
+
+| 商品 | 銷量 |
+|---|---:|
+| 翡翠檸檬綠 | 78 |
+| 焦糖瑪奇朵 | 65 |
+| 珍珠醇奶茶 | 61 |
+| 經典牛肉起司堡 | 60 |
+| 美式咖啡 | 58 |
+
+</details>
+
+<details>
+<summary>第 3 題答案</summary>
+
+```sql
+SELECT
+    CASE WHEN o.customer_id IS NULL THEN '散客' ELSE '會員' END AS 客群,
+    COUNT(DISTINCT o.order_id) AS 訂單數,
+    SUM(i.quantity * i.unit_price) AS 營業額
+FROM orders o
+JOIN order_items i ON o.order_id = i.order_id
+WHERE o.status = '已完成'
+GROUP BY 客群
+ORDER BY 營業額 DESC;
+```
+
+**執行結果**
+
+| 客群 | 訂單數 | 營業額 |
+|---|---:|---:|
+| 會員 | 278 | 52365 |
+| 散客 | 134 | 28620 |
+
+</details>
+
+<details>
+<summary>第 4 題答案</summary>
+
+```sql
+SELECT e.name AS 店員, s.name AS 門市, SUM(i.quantity * i.unit_price) AS 業績
+FROM staff e
+JOIN stores s ON e.store_id = s.store_id
+JOIN orders o ON e.staff_id = o.staff_id
+JOIN order_items i ON o.order_id = i.order_id
+WHERE o.status = '已完成'
+GROUP BY e.staff_id, e.name, s.name
+ORDER BY 業績 DESC
+LIMIT 1;
+```
+
+**執行結果**
+
+| 店員 | 門市 | 業績 |
+|---|---|---:|
+| 郭俊宏 | 高雄巨蛋店 | 9525 |
+
+</details>
+
+<details>
+<summary>第 5 題答案</summary>
+
+```sql
+SELECT name AS 商品, price AS 售價, cost AS 成本,
+       ROUND((price - cost)::NUMERIC / price * 100, 1) AS 毛利率
+FROM products
+WHERE (price - cost)::NUMERIC / price > 0.7
+ORDER BY 毛利率 DESC;
+```
+
+**執行結果**
+
+| 商品 | 售價 | 成本 | 毛利率 |
+|---|---:|---:|---:|
+| 蜜香紅茶 | 50 | 12 | 76.0 |
+| 翡翠檸檬綠 | 60 | 15 | 75.0 |
+| 珍珠醇奶茶 | 65 | 18 | 72.3 |
+| 美式咖啡 | 70 | 20 | 71.4 |
+| 紅玉白桃烏龍 | 75 | 22 | 70.7 |
+
+兩個整數相除會無條件捨去，所以要先用 `::NUMERIC` 轉型。
+
+</details>
+
+## ✅ 第 4 章結業檢查
+
+- [ ] 我能寫出五要素俱全的提問
+- [ ] 我會在執行前用驗收四問檢查 AI 的 SQL
+- [ ] 抓錯遊戲四關，我至少自己抓到三關
+- [ ] 結業挑戰五題，我不看答案能寫出至少四題
+
+> 🎓 **恭喜完成第 4 章！** 下一章要讓 Python 用這些 SQL 自動產生報表。
+
+---
+
+| 上一步 | 目錄 | 下一步 |
+|:---|:---:|---:|
+| [⬅️ 進階-9 ON DELETE](./15on_delete_action.md) | [🏠 第 4 章目錄](./README.md) | [第 5 章 Python 串接 ➡️](./../python/) |

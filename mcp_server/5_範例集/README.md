@@ -1,6 +1,6 @@
 # 單元 5：企業各部門 MCP Server 範例集
 
-> 把課程中**所有的範例資料庫**都做成 MCP Server。每個範例都是一個「部門」的 AI 助理，可以直接使用（支援本機 `stdio` 與遠端 `http + Token` 雙模式），也可以當作請 AI 寫程式與期末專題的參考。　[← 回第 8 章](../)
+> 把課程中**所有的範例資料庫**都做成 MCP Server。每個範例都是一個「部門」的 AI 助理，可以直接使用（支援本機 `stdio` 與遠端 `http + Token` 雙模式；YouBike 未附資料，僅供閱讀），也可以當作請 AI 寫程式與期末專題的參考。　[← 回第 6 章](../)
 
 ## 範例一覽
 
@@ -10,16 +10,16 @@ flowchart LR
         SHOP[("shop.sql<br/>網路商店")]
         SCHOOL[("school.sql<br/>學校選課")]
         LIB[("library.sql<br/>圖書館借閱")]
-        TRA[("台鐵<br/>進出站人數")]
-        YB[("YouBike<br/>實戰專案")]
-        STK[("大盤股市<br/>實戰專案")]
+        CAFE[("cafe_shop.sql<br/>連鎖咖啡門市")]
+        YB[("YouBike<br/>需自備資料")]
+        STK[("stock_market.sql<br/>大盤股市")]
     end
     subgraph MCP Server
         E0["營運助理<br/>（單元 3–4）"]
         E1["客服助理"]
         E2["教務處助理"]
         E3["館員助理"]
-        E4["台鐵查詢<br/>（單元 1）"]
+        E4["門市營運查詢<br/>（單元 1）"]
         E5["YouBike 查詢"]
         E6["股市查詢"]
     end
@@ -27,7 +27,7 @@ flowchart LR
     SHOP --> E1
     SCHOOL --> E2
     LIB --> E3
-    TRA --> E4
+    CAFE --> E4
     YB --> E5
     STK --> E6
 
@@ -42,11 +42,11 @@ flowchart LR
 | 1 | [🛒 網路商店客服助理](./shop_service.md) | 客服人員 | shop.sql | 4 | **個資最小化**（email 遮罩）、多步驟查詢 |
 | 2 | [🎓 教務處助理](./school_office.md) | 教務處職員、導師 | school.sql | 4 | `HAVING` 找出需要輔導的學生、`CASE WHEN` 判斷及格 |
 | 3 | [📚 圖書館館員助理](./library_desk.md) | 圖書館館員 | library.sql | 4 | 日期計算（逾期天數）、`RANK()` 排名、可選的篩選條件 |
-| 4 | [🚲 YouBike 查詢](./youbike.md) | 一般民眾 | YouBike 實戰專案 | 4 | 時間序列取「最新一筆」、**台／臺**的搜尋問題 |
-| 5 | [📈 股市大盤查詢](./stock.md) | 理財專員 | 大盤股市實戰專案 | 4 | 依日／週／月彙總、計算漲跌幅、限制回傳筆數 |
+| 4 | [🚲 YouBike 查詢](./youbike.md) | 一般民眾 | 需自備 YouBike 資料（本課程未附） | 4 | 時間序列取「最新一筆」、**台／臺**的搜尋問題 |
+| 5 | [📈 股市大盤查詢](./stock.md) | 理財專員 | [stock_market.sql](../../範例資料庫/中文範例資料庫/stock_market.sql) | 4 | 依日／週／月彙總、計算漲跌幅、限制回傳筆數 |
 | — | [🛍️ 網路商店營運助理](../3_企業導入_遠端MCP與token/) | 主管 | shop.sql | 4 | 單元 3–4 的遠端 + Token 範例 |
 | — | [📖 圖書館借還書櫃台](../2_寫入型MCP_server/) | 櫃台館員 | library.sql | 5 | 單元 2 的安全寫入 + 交易範例 |
-| — | [🚆 台鐵進出站查詢](../1_用AI建立MCP_server/) | 一般民眾 | 台鐵資料 | 3 | 單元 1 的基礎範例 |
+| — | [☕ 門市營運查詢](../1_用AI建立MCP_server/) | 店長 | cafe_shop.sql | 3 | 單元 1 的基礎範例 |
 
 > 💡 **同一個資料庫，可以有不同的 MCP Server。** 網路商店就有「客服助理」和「營運助理」兩個：客服只能查會員訂單，主管才能看營業額。這就是企業依照**部門**開放不同工具的做法。
 

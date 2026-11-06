@@ -2,6 +2,8 @@
 
 還沒學 SQL 也沒關係。只要在 Antigravity 專案中掛載別人寫好的開源 MCP Server，**用中文問問題，AI 就會自動幫你查詢資料庫**。
 
+> ⏱️ **約 1 小時** ｜ 🎯 學完你會：掛載現成的 MCP、用中文查資料，並判斷 AI 的答案對不對
+
 > 「最貴的商品是什麼？」「哪些商品缺貨了？」「哪個月的訂單最多？」
 > → AI 透過專案的 MCP 工具查詢 PostgreSQL → 整理成精美表格回答你
 
@@ -46,14 +48,14 @@ flowchart LR
 
 ## 接下來的學習路線：自己寫 SQL 與 AI 輔助
 
-在第 3 章體驗完「AI 自動查庫」後，接下來的第 4、5 章我們將學習：
+在第 3 章體驗完「AI 自動查庫」後，接下來的第 4 章我們將學習：
 **「自己動手學寫 SQL，並由 Antigravity AI 在旁邊輔助、驗證與比對！」**
 
 ```mermaid
 flowchart LR
-    C3["<b>第 3 章</b><br/>用中文查庫<br/>不用會 SQL"] --> C4["<b>第 4-5 章 SQL 語法與練習</b><br/>① 自己動手學寫 SQL<br/>② 用 prompt 讓 AI 做一次<br/>③ 比對 AI 寫的 SQL 是否正確"]
-    C4 --> C6["<b>第 6-7 章</b><br/>在 Antigravity 中<br/>寫 Python 存取資料庫"]
-    C6 --> C8["<b>第 8 章</b><br/>自己用 Python<br/>寫自訂 MCP Server"]
+    C3["<b>第 3 章</b><br/>用中文查庫<br/>不用會 SQL"] --> C4["<b>第 4 章 SQL 語法與練習</b><br/>① 自己動手寫 SQL<br/>② 請 AI 助教批改<br/>③ 學會抓出 AI 的錯"]
+    C4 --> C6["<b>第 5 章</b><br/>寫 Python<br/>存取資料庫"]
+    C6 --> C8["<b>第 6 章</b><br/>自己用 Python<br/>寫自訂 MCP Server"]
 
     classDef mcp fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
     class C3,C8 mcp
