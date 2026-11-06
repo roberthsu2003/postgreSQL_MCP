@@ -110,9 +110,9 @@ uv pip install -r requirements.txt
 
 | 範例 | 資料庫 | 準備方式 |
 |---|---|---|
-| 客服助理、教務處助理、館員助理 | `practice` | 匯入[中文範例資料庫](../../範例資料庫/中文範例資料庫/)的 `shop.sql`、`school.sql`、`library.sql` |
-| YouBike 查詢 | 實戰專案使用的資料庫 | 執行 [台北市 YouBike](../../tutorial_container/範例/2taipei_youbike/) 的 notebook 下載資料 |
-| 股市大盤查詢 | `stock_market` | 執行 [大盤股市](../../tutorial_container/範例/1stock_market/) 的 notebook 下載資料 |
+| 客服助理、教務處助理、館員助理 | `practice` | 匯入[中文範例資料庫](../../範例資料庫/中文範例資料庫/)的 `cafe_shop.sql`、`shop.sql`、`school.sql`、`library.sql` |
+| 門市營運分析 | `practice` | 執行 [連鎖咖啡門市專案](../../app_projects/project2_cafe_dashboard/) 的 `cafe_shop.sql` |
+| 股市大盤與個股查詢 | `stock_market` | 執行 [股市專案](../../app_projects/project1_stock_market/) 的 `init_stock_db.sql` |
 
 ### 3. 用 Inspector 測試
 

@@ -1,6 +1,6 @@
 # 範例 5：📈 股市大盤查詢
 
-程式：[stock.py](./stock.py)　資料來源：[實戰專案：大盤股市](../../tutorial_container/範例/1stock_market/)　[← 回範例集](./README.md)
+程式：[stock.py](./stock.py)　資料來源：[實戰專案：股市即時監控](../../app_projects/project1_stock_market/)　[← 回範例集](./README.md)
 
 ## 情境
 

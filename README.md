@@ -146,14 +146,14 @@
 
 ---
 
-## 7. 實戰專案
+## 7. 實戰專案（SDD 規格驅動開發）
 
-| 專案 | 介面 | 說明 |
+本階段採用現代 AI 軟體工程的 **規格驅動開發 (SDD, Spec-Driven Development)**：透過 `PRD.md` 規範需求，由 AI 透過 MCP 讀取真實資料庫結構並產生 `plan.md`，循序實作具備快取與視覺化的完整 App。 👉 [專案總覽](./app_projects/)
+
+| 專案 | 介面 | 核心技術與說明 |
 |---|---|---|
-| [引導式 CLI 專案](./tutorial_container/範例/3引導式的CLI專案) | CLI | 函式框架先行的學習方式 |
-| [台鐵車站進出站](./tutorial_container/範例/4台鐵車站進出站範例) | CLI | 查詢台鐵車站進出站人數 |
-| [大盤股市](./tutorial_container/範例/1stock_market) | Streamlit | 下載股市資料、存入資料庫並視覺化 |
-| [台北市 YouBike](./tutorial_container/範例/2taipei_youbike) | Streamlit | 下載 YouBike 站點資料、存入資料庫並視覺化 |
+| ⭐ [股市即時監控與增量同步](./app_projects/project1_stock_market/) | Streamlit / Tkinter | **Cache-Aside 快取與增量同步**：無資料抓 yfinance、有資料走 DB、落後自動增量補齊 (Upsert) |
+| ☕ [連鎖門市營運分析看板](./app_projects/project2_cafe_dashboard/) | Streamlit | **跨月商業報表與 BI 看板**：銜接 Excel 月報表痛點教學，視覺化展示各門市營收、明星商品與 VIP 會員 |
 
 ---
 
