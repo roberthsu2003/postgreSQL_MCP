@@ -133,16 +133,18 @@
 
 ---
 
-## 6. Python 串接（psycopg2）
+## 6. Python 串接（用自然語言 Prompt 驅動連線）
 
-| # | 單元 | 內容 |
+本章不是要讓你硬背 Python 語法，而是學會使用自然語言 Prompt 指引 AI，快速生成安全、能讀取 `.env` 並連線到範例資料庫（如 `cafe_shop`）的 Python 專案。 👉 [章節總覽與常用 Prompt](./python/)
+
+| # | 單元 | 核心概念與 Prompt 重點 |
 |:---:|---|---|
-| 1 | [安裝和介紹](./python/安裝和介紹) | 安裝 psycopg2 |
-| 2 | [基本語法](./python/basic_module_usage) | 連線、執行 SQL、取得結果 |
-| 3 | [使用 with](./python/with) | 自動管理連線與交易 |
-| 4 | [傳遞參數](./python/parameter) | 安全地把資料傳進 SQL，避免 SQL Injection |
-| 5 | [型別對應](./python/type) | SQL 型別與 Python 型別的對應 |
-| 6 | [例外處理](./python/exception) | psycopg2 的 Exceptions |
+| 1 | [安裝和環境](./python/安裝和介紹) | 安裝套件、使用 `.env` 保管密碼，請 AI 產生連線測試檔 |
+| 2 | [基本查詢](./python/basic_module_usage) | 查詢 `cafe_shop` 商品與門市，請 AI 抓取資料並印出表格 |
+| 3 | [使用 with 語法](./python/with) | 請 AI 使用 `with` 語法自動 commit / rollback，確保交易安全 |
+| 4 | [安全傳遞參數](./python/parameter) | 嚴禁字串拼接！請 AI 撰寫 `%s` 參數化查詢防止 SQL Injection |
+| 5 | [型別對應](./python/type) | PostgreSQL 型別與 Python 對應關係，請 AI 轉換 JSON 格式 |
+| 6 | [例外處理](./python/exception) | 請 AI 加上 `try...except psycopg2.Error` 與自動 rollback 容錯防呆 |
 
 ---
 
