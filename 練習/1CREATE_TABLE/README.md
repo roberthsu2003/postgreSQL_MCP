@@ -1,6 +1,6 @@
 ## 練習建立資料表
 
-> 💡 用 DBeaver 匯入：在資料表上按右鍵 → **Import Data** → **CSV**（詳細步驟見[匯入 CSV](../../上課用sql/2_1匯入csv.md)）。
+> 💡 用 DBeaver 匯入：在資料表上按右鍵 → **Import Data** → **CSV**（詳細步驟見[匯入 CSV](../../SQL語法教學/2_1匯入csv.md)）。
 > CSV 的欄位名稱和資料表不同時，在 **Tables mapping** 頁面按 **Columns...** 手動對應；資料表多出來的 `id` 欄位（SERIAL）不用對應，會自動產生。
 
 - 使用city.csv檔

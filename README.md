@@ -65,12 +65,12 @@
 
 | # | 單元 | 內容 |
 |:---:|---|---|
-| 導讀 | [DDL 概念簡介](./上課用sql/DDL%28定義資料語言%29.md) | 什麼是資料定義語言？CREATE、ALTER、DROP 概念總覽 |
-| 1 | [建立資料庫](./上課用sql/1建立資料庫.md) | `CREATE DATABASE`、`DROP DATABASE` |
-| 2 | [資料表與基本型別](./上課用sql/2_0基本型別.md) | 數值、文字、日期時間等資料型別速查 |
-| 3 | [建立資料表](./上課用sql/2建立資料表.md) | `CREATE TABLE`、`ALTER TABLE`、欄位結構操作 |
-| 4 | [匯入 CSV](./上課用sql/2_1匯入csv.md) | 將 CSV 匯入資料表，包含單表與台鐵資料 |
-| 5 | [限制條件](./上課用sql/4限制.md) | `PRIMARY KEY`、`NOT NULL`、`UNIQUE`、`DEFAULT` |
+| 導讀 | [DDL 概念簡介](./SQL語法教學/DDL%28定義資料語言%29.md) | 什麼是資料定義語言？CREATE、ALTER、DROP 概念總覽 |
+| 1 | [建立資料庫](./SQL語法教學/1建立資料庫.md) | `CREATE DATABASE`、`DROP DATABASE` |
+| 2 | [資料表與基本型別](./SQL語法教學/2_0基本型別.md) | 數值、文字、日期時間等資料型別速查 |
+| 3 | [建立資料表](./SQL語法教學/2建立資料表.md) | `CREATE TABLE`、`ALTER TABLE`、欄位結構操作 |
+| 4 | [匯入 CSV](./SQL語法教學/2_1匯入csv.md) | 將 CSV 匯入資料表，包含單表與台鐵資料 |
+| 5 | [限制條件](./SQL語法教學/4限制.md) | `PRIMARY KEY`、`NOT NULL`、`UNIQUE`、`DEFAULT` |
 
 ### DML：資料操作語言
 
@@ -78,13 +78,13 @@
 
 | # | 單元 | 內容 |
 |:---:|---|---|
-| 導讀 | [DML 概念簡介](./上課用sql/DML%28資料操作語言%29.md) | 什麼是資料操作語言？INSERT、SELECT、UPDATE、DELETE 概念總覽 |
-| 1 | [新增資料](./上課用sql/3新增資料.md) | `INSERT INTO` |
-| 2 | [取得資料](./上課用sql/6取得資料.md) | `SELECT`、`WHERE`、`ORDER BY` |
-| 3 | [修改和刪除](./上課用sql/5修改和刪除.md) | `UPDATE`、`DELETE` |
-| 4 | [FOREIGN KEY](./上課用sql/7_0FOREIGN_KEY.md) | 外來鍵與資料表關聯 |
-| 5 | [JOIN](./上課用sql/JOIN.md) | 合併多張資料表 |
-| 6 | [JSON 應用](./上課用sql/16json.md) | `JSON` / `JSONB` 欄位 |
+| 導讀 | [DML 概念簡介](./SQL語法教學/DML%28資料操作語言%29.md) | 什麼是資料操作語言？INSERT、SELECT、UPDATE、DELETE 概念總覽 |
+| 1 | [新增資料](./SQL語法教學/3新增資料.md) | `INSERT INTO` |
+| 2 | [取得資料](./SQL語法教學/6取得資料.md) | `SELECT`、`WHERE`、`ORDER BY` |
+| 3 | [修改和刪除](./SQL語法教學/5修改和刪除.md) | `UPDATE`、`DELETE` |
+| 4 | [FOREIGN KEY](./SQL語法教學/7_0FOREIGN_KEY.md) | 外來鍵與資料表關聯 |
+| 5 | [JOIN](./SQL語法教學/JOIN.md) | 合併多張資料表 |
+| 6 | [JSON 應用](./SQL語法教學/16json.md) | `JSON` / `JSONB` 欄位 |
 
 ---
 
@@ -107,15 +107,15 @@
 
 ### 關聯資料庫實作案例
 
-從零建立一個關聯資料庫，並練習各種查詢。建議先看[適合初學者的版本](./上課用sql/7.0適合初學者關聯資料庫.md)。第 2～9 課的 prompt 請看 👉 [🤖 關聯資料庫實作：用 Prompt 操作](./上課用sql/關聯資料庫實作_用Prompt操作.md)
+從零建立一個關聯資料庫，並練習各種查詢。建議先看[適合初學者的版本](./SQL語法教學/7.0適合初學者關聯資料庫.md)。第 2～9 課的 prompt 請看 👉 [🤖 關聯資料庫實作：用 Prompt 操作](./SQL語法教學/關聯資料庫實作_用Prompt操作.md)
 
 | # | 單元 | # | 單元 |
 |:---:|---|:---:|---|
-| 1 | [創建關聯資料庫](./上課用sql/7創建關聯資料庫.md) | 6 | [聯集 UNION](./上課用sql/12聯集.sql) |
-| 2 | [新增資料](./上課用sql/8新增關聯資料庫資料.sql) | 7 | [連結 JOIN](./上課用sql/13連結.sql) |
-| 3 | [搜尋資料](./上課用sql/9搜尋關聯資料庫.sql) | 8 | [子查詢 SubQuery](./上課用sql/14子查詢.sql) |
-| 4 | [聚合函式](./上課用sql/10聚合函式.sql) | 9 | [ON DELETE 動作](./上課用sql/15on_delete_action.sql) |
-| 5 | [萬用字元](./上課用sql/11萬用字元.sql) | | |
+| 1 | [創建關聯資料庫](./SQL語法教學/7創建關聯資料庫.md) | 6 | [聯集 UNION](./SQL語法教學/12聯集.sql) |
+| 2 | [新增資料](./SQL語法教學/8新增關聯資料庫資料.sql) | 7 | [連結 JOIN](./SQL語法教學/13連結.sql) |
+| 3 | [搜尋資料](./SQL語法教學/9搜尋關聯資料庫.sql) | 8 | [子查詢 SubQuery](./SQL語法教學/14子查詢.sql) |
+| 4 | [聚合函式](./SQL語法教學/10聚合函式.sql) | 9 | [ON DELETE 動作](./SQL語法教學/15on_delete_action.sql) |
+| 5 | [萬用字元](./SQL語法教學/11萬用字元.sql) | | |
 
 ---
 

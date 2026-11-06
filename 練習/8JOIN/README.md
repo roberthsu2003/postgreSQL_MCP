@@ -30,7 +30,7 @@ FROM 左表 LEFT JOIN 右表 ON 連接條件
 
 > [!TIP]
 > 想要詳細的了解,可以參考以下的連結  
-> [JOIN的簡單範例](../../上課用sql/JOIN.md)
+> [JOIN的簡單範例](../../SQL語法教學/JOIN.md)
 
 ---
 
