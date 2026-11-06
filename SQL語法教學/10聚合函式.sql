@@ -85,3 +85,34 @@ WHERE o.status = '已完成'
 GROUP BY c.customer_id, c.name, c.phone
 HAVING COUNT(DISTINCT TO_CHAR(o.order_date, 'YYYY-MM')) >= 2
 ORDER BY 累計消費金額 DESC;
+
+/* ==========================================
+   3. 職場跨部門實戰：會計與人資範例庫
+   ========================================== */
+
+-- 【實戰 5：會計報銷 (expense_tracker) - 各部門累計支出與預算使用率】
+-- 需先在 DBeaver 執行 expense_tracker.sql
+SELECT 
+    d.name AS 部門名稱,
+    b.budget_amount AS 年度預算,
+    COALESCE(SUM(c.total_amount), 0) AS 累計核准支出,
+    ROUND((COALESCE(SUM(c.total_amount), 0) / b.budget_amount) * 100, 2) AS 預算使用百分比
+FROM departments d
+JOIN budgets b ON d.department_id = b.department_id AND b.year = 2024
+LEFT JOIN employees e ON d.department_id = e.department_id
+LEFT JOIN expense_claims c ON e.employee_id = c.employee_id AND c.status = '已撥款'
+GROUP BY d.department_id, d.name, b.budget_amount
+ORDER BY 預算使用百分比 DESC;
+
+-- 【實戰 6：人資差勤 (hr_attendance) - 員工總加班時數與異常打卡次數】
+-- 需先在 DBeaver 執行 hr_attendance.sql
+SELECT 
+    e.name AS 員工姓名,
+    COUNT(a.log_id) AS 出勤天數,
+    SUM(a.overtime_hours) AS 總加班時數,
+    COUNT(CASE WHEN a.status = '遲到' THEN 1 END) AS 遲到次數,
+    COUNT(CASE WHEN a.status = '早退' THEN 1 END) AS 早退次數
+FROM employees e
+JOIN attendance_logs a ON e.employee_id = a.employee_id
+GROUP BY e.employee_id, e.name
+ORDER BY 總加班時數 DESC;

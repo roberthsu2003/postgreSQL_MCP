@@ -4,8 +4,8 @@
 """
 範例 5:股市大盤指數查詢 MCP Server
 使用者:理財專員、投資人,查詢大盤走勢、年度表現、比較不同市場
-資料庫:實戰專案「大盤股市」建立的 市場、股市 資料表
-       (先執行 app_projects/project1_stock_market 的 init_stock_db.sql 建置資料庫)
+資料庫:範例資料庫「股市大盤歷史資料庫」建立的 市場、股市 資料表
+       (先在 DBeaver 執行 範例資料庫/中文範例資料庫/stock_market.sql 建置資料庫)
 """
 
 from datetime import date

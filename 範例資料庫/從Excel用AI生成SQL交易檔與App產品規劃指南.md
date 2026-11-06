@@ -130,69 +130,69 @@ COMMIT; -- 交易成功確認，寫入資料庫
 
 ---
 
-## 📱 第二階段：範例庫最後做成哪些「個人桌面小 App (Tkinter / PyQt)」
+## 📱 第二階段：範例庫最後做成哪些「個人職場桌面小 App (PyQt5 / Tkinter)」
 
-學 SQL 的目的，是為了讓自己在電腦前擁有一套隨時可用、不用聯網伺服器的個人管理軟體：
+學 SQL 的目的，不是為了枯燥的考試，而是讓上班族（會計、出納、總務、業務、人資）將手邊繁瑣重複的 Excel 工作，轉化為自己電腦前隨點即用、不用架設網路伺服器的**個人本機桌面管理 App**：
 
-### 1. ☕ 連鎖門市銷售報表 (`cafe_shop.sql`)
-* **個人桌面 App**：**門市店長營運分析桌面小視窗**
-* **技術**：Python 內建 Tkinter (`ttk.Treeview`, `ttk.Combobox`)
+### 1. 💼 會計 / 出納：費用報銷審核與部門預算預警系統 (`expense_tracker.sql`)
+* **個人桌面 App**：**企業費用報銷審核與部門預算超支警示系統**
+* **技術**：**PyQt5** (專業商務 QSS 風格、QTabWidget 分頁、QTableWidget 即時核銷)
 * **核心功能**：
-  1. 門市與月份快速下拉切換。
-  2. 手寫 SQL 多表 JOIN 即時載入訂單與明細清單。
-  3. 手寫 SQL `GROUP BY + HAVING` 一鍵篩選連續消費 2 個月以上的 VIP 名冊。
-* 🔗 **實戰專案**：[`app_projects/project2_cafe_dashboard/`](../app_projects/project2_cafe_dashboard/)
+  1. 待審核報銷案件流水線審批（核准/駁回/撥款）狀態切換。
+  2. 手寫 SQL 聚合與關聯查詢，即時計算各部門「年度核定預算 vs 累計報銷支出」。
+  3. 支出率超過 80% 自動觸發視覺預警，協助出納與會計控管預算。
+* 🔗 **實戰專案**：[`app_projects/project1_expense_manager/`](../app_projects/project1_expense_manager/)
 
 ---
 
-### 2. 🛒 網路商店與電商訂單 (`shop.sql`)
-* **個人桌面 App**：**電商訂單履約與客戶 CRM 桌面管理系統**
-* **技術**：Python 內建 Tkinter (雙分頁視窗) 或 PyQt5
+### 2. 👥 人資 HR：排班差勤、加班與計薪核算工具 (`hr_attendance.sql`)
+* **個人桌面 App**：**員工排班打卡核對、加班工時與計薪結算工具**
+* **技術**：**Tkinter** (Python 內建免安裝環境、`ttk.Treeview` 差勤網格)
 * **核心功能**：
-  1. 訂單狀態過濾（未處理 / 已出貨 / 已取消）。
-  2. 點擊訂單，下方手寫 SQL JOIN 即時帶出該單購買之所有品項。
-  3. RFM 客戶價值模型試算，標記即將流失客與核心客戶。
-* 🔗 **實戰專案**：[`app_projects/project3_shop_crm/`](../app_projects/project3_shop_crm/)
+  1. 匯入員工每日打卡時間，手寫 SQL `CASE WHEN` 自動判斷遲到、早退與正常。
+  2. 自動計算平日加班與假日加班時數（以勞基法 1.34x / 1.67x 費率試算）。
+  3. 月底一鍵結算應發薪資總表（底薪 + 加班費 - 勞健保自付額）。
+* 🔗 **實戰專案**：[`app_projects/project2_hr_attendance/`](../app_projects/project2_hr_attendance/)
 
 ---
 
-### 3. 🎓 學校選課與成績 (`school.sql`)
-* **個人桌面 App**：**個人智慧選課與學分審查小工具**
-* **技術**：Python 內建 Tkinter (`ttk.Treeview`, `messagebox`)
+### 3. 🏢 總務：固定資產借還與耗材安全存量管理 (`assets_inventory.sql`)
+* **個人桌面 App**：**辦公設備借還登記、逾期追蹤與耗材採購預警系統**
+* **技術**：**PyQt5** (多面板互動視窗、`QSplitter` 資產與借閱雙向聯動)
 * **核心功能**：
-  1. 學生每週排課網格視圖呈現。
-  2. 加選時以手寫 SQL 檢查時段衝突，衝堂時彈出錯誤警告。
-  3. 畢業學分達成率進度條（必修 / 選修）。
-* 🔗 **實戰專案**：[`app_projects/project4_school_enrollment/`](../app_projects/project4_school_enrollment/)
+  1. 公司筆電、投影機借還登記，手寫 SQL 篩選逾期未歸還名冊與天數。
+  2. 文具與耗材安全存量檢核：庫存低於預警線自動標記「建議採購清單」。
+  3. 耗材領用登記自動扣減庫存，完整紀錄各部門領用歷程。
+* 🔗 **實戰專案**：[`app_projects/project3_assets_inventory/`](../app_projects/project3_assets_inventory/)
 
 ---
 
-### 4. 📚 圖書館借閱與罰金 (`library.sql`)
-* **個人桌面 App**：**圖書借還流通與逾期罰款計算機**
-* **技術**：Python 內建 Tkinter 或 PyQt5
+### 4. ☕ 門市店長：跨月門市營運分析與員工提成系統 (`cafe_shop.sql`)
+* **個人桌面 App**：**門市銷售戰情室與員工銷售業績提成計算機**
+* **技術**：**PyQt5** (現代化卡片式 KPI、排行清單與營運圖表)
 * **核心功能**：
-  1. 館藏圖書模糊搜尋（手寫 SQL `LIKE %s`）。
-  2. 會員未還書清單與逾期天數、累積罰金動態結算。
-  3. 年度熱門借閱榜單（PostgreSQL 視窗函式 `RANK()`）。
-* 🔗 **實戰專案**：[`app_projects/project5_library_system/`](../app_projects/project5_library_system/)
+  1. 跨月份、跨門市營收對比，解決多份 Excel 拼湊痛點。
+  2. 手寫 SQL `GROUP BY` 與視窗函式，計算明星商品熱賣排行與滯銷警示。
+  3. 員工銷售杯數提成階梯試算，自動產出各店員當月提成獎金明細。
+* 🔗 **實戰專案**：[`app_projects/project4_cafe_dashboard/`](../app_projects/project4_cafe_dashboard/)
 
 ---
 
-### 5. 📈 金融股市即時監控 (`init_stock_db.sql`)
-* **個人桌面 App**：**個人投資組合即時監控與增量同步視窗**
-* **技術**：Python 內建 Tkinter + Matplotlib Canvas
+### 5. 🛒 業務 / 電商：業務訂單履約與客戶 CRM 系統 (`shop.sql`)
+* **個人桌面 App**：**客戶訂單追蹤、出貨排程與 RFM 價值分群系統**
+* **技術**：**Tkinter** (主從明細 Master-Detail、客製化篩選工具列)
 * **核心功能**：
-  1. Cache-Aside 本地手寫 SQL 快取，0.1 秒極速秒開走勢。
-  2. 手寫 SQL `ON CONFLICT DO UPDATE` 每日自動增量更新股價。
-  3. 嵌入式 Matplotlib 折線圖繪製近 60 天走勢與均線。
-* 🔗 **實戰專案**：[`app_projects/project1_stock_market/`](../app_projects/project1_stock_market/)
+  1. 訂單狀態流動管理（待付款 ➡️ 揀貨中 ➡️ 已出貨 ➡️ 已完成）。
+  2. 點選客戶即時連動歷史訂單與購買品項，掌握客戶偏好。
+  3. RFM 模型試算客戶近期消費活躍度與消費額，標記高價值 VIP 與流失預警名單。
+* 🔗 **實戰專案**：[`app_projects/project5_shop_crm/`](../app_projects/project5_shop_crm/)
 
 ---
 
 ## 🎯 總結：學生的實戰行動清單
 
-1. **挑選日常上班 Excel**：去識別化後取樣 10~20 筆。
-2. **複製專用 Prompt 問 AI**：請 AI 產出純 SQL 交易檔文字（不使用 MCP 代勞）。
-3. **在 DBeaver 執行**：按下 `Alt + X`，親手建庫並檢查每一張表的關聯。
+1. **挑選日常上班 Excel**：會計報銷、排班打卡、資產清單、銷售紀錄、客戶名單，去識別化後取樣 10~20 筆。
+2. **複製專用 Prompt 問 AI**：請 AI 產出純 SQL 交易檔文字（嚴禁使用 MCP 代勞自動寫庫）。
+3. **在 DBeaver 執行**：按下 `Alt + X`，親手建庫並檢查每一張表的正規化與外來鍵關聯。
 4. **手寫 SQL 貫穿學習**：跟著 `SQL語法教學/` 每個章節動手下指令。
-5. **打造個人桌面 App**：進入 `app_projects/`，用 Python 內建的 Tkinter 寫出自己在電腦上隨點隨開的桌面小 App！
+5. **打造個人桌面 App**：進入 `app_projects/`，依個人偏好選擇輕量免安裝的 **Tkinter** 或企業級現代介面的 **PyQt5**，寫出自己在電腦上隨點隨開的專屬桌面小 App！

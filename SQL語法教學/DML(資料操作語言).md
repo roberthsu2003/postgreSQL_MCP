@@ -38,14 +38,17 @@ DELETE FROM users WHERE id = 1;
 
 ---
 
-## 🤖 不寫 SQL，用 Prompt 完成
+## 🤖 運用 AI 助教：建議 DML 語法 (學生手動執行)
 
-> 在 Antigravity 使用[第 3 章](../MCP操作資料庫/2_用中文查詢資料庫/#6-準備第-4-章設定可寫入的連線)設定的 **`postgres-sql`**（可寫入，連到 `sql_tutorial` 資料庫）。
-> 每個 prompt 執行後，點開工具呼叫（`execute_sql`），**對照 AI 執行的 SQL 和上面學的是否一樣**。
+> 💡 **核心教學原則**：  
+> 本專案的 MCP Server 採用**安全唯讀保護模式 (`--access-mode=restricted`)**，嚴禁 AI 在背後直接代勞新增、修改或刪除資料！  
+> 正確的學習方式：向 AI 請教建議語法與邏輯解析，**親自將 SQL 複製到 DBeaver 中手動執行**，看懂每筆資料的變化。
 
-> 用一張有 name、major、score 欄位的 student 資料表當例子，分別寫出 SELECT、INSERT、UPDATE、DELETE 的 SQL，並用一句話說明每一個在做什麼。**先不要執行。**
+**Prompt 1：請 AI 解析職場日常 DML（以人資差勤打卡為例）**
 
-✅ 對照上面的「簡單示例」。注意 AI 寫的 UPDATE 和 DELETE **有沒有 WHERE**。
+> 「請以公司人資的『員工打卡記錄 (attendance_logs)』資料表為例（包含 log_id、employee_id、clock_in、clock_out、status 欄位），分別寫出 SELECT 查詢、INSERT 新增打卡、UPDATE 補卡、DELETE 刪除異常資料的標準 SQL，並特別提醒我 UPDATE 與 DELETE 忘記加 WHERE 的災難後果。請給我純 SQL 程式碼區塊，我會在 DBeaver 中手動執行。」
+
+✅ 對照「簡單示例」。注意 AI 寫的 UPDATE 和 DELETE **是否都有加 WHERE 條件**。
 
 ---
 
@@ -53,5 +56,5 @@ DELETE FROM users WHERE id = 1;
 
 | ⬅️ 上一階段 | 🏠 返回目錄 | ➡️ 下一單元 |
 |:---|:---:|---:|
-| [單元 5：限制條件](./4限制.md) | [第 4 章：SQL 語法與 AI 輔助](../README.md#dml資料操作語言) | [DML 單元 1：新增資料](./3新增資料.md) |
+| [單元 5：限制條件](./4限制.md) | [第 4 章：SQL 語法與實戰練功](../README.md#dml資料操作語言資料的新增查詢異動) | [DML 單元 1：新增資料](./3新增資料.md) |
 

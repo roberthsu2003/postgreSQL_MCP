@@ -1,7 +1,34 @@
-# 實戰專案：個人桌面版小 App 開發專區 (Tkinter / PyQt)
+# 職場實戰：五大職能個人桌面 App 專區 (會計・人資・總務・店長・業務)
 
-本目錄包含結合 **PostgreSQL + Python 原生手寫 SQL (psycopg2) + 桌面視窗 GUI (Tkinter / PyQt)** 的綜合實戰專案。  
-**本專案專為上班族設計：告別過去混亂的 Excel 記帳與手動算表，將資料庫化為自己電腦上獨立運作的「個人版桌面小 App」！**
+本目錄包含結合 **PostgreSQL + Python 原生手寫 SQL (psycopg2) + 現代桌面視窗 (PyQt5 & Tkinter)** 的綜合實戰專案。  
+**專門為企業各部門上班族打造：將每天面對的混亂 Excel 報表，轉化為在自己個人電腦上隨開即用的專業管理小 App！**
+
+---
+
+## 🏢 五大職場核心職能完美對照
+
+```mermaid
+flowchart TD
+    subgraph 企業行政與營運五大核心職能
+        F1["💼 會計 / 出納<br>企業費用審核與預算預警 (PyQt5)"]
+        F2["👥 人資 / 考勤<br>員工排班出勤與薪資試算 (Tkinter)"]
+        F3["📦 總務 / 倉管<br>固定資產借還與耗材庫存 (PyQt5)"]
+        F4["☕ 店長 / 營運主管<br>門市營運分析與業績抽成 (PyQt5)"]
+        F5["🛒 業務 / 電商<br>客戶關係 CRM 與訂單履約 (Tkinter)"]
+    end
+```
+
+---
+
+## 📁 實戰專案列表（完美對應繁體中文範例資料庫）
+
+| 專案目錄 | 適用職務 | 對應範例資料庫 | 解決之 Excel 職場痛點 | 桌面 GUI 框架 |
+|---|---|---|---|:---:|
+| 💼 **[專案 1：企業費用報銷審核與預算系統](./project1_expense_manager/)** | **會計、出納、財務主管** | [`expense_tracker.sql`](../範例資料庫/中文範例資料庫/expense_tracker.sql)<br>([報銷單 Excel](../範例資料庫/excel範例/自備Excel轉SQL實戰示範/)) | • 員工差旅請款 Excel 滿天飛、公式損壞<br>• 部門預算防超支即時預警<br>• 一鍵批次審批（核准/駁回/出納撥款） | 🔵 **PyQt5**<br>(KPI 卡片 + QSS) |
+| 👥 **[專案 2：員工排班考勤與薪資試算](./project2_hr_attendance/)** | **人資 (HR)、考勤計薪** | [`hr_attendance.sql`](../範例資料庫/中文範例資料庫/hr_attendance.sql) | • 手動排班撞期與連上 6 天違反勞基法<br>• 打卡鐘工時加總算到眼睛痛<br>• 遲到、加班、請假扣款自動結算薪資 | 🟢 **Tkinter**<br>(零設定免安裝) |
+| 📦 **[專案 3：企業資產借還與耗材庫存](./project3_assets_inventory/)** | **總務、行政庶務、IT 網管** | [`assets_inventory.sql`](../範例資料庫/中文範例資料庫/assets_inventory.sql) | • 筆電/投影機借出沒還找不到人<br>• 耗材庫存斷貨才發現（低庫存警報）<br>• 固定資產盤點編號不再重複 | 🔵 **PyQt5**<br>(流通櫃台視窗) |
+| ☕ **[專案 4：門市營運分析與業績抽成](./project4_cafe_dashboard/)** | **門市店長、營運經理** | [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)<br>([門市月報 Excel](../範例資料庫/excel範例/連鎖門市月報表/)) | • 解決「每個月複製一份 Excel」痛點<br>• 跨月跨店營收即時動態對比<br>• 明星熱銷排行與 VIP 連續回購名冊 | 🔵 **PyQt5**<br>(商業 BI 多分頁) |
+| 🛒 **[專案 5：業務客戶 CRM 與訂單履約](./project5_shop_crm/)** | **業務、業務助理、電商運營** | [`shop.sql`](../範例資料庫/中文範例資料庫/shop.sql)<br>([網路商店 Excel](../範例資料庫/從Excel到關聯資料庫_正規化.md)) | • 客戶電話地址在 Excel 容易矛盾衝突<br>• 訂單履約狀態追蹤與點選展開明細<br>• 客戶 RFM 價值模型自動貼標（VIP/流失客） | 🟢 **Tkinter**<br>(雙分頁工作台) |
 
 ---
 
@@ -11,41 +38,21 @@
 1. **嚴禁 Prompt 讓 MCP 直接在背後自動生成或修改資料庫**：
    - 所有的資料庫建立（DDL）與假資料匯入（DML），必須由 AI **輸出標準 SQL 交易腳本**，由學生**親自複製到 DBeaver 手動執行**，親眼看懂每一條約束與型別！
 2. **Python 程式中全數手寫 SQL**：
-   - 桌面 App 內部透過 `psycopg2` 連線，所有的按鈕查詢、表格刷新、分組統計，皆在 Python 中**手寫原生 SQL（`cursor.execute("SELECT ... JOIN ...")`）**，不使用 ORM 抽象化，讓學生真正體會 SQL 與桌面介面的聯動。
-3. **拒絕笨重線上版，打造輕量個人桌面 App**：
-   - 不使用需要架站與雲端伺服器的 Web/Streamlit 線上版。
-   - 全面採用 **Tkinter**（Python 內建，免安裝環境，雙擊 `.py` 立即跑出視窗）或 **PyQt / PySide**（精美個人桌面視窗），開發出隨開即用的個人專屬工具！
-
----
-
-## 🧭 規格驅動開發 (SDD) 流程
-
-```mermaid
-flowchart LR
-    A["1. 規格需求 (PRD.md)<br>定義桌面畫面與手寫 SQL 邏輯"] --> B["2. 研讀 DDL 結構<br>確認資料表欄位與外來鍵"]
-    B --> C["3. 產生計畫 (plan.md)<br>拆解查詢層與視窗元件任務"]
-    C --> D["4. 桌面 App 實作<br>Tkinter / PyQt + psycopg2"]
-```
-
----
-
-## 📁 實戰專案列表（完美對應範例資料庫）
-
-| 專案目錄 | 對應範例資料庫 | 桌面 App 產品定位 | 核心手寫 SQL 練習 | 推薦桌面技術 |
-|---|---|---|---|---|
-| 📈 **[專案 1：股市即時監控與增量同步](./project1_stock_market/)** | [`init_stock_db.sql`](./project1_stock_market/init_stock_db.sql) | **個人投資組合監控視窗** | • `ON CONFLICT ... DO UPDATE` 增量寫入<br>• `SELECT ... ORDER BY date DESC` 快速讀取<br>• 聚合計算投資組合總市值與損益 | Python 內建 **Tkinter**<br>(可選 ttk / Matplotlib 嵌入) |
-| ☕ **[專案 2：連鎖門市營運分析看板](./project2_cafe_dashboard/)** | [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)<br>([門市月報 Excel](../範例資料庫/excel範例/連鎖門市月報表/)) | **門市店長營運分析桌面小 App** | • 多表 `JOIN` 門市、訂單與明細<br>• `GROUP BY` 與 `TO_CHAR` 跨月營收統計<br>• `HAVING` 抓出回購 VIP 常客清單 | **Tkinter** (ttk.Treeview)<br>或 **PyQt5** |
-| 🛒 **[專案 3：電商訂單履約與客戶 CRM](./project3_shop_crm/)** | [`shop.sql`](../範例資料庫/中文範例資料庫/shop.sql)<br>([網路商店 Excel](../範例資料庫/從Excel到關聯資料庫_正規化.md)) | **電商訂單履約與客戶管理系統** | • 訂單狀態過濾 `WHERE status = %s`<br>• 雙表 JOIN 展開訂單明細清單<br>• RFM 分群計算 (`COUNT`, `SUM`, 天數相減) | **Tkinter** / **PyQt5** |
-| 🎓 **[專案 4：校園智慧選課與學分審查](./project4_school_enrollment/)** | [`school.sql`](../範例資料庫/中文範例資料庫/school.sql) | **個人選課與畢業學分審核小工具** | • 多對多關聯查詢已選課表<br>• 衝堂檢查 SQL (時段交集判斷)<br>• `CASE WHEN` 分類統計必修與選修學分 | **Tkinter** (課表表格視圖) |
-| 📚 **[專案 5：圖書館借閱與罰金系統](./project5_library_system/)** | [`library.sql`](../範例資料庫/中文範例資料庫/library.sql) | **圖書借還流通與逾期罰金計算機** | • 書籍模糊搜尋 `WHERE title LIKE %s`<br>• `CURRENT_DATE - due_date` 動態結算罰金<br>• `RANK()` 視窗函式計算年度借閱榜 | **Tkinter** / **PySide** |
+   - 桌面 App 內部透過 `psycopg2` 連線，所有的按鈕查詢、表格刷新、分組統計，皆在 Python 中**手寫原生 SQL（`cursor.execute("SELECT ... JOIN ...")`）**，不使用 ORM 抽象化，讓學生真正體會手寫 SQL 與視窗元件的聯動。
+3. **拒絕線上架站繁瑣，打造隨開即用的個人桌面 App**：
+   - 不使用需要架站與雲端伺服器的 Web/Streamlit 線上版，專案全數於本機視窗執行。
 
 ---
 
 ## 🛠️ 開發流程三步驟
 
 1. **先在資料庫建好資料表**：
-   開啟 DBeaver，執行對應專案的 `.sql` 腳本（例如 [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql) 或 [`shop.sql`](../範例資料庫/中文範例資料庫/shop.sql)），確認資料表建立無誤。
-2. **複製環境設定檔**：
-   在專案目錄下複製 `.env.example` 為 `.env`，設定 PostgreSQL 本機帳號密碼。
+   開啟 DBeaver，執行對應專案的 `.sql` 腳本（例如 [`expense_tracker.sql`](../範例資料庫/中文範例資料庫/expense_tracker.sql) 或 [`hr_attendance.sql`](../範例資料庫/中文範例資料庫/hr_attendance.sql)），確認資料表建立無誤。
+2. **安裝對應環境與設定檔**：
+   ```bash
+   pip install -r requirements.txt
+   cp .env.example .env
+   # 編輯 .env 填入你的 PostgreSQL 本機連線設定
+   ```
 3. **複製 Prompt 引導 AI 啟動 SDD 計畫**：
    打開該專案下的 `prompts/01_生成開發計畫_plan.md`，貼給 AI（告知 AI 資料表結構與需求，不使用 MCP 捷徑），開始打造你的個人桌面視窗 App！

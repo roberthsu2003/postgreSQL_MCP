@@ -1,6 +1,6 @@
 # 範例 5：📈 股市大盤查詢
 
-程式：[stock.py](./stock.py)　資料來源：[實戰專案：股市即時監控](../../app_projects/project1_stock_market/)　[← 回範例集](./README.md)
+程式：[stock.py](./stock.py)　資料來源：[範例資料庫：股市大盤歷史資料庫](../../範例資料庫/中文範例資料庫/stock_market.sql)　[← 回範例集](./README.md)
 
 ## 情境
 
@@ -8,10 +8,11 @@
 
 ## 事前準備
 
-先執行實戰專案的 notebook，把大盤資料存進 `市場`、`股市` 兩張資料表（實戰專案使用 `stock_market` 資料庫）：
+先在 DBeaver 執行範例資料庫的腳本，把大盤資料存進 `市場`、`股市` 兩張資料表：
 
 ```bash
-export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/stock_market"
+# 匯入範例資料庫/中文範例資料庫/stock_market.sql 至 practice 資料庫
+export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/practice"
 ```
 
 ## 工具

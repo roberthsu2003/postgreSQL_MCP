@@ -174,48 +174,29 @@ SELECT * FROM contacts;
 
 ---
 
-## 🤖 不寫 SQL，用 Prompt 完成
+## 🤖 運用 AI 助教：建議外來鍵語法 (學生手動執行)
 
-> 在 Antigravity 使用[第 3 章](../MCP操作資料庫/2_用中文查詢資料庫/#6-準備第-4-章設定可寫入的連線)設定的 **`postgres-sql`**（可寫入，連到 `sql_tutorial` 資料庫）。
-> 每個 prompt 執行後，點開工具呼叫（`execute_sql`），**對照 AI 執行的 SQL 和上面學的是否一樣**。
+> 💡 **核心教學原則**：  
+> 本專案的 MCP Server 採用**安全唯讀保護模式 (`--access-mode=restricted`)**，嚴禁 AI 在背後直接代勞建立或刪除資料表！  
+> 正確的學習方式：向 AI 請教外來鍵約束與 ON DELETE 行為的建議測試語法，**親自將 SQL 複製到 DBeaver 中手動執行**，親眼觀察資料庫回傳的約束錯誤訊息。
 
-**Prompt 1：NO ACTION（預設）**
+**Prompt 1：請 AI 提供外來鍵測試 DDL 與資料**
 
-> 用 postgres-sql 建立兩張資料表（如果存在先刪除）：
-> - customers：customer_id 用 GENERATED ALWAYS AS IDENTITY 自動產生，是主鍵；customer_name 是 VARCHAR(255) 必填
-> - contacts：contact_id 一樣自動產生，是主鍵；customer_id 參考 customers（不設定 ON DELETE）；contact_name 是 VARCHAR(255) 必填；phone VARCHAR(15)；email VARCHAR(100)
->
-> 新增客戶 BlueBird Inc、Dolphin LLC。新增聯絡人：John Doe（BlueBird，(408)-111-1234，john.doe@bluebird.dev）、Jane Doe（BlueBird，(408)-111-1235，jane.doe@bluebird.dev）、David Wright（Dolphin，(408)-222-1234，david.wright@dolphin.dev）。
+> 「請給我一組用來測試 Foreign Key 的簡單 SQL 範例：父表 customers（主鍵 customer_id）與子表 contacts（包含 customer_id 外來鍵）。請分別提供三種 ON DELETE 設定（NO ACTION、SET NULL、CASCADE）的建表與測試刪除 SQL，我會在 DBeaver 中親自執行驗證。」
 
-> 刪除 customer_id 是 1 的客戶，如果出錯告訴我原因。
+✅ 對照上方範例，在 DBeaver 執行後觀察刪除父表資料時，子表資料的變化與報錯。
 
-✅ 刪除失敗，錯誤訊息是 `violates foreign key constraint`，對照上面的「範例NO_ACTION設定」。
+**Prompt 2：整理職場常見外來鍵決策**
 
-**Prompt 2：SET NULL**
-
-> 把兩張資料表刪除後重建，這次客戶被刪除時，聯絡人的 customer_id 要設為 NULL。資料和剛才一樣。然後刪除 customer_id 1 的客戶，再列出所有聯絡人。
-
-✅ John Doe、Jane Doe 的 customer_id 變成 `NULL`。注意 AI 刪除資料表的順序：要先刪 contacts（child），再刪 customers（parent）。
-
-**Prompt 3：CASCADE**
-
-> 再重建一次，這次客戶被刪除時，他的聯絡人也一起刪除。資料一樣，刪除 customer_id 1 後列出所有聯絡人。
-
-✅ 只剩下 David Wright。
-
-**Prompt 4：整理觀念**
-
-> 用這三次的結果，說明 NO ACTION、SET NULL、CASCADE 的差別，什麼情況適合用哪一種？
+> 「在一般公司系統中，例如『部門 vs 員工』、『客戶 vs 訂單』、『固定資產 vs 借閱紀錄』，這三種情境分別適合使用 NO ACTION、SET NULL 還是 CASCADE？請詳細說明背後的商業安全考量。」
 
 ---
 
-## 🛠️ 實戰演練：以連鎖門市 (`cafe_shop`) 驗證外來鍵保護機制
+## 🛠️ 實戰演練：五大職場範例庫的外來鍵保護驗證
 
-> 💡 **資料來源**：在資料庫匯入 [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)。
+在 DBeaver 中開啟 SQL 編輯器，親自測試以下真實職場資料庫的外來鍵保護機制：
 
-在 DBeaver 中親自測試以下 SQL，體驗資料庫的外來鍵保護：
-
-### 測試 1：插入不存在的外來鍵（資料庫自動擋下無效資料）
+### 測試 1：連鎖門市 (`cafe_shop`) - 插入不存在的父表 ID（資料庫自動擋下幽靈單據）
 ```sql
 -- 門市只有 1~4 號，故意插入門市 999 號的訂單
 INSERT INTO orders (order_id, store_id, order_date, status)
@@ -225,12 +206,21 @@ VALUES (99999, 999, '2024-03-31', '處理中');
 -- 說明：資料庫強制確保每筆訂單都必須屬於真實存在的門市，杜絕幽靈單據！
 ```
 
-### 測試 2：父資料表被參考時，禁止直接刪除
+### 測試 2：會計報銷 (`expense_tracker`) - 被明細參考的報銷主單禁止直接刪除
 ```sql
--- 嘗試直接刪除有大量訂單的台北忠孝店 (store_id = 1)
-DELETE FROM stores WHERE store_id = 1;
+-- 嘗試直接刪除已有報銷品項明細的單據 (claim_id = 1)
+DELETE FROM expense_claims WHERE claim_id = 1;
 
--- 🛑 結果：ERROR: update or delete on table "stores" violates foreign key constraint "orders_store_id_fkey" on table "orders"
--- 說明：因為 orders 表中有資料參考 store_id = 1，預設 NO ACTION / RESTRICT 禁止任意刪除父表資料！
+-- 🛑 結果：ERROR: update or delete on table "expense_claims" violates foreign key constraint on table "expense_items"
+-- 說明：避免單據被誤刪導致報銷金額與明細脫鉤，保護財務帳目完整性！
+```
+
+### 測試 3：總務資產 (`assets_inventory`) - 正在借出中的筆電設備禁止刪除
+```sql
+-- 嘗試直接刪除已有員工借閱記錄的 MacBook Pro (asset_id = 1)
+DELETE FROM assets WHERE asset_id = 1;
+
+-- 🛑 結果：ERROR: violates foreign key constraint on table "asset_lendings"
+-- 說明：設備尚未結清借用歷史前，資料庫禁止刪除資產主檔！
 ```
 

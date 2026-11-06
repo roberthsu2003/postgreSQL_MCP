@@ -118,3 +118,17 @@
 ### Prompt：連鎖刪除驗證
 > **提問 Prompt**：  
 > 「請為我設計一組迷你測試資料表，示範在 `orders` 與 `order_items` 之間設定 `ON DELETE CASCADE`。當我手動在 DBeaver 執行 `DELETE FROM orders WHERE order_id = 101` 時，該訂單的商品明細會如何自動被連鎖清除？請給我完整 DDL 與測試 SQL。」
+
+---
+
+## 🏢 五大職場核心範例庫提問錦囊
+
+學員若要針對自己的工作領域進行 SQL 練功，可直接複製以下職場專屬 Prompt 向 AI 請教：
+
+| 職場職務 | 對應資料庫檔案 | 學生可複製提問的 Prompt 範例 |
+|---|---|---|
+| 💼 **會計 / 出納** | [`expense_tracker.sql`](../範例資料庫/中文範例資料庫/expense_tracker.sql) | 「我在 DBeaver 匯入了 `expense_tracker` 資料庫，請給我一條 SQL，計算出 2024 年各部門核准報銷總金額，並與部門年度預算比對，篩選出預算使用率超過 80% 的部門清單。」 |
+| 👥 **人資 (HR)** | [`hr_attendance.sql`](../範例資料庫/中文範例資料庫/hr_attendance.sql) | 「請以 `hr_attendance` 資料庫為例，寫出一條使用 `CASE WHEN` 統計每位員工當月『遲到次數』與『總加班時數』的 SQL，我會在 DBeaver 中執行。」 |
+| 🏢 **總務 / 倉管** | [`assets_inventory.sql`](../範例資料庫/中文範例資料庫/assets_inventory.sql) | 「請以 `assets_inventory` 資料庫為例，寫出找出『目前借出中且已超過應歸還日期的設備與借用人清單』，以及計算目前逾期天數的 SQL 語法。」 |
+| ☕ **店長 / 營運** | [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql) | 「請給我一條將 2024 年各門市營業額按月份展開（跨月樞紐或分組），並統計各商品銷售佔比的 SQL。」 |
+| 🛒 **業務 / 電商** | [`shop.sql`](../範例資料庫/中文範例資料庫/shop.sql) | 「請以 `shop` 資料庫為例，寫出一條 SQL，計算出各客戶的最後下單日期、下單總次數與總消費金額（RFM 模型），我會在 DBeaver 中手動驗證。」 |

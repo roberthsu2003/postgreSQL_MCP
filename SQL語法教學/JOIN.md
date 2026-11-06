@@ -232,6 +232,40 @@ JOIN products p ON i.product_id = p.product_id
 ORDER BY o.order_id ASC, i.item_id ASC;
 ```
 
+### 題目 3：會計實戰 (expense_tracker) - 員工報銷跨表查詢（部門 ➡️ 員工 ➡️ 單據 ➡️ 類別）
+```sql
+-- 需先在 DBeaver 執行 expense_tracker.sql
+SELECT 
+    d.name AS 部門,
+    e.name AS 員工姓名,
+    c.claim_id AS 報銷單號,
+    cat.name AS 費用類別,
+    i.amount AS 明細金額,
+    c.status AS 審核狀態
+FROM expense_items i
+JOIN expense_claims c ON i.claim_id = c.claim_id
+JOIN employees e ON c.employee_id = e.employee_id
+JOIN departments d ON e.department_id = d.department_id
+JOIN expense_categories cat ON i.category_id = cat.category_id
+WHERE c.status = '待審核'
+ORDER BY d.name, c.claim_id;
+```
+
+### 題目 4：總務實戰 (assets_inventory) - 耗材領用歷程跨表查詢（部門 ➡️ 耗材品項）
+```sql
+-- 需先在 DBeaver 執行 assets_inventory.sql
+SELECT 
+    l.log_date AS 領用日期,
+    l.department AS 領用部門,
+    l.recipient_name AS 領用人,
+    c.name AS 耗材名稱,
+    l.quantity AS 領用數量,
+    c.current_stock AS 目前剩餘庫存
+FROM consumable_logs l
+JOIN consumables c ON l.consumable_id = c.consumable_id
+ORDER BY l.log_date DESC;
+```
+
 ---
 
 ## 🧭 課程導覽

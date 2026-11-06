@@ -69,3 +69,38 @@ WHERE product_id NOT IN (
     SELECT DISTINCT product_id 
     FROM order_items
 );
+
+/* ==========================================
+   3. 職場跨部門實戰：會計與總務範例庫子查詢
+   ========================================== */
+
+-- 【實戰 5：會計報銷 (expense_tracker) - 找出單筆報銷金額大於平均值的費用明細】
+-- 需先在 DBeaver 執行 expense_tracker.sql
+SELECT 
+    i.item_id,
+    c.name AS 費用類別,
+    i.expense_date AS 支出日期,
+    i.amount AS 金額,
+    i.description AS 說明
+FROM expense_items i
+JOIN expense_categories c ON i.category_id = c.category_id
+WHERE i.amount > (
+    SELECT AVG(amount) FROM expense_items
+)
+ORDER BY i.amount DESC;
+
+-- 【實戰 6：總務資產 (assets_inventory) - 找出「借用天數大於預計歸還期」的逾期未還資產】
+-- 需先在 DBeaver 執行 assets_inventory.sql
+SELECT 
+    l.lending_id,
+    a.asset_code AS 資產編號,
+    a.name AS 設備名稱,
+    l.borrower_name AS 借用人,
+    l.lend_date AS 借用日期,
+    l.due_date AS 應歸還日,
+    (CURRENT_DATE - l.due_date) AS 逾期天數
+FROM asset_lendings l
+JOIN assets a ON l.asset_id = a.asset_id
+WHERE l.return_date IS NULL 
+  AND l.due_date < CURRENT_DATE
+ORDER BY 逾期天數 DESC;
