@@ -206,3 +206,31 @@ SELECT * FROM contacts;
 **Prompt 4：整理觀念**
 
 > 用這三次的結果，說明 NO ACTION、SET NULL、CASCADE 的差別，什麼情況適合用哪一種？
+
+---
+
+## 🛠️ 實戰演練：以連鎖門市 (`cafe_shop`) 驗證外來鍵保護機制
+
+> 💡 **資料來源**：在資料庫匯入 [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)。
+
+在 DBeaver 中親自測試以下 SQL，體驗資料庫的外來鍵保護：
+
+### 測試 1：插入不存在的外來鍵（資料庫自動擋下無效資料）
+```sql
+-- 門市只有 1~4 號，故意插入門市 999 號的訂單
+INSERT INTO orders (order_id, store_id, order_date, status)
+VALUES (99999, 999, '2024-03-31', '處理中');
+
+-- 🛑 結果：ERROR: insert or update on table "orders" violates foreign key constraint "orders_store_id_fkey"
+-- 說明：資料庫強制確保每筆訂單都必須屬於真實存在的門市，杜絕幽靈單據！
+```
+
+### 測試 2：父資料表被參考時，禁止直接刪除
+```sql
+-- 嘗試直接刪除有大量訂單的台北忠孝店 (store_id = 1)
+DELETE FROM stores WHERE store_id = 1;
+
+-- 🛑 結果：ERROR: update or delete on table "stores" violates foreign key constraint "orders_store_id_fkey" on table "orders"
+-- 說明：因為 orders 表中有資料參考 store_id = 1，預設 NO ACTION / RESTRICT 禁止任意刪除父表資料！
+```
+

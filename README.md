@@ -9,13 +9,12 @@
 | 階段 | 章節 | 你會學到 | 使用工具與環境 |
 |:---:|---|---|---|
 | **一** | [1. 環境安裝](#1-環境安裝) | 安裝 PostgreSQL（樹莓派 Docker / Supabase）與 DBeaver 圖形工具 | Docker / Supabase / DBeaver |
-| **一** | [2. 範例資料庫](#2-範例資料庫) | 匯入網路商店、圖書館、台鐵等繁中範例資料庫 | DBeaver 匯入 |
+| **一** | [2. 範例資料庫](#2-範例資料庫) | 繁中範例庫（咖啡門市、電商、選課、圖書館）與自備 Excel 轉 SQL 交易檔 | DBeaver 匯入 |
 | **一** | [3. 自然語言查庫初體驗](#3-自然語言查庫初體驗免寫-sql) | 不用會寫 SQL！直接用中文向 AI 提問網路商店資料，體驗 AI 自動查庫的便利 | Antigravity + 專案級 MCP |
-| **二** | [4. SQL 語法與 AI 輔助](#4-sql-語法) | **親自學寫 SQL**：DDL/DML，每課搭配 prompt 讓 AI 做一次，學習審核與比對 AI 的 SQL | DBeaver + Antigravity 對話 |
-| **二** | [5. SQL 實戰練習](#5-sql-練習) | 關聯資料庫實戰、外來鍵、JOIN、GROUP BY、子查詢多題演練 | DBeaver 手寫查詢 |
-| **三** | [6. Python 串接](#6-python-串接psycopg2) | **在 Antigravity 中寫程式**：用 psycopg2 從 Python 進行資料庫 CRUD 與交易管理 | Antigravity (Python) |
-| **三** | [7. 實戰專案開發](#7-實戰專案) | 建立引導式 CLI 工具與 Streamlit 互動視覺化 Web 應用 | Antigravity |
-| **四** | [8. 自訂 MCP Server](#8-自訂-mcp-server個人本機開發到企業容器化導入) | **壓軸單元**：打造自訂 MCP Server，封裝專屬商業邏輯與 Token 安全防護 | Antigravity + FastMCP |
+| **二** | [4. SQL 語法與實戰練功](#4-sql-語法與實戰練功) | **講義與實戰題合一**：DDL/DML，每課搭配 prompt 讓 AI 做一次，章節尾端直接附實戰練習題 | DBeaver + Antigravity 對話 |
+| **三** | [5. Python 串接](#5-python-串接psycopg2) | **在 Antigravity 中寫程式**：用 psycopg2 從 Python 進行資料庫 CRUD 與交易管理 | Antigravity (Python) |
+| **三** | [6. 實戰專案開發](#6-實戰專案規格驅動開發-sdd) | 規格驅動開發 (SDD)，結合 Streamlit 打造 5 款商業 App 產品 | Antigravity + Streamlit |
+| **四** | [7. 自訂 MCP Server](#7-自訂-mcp-server個人本機開發到企業容器化導入) | **壓軸單元**：打造自訂 MCP Server，封裝專屬商業邏輯與 Token 安全防護 | Antigravity + FastMCP |
 
 ---
 
@@ -42,7 +41,7 @@
 | 🏠 **自備 Excel 轉 SQL 交易檔** | 上班族真實 Excel ➡️ AI 提示詞 ➡️ 關聯式 SQL 交易檔 | **回家自主實作核心**：脫敏後給 AI 分析，產生 `BEGIN...COMMIT` 交易檔，無縫套用於後續 SQL 教學 |
 | ☕ **連鎖門市月報表** | 跨月銷售 Excel / CSV ➡️ `cafe_shop.sql` | 解決「每月複製一份 Excel」痛點，最終打造 **[連鎖門市營運分析 BI 看板](./app_projects/project2_cafe_dashboard/)** |
 | 🛒 **Excel 正規化對照範例** | 未正規化單表 Excel / CSV ➡️ 多表正規化 Excel | 體驗單表痛點與 3NF 正規化，對照 `shop.sql` 打造 **電商訂單履約與客戶 CRM 系統** |
-| ⭐ **繁體中文範例資料庫** | 網路商店、學校選課、圖書館借閱、台鐵資料 | 執行單一 `.sql` 檔即完成建表與匯入，對照打造 **校園選課系統** 與 **圖書館數位流通系統** |
+| ⭐ **繁體中文範例資料庫** | 咖啡門市、網路商店、學校選課、圖書館借閱、股市快取 | 執行單一 `.sql` 檔即完成建表與匯入，對照打造 5 大商業 App 產品 |
 | 🚀 **巨量資料產生器** | 1 秒自體生成 10 萬筆訂單明細腳本 | 零網路傳輸，用於索引優化 (INDEX) 與查詢計畫 (EXPLAIN ANALYZE) 效能壓測 |
 
 ---
@@ -56,10 +55,10 @@
 
 ---
 
-## 4. SQL 語法與 AI 輔助
+## 4. SQL 語法與實戰練功
 
-在第 3 章體驗了 AI 查庫後，**第 4 章我們要自己動手學會寫 SQL**！
-每一課先學正規 SQL 語法，最後的「🤖 **不寫 SQL，用 Prompt 完成**」單元，再用 prompt 讓 Antigravity AI 做一次，**親自對照 AI 寫的 SQL 和自己學的是否一樣**，學會如何驗證 AI 的正確性。
+在第 3 章體驗了 AI 查庫後，**第 4 章我們要自己動手學會寫 SQL**！  
+本章採用**「講義觀念與實戰練習合一」**設計：每一課先學標準 SQL 語法，搭配「🤖 **不寫 SQL，用 Prompt 完成**」單元驗證 AI，章節底部更附有**「🛠️ 實戰演練區」**，直接拿 `cafe_shop` 或 `shop` 範例庫進行題目挑戰！
 
 
 ### DDL：資料定義語言
@@ -72,7 +71,7 @@
 | 1 | [建立資料庫](./SQL語法教學/1建立資料庫.md) | `CREATE DATABASE`、`DROP DATABASE` |
 | 2 | [資料表與基本型別](./SQL語法教學/2_0基本型別.md) | 數值、文字、日期時間等資料型別速查 |
 | 3 | [建立資料表](./SQL語法教學/2建立資料表.md) | `CREATE TABLE`、`ALTER TABLE`、欄位結構操作 |
-| 4 | [匯入 CSV](./SQL語法教學/2_1匯入csv.md) | 將 CSV 匯入資料表，包含單表與台鐵資料 |
+| 4 | [匯入 CSV](./SQL語法教學/2_1匯入csv.md) | 將 CSV 匯入資料表（含 22 縣市天氣與門市銷售大表） |
 | 5 | [限制條件](./SQL語法教學/4限制.md) | `PRIMARY KEY`、`NOT NULL`、`UNIQUE`、`DEFAULT` |
 
 ### DML：資料操作語言
@@ -122,21 +121,7 @@
 
 ---
 
-## 5. SQL 練習
-
-| 練習 | 使用資料 | 主題 |
-|---|---|---|
-| ⭐ [中文範例資料庫練習題](./範例資料庫/中文範例資料庫/) | 網路商店、學校選課、圖書館借閱 | SELECT、JOIN、GROUP BY、HAVING、子查詢、日期計算（附參考答案） |
-| [CREATE TABLE](./練習/1CREATE_TABLE) | 自行建立資料表 | 建立資料表、匯入 CSV |
-| [INSERT INTO](./練習/5INSERT_INTO) | 自行建立資料表 | 新增資料、`ON CONFLICT` |
-| [FOREIGN KEY](./練習/7Foreign_key) | 台鐵進出站 | 外來鍵 |
-| [JOIN](./練習/8JOIN) | 台鐵進出站 | 合併查詢 |
-| [GROUP BY、HAVING](./練習/9HAVING) | 台鐵進出站 | 分組統計 |
-| [SubQuery](./練習/10subQuery) | 台鐵進出站 | 子查詢 |
-
----
-
-## 6. Python 串接（用自然語言 Prompt 驅動連線）
+## 5. Python 串接（用自然語言 Prompt 驅動連線）
 
 本章不是要讓你硬背 Python 語法，而是學會使用自然語言 Prompt 指引 AI，快速生成安全、能讀取 `.env` 並連線到範例資料庫（如 `cafe_shop`）的 Python 專案。 👉 [章節總覽與常用 Prompt](./python/)
 
@@ -151,18 +136,22 @@
 
 ---
 
-## 7. 實戰專案（SDD 規格驅動開發）
+## 6. 實戰專案（規格驅動開發 SDD）
 
-本階段採用現代 AI 軟體工程的 **規格驅動開發 (SDD, Spec-Driven Development)**：透過 `PRD.md` 規範需求，由 AI 透過 MCP 讀取真實資料庫結構並產生 `plan.md`，循序實作具備快取與視覺化的完整 App。 👉 [專案總覽](./app_projects/)
+本階段採用現代 AI 軟體工程的 **規格驅動開發 (SDD, Spec-Driven Development)**：透過 `PRD.md` 規範需求，由 AI 透過 MCP 讀取真實資料庫結構並產生 `plan.md`，循序實作具備快取與視覺化的完整商業 App。  
+**本目錄 5 大實戰專案，100% 對應繁體中文範例資料庫！** 👉 [專案總覽](./app_projects/)
 
-| 專案 | 介面 | 核心技術與說明 |
-|---|---|---|
-| ⭐ [股市即時監控與增量同步](./app_projects/project1_stock_market/) | Streamlit / Tkinter | **Cache-Aside 快取與增量同步**：無資料抓 yfinance、有資料走 DB、落後自動增量補齊 (Upsert) |
-| ☕ [連鎖門市營運分析看板](./app_projects/project2_cafe_dashboard/) | Streamlit | **跨月商業報表與 BI 看板**：銜接 Excel 月報表痛點教學，視覺化展示各門市營收、明星商品與 VIP 會員 |
+| 專案 | 對應資料庫 | 介面 | 核心技術與說明 |
+|---|---|---|---|
+| ⭐ [股市即時監控與增量同步](./app_projects/project1_stock_market/) | `init_stock_db.sql` | Streamlit | **Cache-Aside 快取與增量同步**：無資料抓 yfinance、有資料走 DB、落後自動增量補齊 (Upsert) |
+| ☕ [連鎖門市營運分析看板](./app_projects/project2_cafe_dashboard/) | `cafe_shop.sql` | Streamlit | **跨月商業報表與 BI 看板**：銜接 Excel 月報表痛點教學，視覺化展示各門市營收、明星商品與 VIP 會員 |
+| 🛒 [電商訂單履約與客戶 CRM](./app_projects/project3_shop_crm/) | `shop.sql` | Streamlit | **訂單流水線履約與 RFM 分群**：訂單狀態 Kanban 追蹤、客戶 RFM 價值模型自動分群、熱門合購推薦 |
+| 🎓 [校園智慧選課與學分審查](./app_projects/project4_school_enrollment/) | `school.sql` | Streamlit | **選課防衝堂檢核與學分審查**：即時名額剩餘查詢、排課防衝堂防呆、畢業學分達成率進度條 |
+| 📚 [圖書館借閱與罰金系統](./app_projects/project5_library_system/) | `library.sql` | Streamlit | **館藏流通狀態與逾期罰款計算**：在館/借出即時標記、逾期天數與罰金動態結算、年度排行榜 (RANK) |
 
 ---
 
-## 8. 自訂 MCP Server（個人本機開發到企業容器化導入）
+## 7. 自訂 MCP Server（個人本機開發到企業容器化導入）
 
 學會了 SQL 與 Python 後，我們不再受限於現成工具，而是**使用 Python（FastMCP）在 Antigravity 中親手打造專屬的 MCP Server**！
 採用**「先個人（本機執行 MCP 連樹莓派 DB） $\rightarrow$ 後企業共用（打包進樹莓派 Docker 雙容器 + Token 門禁）」**的循序漸進路線。 👉 [章節總覽](./mcp_server/)

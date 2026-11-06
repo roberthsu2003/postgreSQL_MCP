@@ -77,6 +77,36 @@ ORDER BY 最高溫度 DESC;
 
 ---
 
+## 🛠️ 進階實戰：匯入「門市銷售明細」大表
+
+當你熟悉了 22 筆的天氣資料後，可以挑戰包含日期、金額、多欄位的大型業務報表：
+
+* **使用檔案**：[`門市銷售明細_2024Q1_全部.csv`](../範例資料庫/excel範例/連鎖門市月報表/門市銷售明細_2024Q1_全部.csv)（共 782 筆）
+* **資料表結構 (DDL)**：
+```sql
+CREATE TABLE IF NOT EXISTS 門市銷售明細_2024Q1(
+    銷售單號 VARCHAR(20),
+    銷售日期 DATE,
+    時間 TIME,
+    門市名稱 VARCHAR(30),
+    區域 VARCHAR(10),
+    經手店員 VARCHAR(20),
+    會員姓名 VARCHAR(20),
+    會員電話 VARCHAR(20),
+    商品分類 VARCHAR(20),
+    商品名稱 VARCHAR(50),
+    單價 INT,
+    數量 INT,
+    小計 INT,
+    付款方式 VARCHAR(20),
+    狀態 VARCHAR(20)
+);
+```
+用 DBeaver 匯入後，即可執行 `SELECT COUNT(*) FROM 門市銷售明細_2024Q1;` 確認 782 筆資料完整匯入！
+
+
+---
+
 ## 🤖 不寫 SQL，用 Prompt 完成
 
 如果你使用 Antigravity 搭配 MCP 連線：
