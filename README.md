@@ -57,8 +57,7 @@
 
 ## 2. 範例資料庫
 
-資料庫不能紙上談兵！我們針對上班族最常見的 5 大部門職能（會計、人資、總務、店長、業務），設計了最貼合工作實務的範例庫與轉換指南：  
-👉 **[進入：範例資料庫與 App 產品規劃專區](./範例資料庫/)**
+資料庫不能紙上談兵！我們針對上班族最常見的 5 大部門職能（會計、人資、總務、店長、業務），設計了最貼合工作實務的繁體中文範例庫：
 
 ```mermaid
 flowchart LR
@@ -68,15 +67,15 @@ flowchart LR
     D --> E["5. 打造個人本機桌面 App<br>PyQt5 / Tkinter 專屬視窗"]
 ```
 
-### 🏢 五大職場核心職能範例庫對照
+### 🏢 五大職場核心職能範例庫
 
-| 適用職務 | 範例資料庫腳本 | 解決之職場 Excel 痛點 | 最終打造的個人桌面 App | 視窗技術 |
+| 適用職務 | 範例資料庫腳本（點擊查看） | 解決之職場 Excel 痛點 | 後續實戰打造之桌面 App | GUI 技術 |
 |---|---|---|---|:---:|
-| 💼 **會計 / 出納** | [`expense_tracker.sql`](./範例資料庫/中文範例資料庫/expense_tracker.sql) | 差旅請款單滿天飛、重複報帳、部門預算超支無即時預警 | **[費用報銷審核與預算預警系統](./app_projects/project1_expense_manager/)** | 🔵 **PyQt5** |
-| 👥 **人資 (HR)** | [`hr_attendance.sql`](./範例資料庫/中文範例資料庫/hr_attendance.sql) | 手動排班撞期、打卡時數加總繁瑣、加班費與計薪算到眼花 | **[排班出勤與加班計薪小工具](./app_projects/project2_hr_attendance/)** | 🟢 **Tkinter** |
-| 🏢 **總務 / 倉管** | [`assets_inventory.sql`](./範例資料庫/中文範例資料庫/assets_inventory.sql) | 筆電投影機借出找不到人、耗材臨時斷貨缺安全庫存提醒 | **[固定資產借還與耗材管理系統](./app_projects/project3_assets_inventory/)** | 🔵 **PyQt5** |
-| ☕ **店長 / 營運** | [`cafe_shop.sql`](./範例資料庫/中文範例資料庫/cafe_shop.sql) | 每月複製一份 Excel 難以跨月對比、明星商品與常客排行 | **[門市營運分析與員工提成看板](./app_projects/project4_cafe_dashboard/)** | 🔵 **PyQt5** |
-| 🛒 **業務 / 電商** | [`shop.sql`](./範例資料庫/中文範例資料庫/shop.sql) | 客戶資料與訂單塞在同張表、訂單履約追蹤、RFM 客戶分群 | **[客戶 CRM 與訂單履約系統](./app_projects/project5_shop_crm/)** | 🟢 **Tkinter** |
+| 💼 **會計 / 出納** | [`expense_tracker.sql`](./範例資料庫/中文範例資料庫/expense_tracker.sql) | 差旅請款單滿天飛、重複報帳、部門預算超支無即時預警 | 費用報銷審核與預算預警系統 | 🔵 **PyQt5** |
+| 👥 **人資 (HR)** | [`hr_attendance.sql`](./範例資料庫/中文範例資料庫/hr_attendance.sql) | 手動排班撞期、打卡時數加總繁瑣、加班費與計薪算到眼花 | 排班出勤與加班計薪小工具 | 🟢 **Tkinter** |
+| 🏢 **總務 / 倉管** | [`assets_inventory.sql`](./範例資料庫/中文範例資料庫/assets_inventory.sql) | 筆電投影機借出找不到人、耗材臨時斷貨缺安全庫存提醒 | 固定資產借還與耗材管理系統 | 🔵 **PyQt5** |
+| ☕ **店長 / 營運** | [`cafe_shop.sql`](./範例資料庫/中文範例資料庫/cafe_shop.sql) | 每月複製一份 Excel 難以跨月對比、明星商品與常客排行 | 門市營運分析與員工提成看板 | 🔵 **PyQt5** |
+| 🛒 **業務 / 電商** | [`shop.sql`](./範例資料庫/中文範例資料庫/shop.sql) | 客戶資料與訂單塞在同張表、訂單履約追蹤、RFM 客戶分群 | 客戶 CRM 與訂單履約系統 | 🟢 **Tkinter** |
 
 * 🌟 **[自備 Excel 轉 SQL 實戰示範](./範例資料庫/excel範例/自備Excel轉SQL實戰示範/)**：附完整「員工差旅與費用報銷單.xlsx」，示範如何請 AI 產出具備 `BEGIN...COMMIT` 的 SQL 交易腳本，並手動在 DBeaver 成功匯入。
 * 🚀 **[巨量資料產生器](./範例資料庫/中文範例資料庫/generate_100k_orders.sql)**：免下載任何巨大檔案！PostgreSQL 內建指令 1 秒動態生成 10 萬筆訂單資料，專門用於索引（INDEX）與查詢效能壓測。
@@ -149,8 +148,7 @@ flowchart LR
 
 ## 5. Python 串接（psycopg2）
 
-學會 SQL 語法後，我們使用 Python 官方標準驅動套件 `psycopg2` 進行連線。本章節著重於**程式架構安全與交易完整性**，引導學員建立穩健的資料庫應用習慣：  
-👉 **[進入：Python 連線教學與實戰語法](./python/)**
+學會 SQL 語法後，我們使用 Python 官方標準驅動套件 `psycopg2` 進行連線。本章節著重於**程式架構安全與交易完整性**，引導學員建立穩健的資料庫應用習慣：
 
 ```python
 import psycopg2
@@ -185,7 +183,7 @@ with psycopg2.connect(os.getenv("DATABASE_URL")) as conn:
 
 你不再需要手動把資料匯出成 Excel 丟給 AI，也不需要架設複雜的 Web 後端網站。透過 **MCP（Model Context Protocol）**，只要用 Python (FastMCP) 寫幾行查詢小工具，你的 AI 就能化身為專屬查庫助理，直接在聊天對話框中幫你找出客戶訂單、庫存警報、出勤打卡或營業額！
 
-本章採用大白話教學與循序漸進架構：**「從個人本機專屬助理 $\rightarrow$ 升級到具備 Token 門禁的企業級安全服務與樹莓派 Docker 雙容器常駐」**。 👉 **[章節總覽與完整指引](./mcp_server/)**
+本章採用大白話教學與循序漸進架構：**「從個人本機專屬助理 $\rightarrow$ 升級到具備 Token 門禁的企業級安全服務與樹莓派 Docker 雙容器常駐」**。
 
 ```mermaid
 flowchart TD
@@ -215,7 +213,7 @@ flowchart TD
 
 我們採用現代軟體工程的 **規格驅動開發 (SDD, Spec-Driven Development)**：透過 `PRD.md` 規範商業功能，由 AI 閱讀資料庫結構並引導架構，學員在自己電腦上以純本機視窗（**PyQt5** 與 **Tkinter**）親手手寫 SQL，開發出完全屬於自己的 5 大職場桌面管理工具！
 
-**本目錄 5 大實戰專案，100% 完整對應五大職場範例資料庫！** 👉 **[專案總覽專區](./app_projects/)**
+**本目錄 5 大實戰專案，100% 完整對應五大職場範例資料庫！**
 
 | 專案目錄 | 對應範例庫 | 本機 GUI 框架 | 職場角色 | 核心手寫 SQL 技術與亮點功能 |
 |---|---|:---:|:---:|---|
