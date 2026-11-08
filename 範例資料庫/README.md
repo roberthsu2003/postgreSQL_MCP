@@ -93,7 +93,7 @@
 
 📄 資料庫：[`expense_tracker`](./中文範例資料庫/expense_tracker.sql)<br>
 📊 Excel：[報銷單](./excel範例/自備Excel轉SQL實戰示範/)<br>
-🚀 專案：[專案 3 差旅報銷單](../app_projects/excel3_expense/)
+🚀 專案：[專案 4 差旅報銷單](../app_projects/excel4_expense/)
 
 </td>
 <td width="50%" valign="top">
@@ -103,8 +103,8 @@
 排班撞期、工時加總繁瑣、算薪費時
 
 📄 資料庫：[`hr_attendance`](./中文範例資料庫/hr_attendance.sql)<br>
-📊 Excel：[打卡表（簡化版）](../app_projects/excel2_attendance/打卡表.xlsx)<br>
-🚀 專案：[專案 2 打卡表](../app_projects/excel2_attendance/)
+📊 Excel：[打卡表（簡化版）](../app_projects/excel3_attendance/打卡表.xlsx)<br>
+🚀 專案：[專案 3 打卡表](../app_projects/excel3_attendance/)
 
 </td>
 </tr>
@@ -128,7 +128,7 @@
 
 📄 資料庫：[`cafe_shop`](./中文範例資料庫/cafe_shop.sql)<br>
 📊 Excel：[門市月報](./excel範例/連鎖門市月報表/)<br>
-🚀 專案：[專案 5 連鎖門市月報](../app_projects/excel5_stores/)
+🚀 專案：[專案 8 連鎖門市月報](../app_projects/excel8_stores/)
 
 </td>
 </tr>
@@ -141,14 +141,14 @@
 
 📄 資料庫：[`shop`](./中文範例資料庫/shop.sql)<br>
 📊 Excel：[網路商店](./從Excel到關聯資料庫_正規化.md)<br>
-🚀 專案：[專案 4 網路商店訂單](../app_projects/excel4_shop/)
+🚀 專案：[專案 5 網路商店訂單](../app_projects/excel5_shop/)
 
 </td>
 <td valign="top">
 
 **🎓 你的工作不在這裡？**
 
-學完五個專案後，可以換成自己工作上的 Excel，走一次完整流程。
+學完八個專案後，可以換成自己工作上的 Excel，走一次完整流程。
 
 👉 [畢業專題：換你的 Excel](../app_projects/畢業專題_換你的Excel.md)
 

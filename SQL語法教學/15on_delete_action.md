@@ -204,7 +204,7 @@ DELETE FROM stores WHERE store_id = 1;
 
 分組、子查詢都學完了，可以挑戰最接近真實工作的專案。
 
-👉 **[實戰專案 5：連鎖門市月報](../app_projects/excel5_stores/)**：用暫存表整合跨月 CSV，做出每月匯入一次就更新的報表。
+👉 **[實戰專案 8：連鎖門市月報](../app_projects/excel8_stores/)**：用暫存表整合跨月 CSV，做出每月匯入一次就更新的報表。
 
 ---
 

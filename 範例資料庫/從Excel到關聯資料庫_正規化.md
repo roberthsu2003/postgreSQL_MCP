@@ -133,7 +133,7 @@ JOIN products ON order_items.product_id = products.product_id;
 ```
 
 > [!IMPORTANT]
-> **小計要用訂單當時的成交單價，不能用商品目前的售價。** 商品調價後，舊訂單的金額不應該改變，所以 `order_items` 要保留自己的 `unit_price`。這不是重複資料：目前售價和當時成交價是兩件不同的事。`正規化_網路商店多工作表.xlsx` 的單價是用 `VLOOKUP` 查商品表，只是為了示範跨工作表查詢。想親眼看差別，請做[實戰專案 4：網路商店訂單](../app_projects/excel4_shop/)。
+> **小計要用訂單當時的成交單價，不能用商品目前的售價。** 商品調價後，舊訂單的金額不應該改變，所以 `order_items` 要保留自己的 `unit_price`。這不是重複資料：目前售價和當時成交價是兩件不同的事。`正規化_網路商店多工作表.xlsx` 的單價是用 `VLOOKUP` 查商品表，只是為了示範跨工作表查詢。想親眼看差別，請做[實戰專案 5：網路商店訂單](../app_projects/excel5_shop/)。
 
 ---
 
