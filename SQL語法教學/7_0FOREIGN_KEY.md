@@ -233,4 +233,4 @@ CREATE TABLE fk_products (
 
 | 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [⬅️ DML-3 修改與刪除](./5修改和刪除.md) | [🏠 第 4 章目錄](../README.md#4-sql-語法與實戰練功) | [DML-5 JOIN ➡️](./JOIN.md) |
+| [⬅️ DML-3 修改與刪除](./5修改和刪除.md) | [🏠 第 4 章目錄](./README.md) | [DML-5 JOIN ➡️](./JOIN.md) |
