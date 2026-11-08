@@ -73,13 +73,13 @@ flowchart LR
 
 這些範例會在後面的課程陸續用到，可以先看看哪一個最接近你的工作。
 
-| 職務 | 工作上的痛點 | 範例資料庫 | 對應 Excel | 延伸 App |
+| 職務 | 工作上的痛點 | 範例資料庫 | 對應 Excel | 實戰專案 |
 |---|---|---|---|---|
-| 💼 **會計 / 出納** | 請款單滿天飛、重複報帳、預算超支 | [`expense_tracker`](./中文範例資料庫/expense_tracker.sql) | [報銷單](./excel範例/自備Excel轉SQL實戰示範/) | [費用報銷與預算](../app_projects/project1_expense_manager/) |
-| 👥 **人資** | 排班撞期、工時加總繁瑣、算薪費時 | [`hr_attendance`](./中文範例資料庫/hr_attendance.sql) | [打卡表（簡化版）](../app_projects/excel2_attendance/打卡表.xlsx) | [排班出勤與薪資](../app_projects/project2_hr_attendance/) |
-| 📦 **總務 / 倉管** | 設備找不到人、耗材斷貨、編號重複 | [`assets_inventory`](./中文範例資料庫/assets_inventory.sql) | [耗材庫存（簡化版）](../app_projects/excel1_supplies/耗材庫存表.xlsx) | [資產借還與耗材](../app_projects/project3_assets_inventory/) |
-| ☕ **店長 / 營運** | 每月複製 Excel、跨月營收難統計 | [`cafe_shop`](./中文範例資料庫/cafe_shop.sql) | [門市月報](./excel範例/連鎖門市月報表/) | [門市營運看板](../app_projects/project4_cafe_dashboard/) |
-| 🛒 **業務 / 電商** | 客戶資料矛盾、訂單難追蹤 | [`shop`](./中文範例資料庫/shop.sql) | [網路商店](./從Excel到關聯資料庫_正規化.md) | [客戶與訂單管理](../app_projects/project5_shop_crm/) |
+| 💼 **會計 / 出納** | 請款單滿天飛、重複報帳、預算超支 | [`expense_tracker`](./中文範例資料庫/expense_tracker.sql) | [報銷單](./excel範例/自備Excel轉SQL實戰示範/) | [專案 3 差旅報銷單](../app_projects/excel3_expense/) |
+| 👥 **人資** | 排班撞期、工時加總繁瑣、算薪費時 | [`hr_attendance`](./中文範例資料庫/hr_attendance.sql) | [打卡表（簡化版）](../app_projects/excel2_attendance/打卡表.xlsx) | [專案 2 打卡表](../app_projects/excel2_attendance/) |
+| 📦 **總務 / 倉管** | 設備找不到人、耗材斷貨、編號重複 | [`assets_inventory`](./中文範例資料庫/assets_inventory.sql) | [耗材庫存（簡化版）](../app_projects/excel1_supplies/耗材庫存表.xlsx) | [專案 1 耗材庫存表](../app_projects/excel1_supplies/) |
+| ☕ **店長 / 營運** | 每月複製 Excel、跨月營收難統計 | [`cafe_shop`](./中文範例資料庫/cafe_shop.sql) | [門市月報](./excel範例/連鎖門市月報表/) | [專案 5 連鎖門市月報](../app_projects/excel5_stores/) |
+| 🛒 **業務 / 電商** | 客戶資料矛盾、訂單難追蹤 | [`shop`](./中文範例資料庫/shop.sql) | [網路商店](./從Excel到關聯資料庫_正規化.md) | [專案 4 網路商店訂單](../app_projects/excel4_shop/) |
 
 ---
 

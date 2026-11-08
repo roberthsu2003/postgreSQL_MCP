@@ -111,8 +111,8 @@ uv pip install -r requirements.txt
 | 範例 | 資料庫 | 準備方式 |
 |---|---|---|
 | 客服助理、教務處助理、館員助理 | `practice` | 匯入[中文範例資料庫](../../範例資料庫/中文範例資料庫/)的 `cafe_shop.sql`、`shop.sql`、`school.sql`、`library.sql` |
-| 門市營運分析 | `practice` | 匯入 [門市營運專案](../../app_projects/project4_cafe_dashboard/) 或範例庫的 `cafe_shop.sql` |
-| 客服助理、電商助理 | `practice` | 匯入 [電商專案](../../app_projects/project5_shop_crm/) 或範例庫的 `shop.sql` |
+| 門市營運分析 | `practice` | 匯入範例庫的 [`cafe_shop.sql`](../../範例資料庫/中文範例資料庫/cafe_shop.sql) |
+| 客服助理、電商助理 | `practice` | 匯入範例庫的 [`shop.sql`](../../範例資料庫/中文範例資料庫/shop.sql) |
 
 ### 3. 用 Inspector 測試
 
