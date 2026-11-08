@@ -392,4 +392,4 @@ ORDER BY l.expected_return_date;
 
 | 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [⬅️ DML-4 外來鍵](./7_0FOREIGN_KEY.md) | [🏠 第 4 章目錄](./README.md) | [DML-6 JSON ➡️](./16json.md) |
+| [⬅️ DML-4 外來鍵](./7_0FOREIGN_KEY.md) | [🏠 第 4 章目錄](../README.md#4-sql-語法與實戰練功) | [DML-6 JSON ➡️](./16json.md) |

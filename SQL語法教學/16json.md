@@ -198,4 +198,4 @@ FROM coffee_orders;
 
 | 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [⬅️ DML-5 JOIN](./JOIN.md) | [🏠 第 4 章目錄](./README.md) | [觀念：Excel 到正規化 ➡️](./../範例資料庫/從Excel到關聯資料庫_正規化.md) |
+| [⬅️ DML-5 JOIN](./JOIN.md) | [🏠 第 4 章目錄](../README.md#4-sql-語法與實戰練功) | [觀念：Excel 到正規化 ➡️](./../範例資料庫/從Excel到關聯資料庫_正規化.md) |

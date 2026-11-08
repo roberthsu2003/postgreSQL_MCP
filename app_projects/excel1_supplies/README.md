@@ -12,8 +12,8 @@
 
 ## 開始之前
 
-- [ ] 學完 [DDL 章節](../../SQL語法教學/README.md#-ddl蓋結構)，可以開始步驟 1、2
-- [ ] 學完 [DML-1 到 DML-3](../../SQL語法教學/README.md#-dml操作資料)，可以開始步驟 3、4
+- [ ] 學完 [DDL 章節](../../README.md#-ddl蓋結構)，可以開始步驟 1、2
+- [ ] 學完 [DML-1 到 DML-3](../../README.md#-dml操作資料)，可以開始步驟 3、4
 - [ ] Tkinter 可以使用（步驟 5 才需要）：在終端機執行 `python3 -m tkinter`，會跳出一個小視窗
 
 > [!NOTE]

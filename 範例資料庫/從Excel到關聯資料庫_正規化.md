@@ -176,4 +176,4 @@ JOIN products ON order_items.product_id = products.product_id;
 
 | 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [⬅️ DML-6 JSON](../SQL語法教學/16json.md) | [🏠 第 4 章目錄](../SQL語法教學/README.md) | [入門：一對多關聯 ➡️](../SQL語法教學/7.0適合初學者關聯資料庫.md) |
+| [⬅️ DML-6 JSON](../SQL語法教學/16json.md) | [🏠 第 4 章目錄](../README.md#4-sql-語法與實戰練功) | [入門：一對多關聯 ➡️](../SQL語法教學/7.0適合初學者關聯資料庫.md) |
