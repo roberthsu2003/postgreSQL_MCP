@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="176" viewBox="0 0 960 176" font-family="'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="958" height="174" rx="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <g transform="translate(18, 18)">
+    <rect x="0" y="0" width="212" height="140" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="106" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#1e3a8a">DDL：蓋結構</text>
+    <text x="106" y="60" text-anchor="middle" font-size="13" fill="#475569">建資料庫、資料表與限制</text>
+    <text x="106" y="82" text-anchor="middle" font-size="12" fill="#475569">6 個單元</text>
+    <rect x="46" y="98" width="120" height="26" rx="13" fill="#2563eb"/>
+    <text x="106" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">接專案 1</text>
+  </g>
+  <line x1="232" y1="88" x2="252" y2="88" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g transform="translate(256, 18)">
+    <rect x="0" y="0" width="212" height="140" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="106" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#78350f">DML：操作資料</text>
+    <text x="106" y="60" text-anchor="middle" font-size="13" fill="#475569">新增、查詢、修改、JOIN</text>
+    <text x="106" y="82" text-anchor="middle" font-size="12" fill="#475569">7 個單元</text>
+    <rect x="46" y="98" width="120" height="26" rx="13" fill="#d97706"/>
+    <text x="106" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">接專案 1、2</text>
+  </g>
+  <line x1="470" y1="88" x2="490" y2="88" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g transform="translate(494, 18)">
+    <rect x="0" y="0" width="212" height="140" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+    <text x="106" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#14532d">思維躍升</text>
+    <text x="106" y="60" text-anchor="middle" font-size="13" fill="#475569">從一張工作表到多張表</text>
+    <text x="106" y="82" text-anchor="middle" font-size="12" fill="#475569">2 個單元</text>
+    <rect x="46" y="98" width="120" height="26" rx="13" fill="#16a34a"/>
+    <text x="106" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">接專案 3</text>
+  </g>
+  <line x1="708" y1="88" x2="728" y2="88" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g transform="translate(732, 18)">
+    <rect x="0" y="0" width="210" height="140" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
+    <text x="105" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#831843">關聯進階實戰</text>
+    <text x="105" y="60" text-anchor="middle" font-size="13" fill="#475569">多表、統計、子查詢、結業</text>
+    <text x="105" y="82" text-anchor="middle" font-size="12" fill="#475569">11 個單元</text>
+    <rect x="45" y="98" width="120" height="26" rx="13" fill="#db2777"/>
+    <text x="105" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">接專案 4～8</text>
+  </g>
+</svg>
