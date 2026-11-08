@@ -1,6 +1,6 @@
 # 單元 1：用 AI 建立自己的 MCP Server
 
-> **本單元目標**：結合前面學到的 SQL 與 Python 知識，在 **Antigravity** 中建立一個查詢門市營運資料（`cafe_shop`）的自訂 MCP Server，並透過專案級設定掛載。
+> **本單元目標**：結合前面學到的 SQL 和請 AI 寫程式的經驗，在 **Antigravity** 中建立一個查詢門市營運資料（`cafe_shop`）的自訂 MCP Server，並透過專案級設定掛載。
 > 你的角色是**需求設計者**和**驗收者**。
 
 ## 目錄
@@ -79,7 +79,7 @@ flowchart LR
 | 項目 | 說明 |
 |---|---|
 | 範例資料庫 | 建立資料庫 `cafe_shop` 並匯入 👉 [cafe_shop.sql](../../範例資料庫/中文範例資料庫/cafe_shop.sql) |
-| uv | Python 套件管理工具 👉 [安裝說明](https://docs.astral.sh/uv/getting-started/installation/) |
+| uv | 幫你準備 Python 和所需套件的工具，電腦上沒有 Python 時也會自動下載 👉 [安裝說明](https://docs.astral.sh/uv/getting-started/installation/) |
 | Antigravity | 本課程統一使用的 AI 助手，支援專案級 MCP、終端機與 AI 輔助開發 |
 
 ---
@@ -155,6 +155,16 @@ AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（�
 
 你不用會寫，但要**看得懂這 5 個地方**，才能判斷 AI 寫的程式能不能交給公司使用。
 
+先認識程式裡常見的幾個字，不用背，看到時回來查就好：
+
+| 程式裡的字 | 白話 |
+|---|---|
+| `import` | 把別人寫好的功能拿來用 |
+| `def 名稱(...):` | 定義一個功能，這裡就是一個工具 |
+| `with ...:` | 這段做完後，自動把連線等資源收拾好 |
+| `try:` / `finally:` | 不管成功或出錯，最後都一定要做的事 |
+| `f"...{變數}..."` | 把變數直接接進文字裡，**SQL 不可以這樣寫** |
+
 ### 驗收檢查清單
 
 | # | 檢查項目 | 在程式裡找這個 | 為什麼重要 |
@@ -203,7 +213,9 @@ def query(sql, params=None):
 
 ### 5. 防止 SQL Injection
 
-AI 傳進來的參數也是「使用者輸入」，可能被惡意操控，一定要用 **`%s` 參數化查詢**：
+AI 傳進來的參數也是「使用者輸入」，可能被惡意操控，一定要用 **`%s` 參數化查詢**。
+
+**什麼是 SQL Injection？** 如果把輸入的文字直接接進 SQL，有人輸入 `'; DROP TABLE products; --`，資料庫就可能把它當成指令執行，整張表就不見了。用 `%s` 時，輸入的內容永遠只會被當成資料，不會被當成指令。
 
 ![SQL Injection 對照圖](../images/sql_injection.svg)
 
@@ -251,9 +263,9 @@ Input should be '銷量' or '營業額'
 在專案掛載之前，先用 MCP Inspector（網頁介面）確認每個工具都正常。
 
 ```bash
-uv venv
-uv pip install -r requirements.txt
-uv run mcp dev server.py
+uv venv                               # 建立這個專案專用的環境
+uv pip install -r requirements.txt    # 安裝程式需要的套件
+uv run mcp dev server.py              # 啟動測試工具
 ```
 
 > **啟動前一定要先設定環境變數**，否則會出現 `KeyError: 'DATABASE_URI'`：

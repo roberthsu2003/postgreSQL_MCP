@@ -14,9 +14,11 @@
 
 - [ ] 學完 [DDL 章節](../../SQL語法教學/README.md#-ddl蓋結構)，可以開始步驟 1、2
 - [ ] 學完 [DML-1 到 DML-3](../../SQL語法教學/README.md#-dml操作資料)，可以開始步驟 3、4
-- [ ] Tkinter 可以使用（步驟 5 才需要）：在終端機執行 `python3 -m tkinter`，會跳出一個小視窗
+- [ ] Tkinter 可以使用（步驟 5 才需要）：在終端機執行 `python3 -m tkinter`（Windows 用 `python -m tkinter`），會跳出一個小視窗
 
 > [!NOTE]
+> 還沒有 Python 的話，到 [python.org](https://www.python.org/downloads/) 下載安裝，Windows 安裝時請勾選 **Add python.exe to PATH**。
+>
 > Windows 和 python.org 下載的 Python 已經包含 Tkinter。Mac 用 Homebrew 安裝的 Python 要另外執行 `brew install python-tk`。
 
 ## 專案流程

@@ -85,8 +85,8 @@ sequenceDiagram
 | # | 原則 | 在 library_counter.py 裡的寫法 |
 |:---:|---|---|
 | 1 | **只開放特定操作** | 只有 `borrow_book`、`return_book`，沒有「執行任意 SQL」、沒有刪除 |
-| 2 | **檢查寫在程式裡** | `if status["逾期"] > 0: raise Refused(...)`，不交給 AI 判斷 |
-| 3 | **使用交易** | `with conn:` 包住所有檢查和 INSERT，任何一步失敗就全部取消 |
+| 2 | **檢查寫在程式裡** | `if status["逾期"] > 0: raise Refused(...)`（有逾期就中止並拒絕），不交給 AI 判斷 |
+| 3 | **使用交易** | `with conn:` 包住所有檢查和 INSERT，全部成功才 `COMMIT`，任何一步失敗就 `ROLLBACK` |
 | 4 | **WHERE 條件要精準** | 還書時 `WHERE loan_id = %s AND return_date IS NULL`，已經還過的書不會被改第二次 |
 | 5 | **避免同時操作的衝突** | `SELECT ... FOR UPDATE` 鎖住書籍資料，兩個館員同時借最後一本時，只有一個會成功 |
 | 6 | **留下稽核紀錄** | 成功和**被拒絕**的操作都要記錄 |
