@@ -80,7 +80,7 @@ graph LR
 ```json
 {
   "mcpServers": {
-    "postgres": {
+    "raspberry-postgres": {
       "command": "npx",
       "args": [
         "-y",
