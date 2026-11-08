@@ -1,6 +1,6 @@
 # 單元 3：企業導入：遠端 MCP Server 與 Token 門禁
 
-> **本單元目標**：將原本只在本機執行的 MCP Server 升級為 **Streamable HTTP 遠端服務**，讓多位員工在 Antigravity（或 Claude Desktop）**帶著自己的 Token** 連線，並即時記錄每個人查了什麼。　[← 回第 6 章](../)
+> **本單元目標**：將原本只在本機執行的 MCP Server 升級為 **Streamable HTTP 遠端服務**，讓多位員工在 Antigravity（或 Claude Desktop）**帶著自己的 Token** 連線，並即時記錄每個人查了什麼。　[← 回第 6 章](../README.md)
 
 ## 目錄
 
@@ -56,7 +56,7 @@ token 就像**員工的門禁卡**：
 
 ## 3. 範例：網路商店營運助理
 
-程式：[server_http.py](./server_http.py)　資料庫：[shop.sql](../../範例資料庫/中文範例資料庫/)（網路商店）
+程式：[server_http.py](./server_http.py)　資料庫：[shop.sql](../../範例資料庫/中文範例資料庫/README.md)（網路商店）
 
 | 工具 | 用途 | 員工可能會這樣問 |
 |---|---|---|
@@ -87,7 +87,7 @@ def audit(tool, **params):
 
 ### 4.1 準備資料庫
 
-建立 `practice` 資料庫並匯入 `shop.sql` 👉 [匯入方式](../../範例資料庫/中文範例資料庫/#匯入方式)
+建立 `practice` 資料庫並匯入 `shop.sql` 👉 [匯入方式](../../範例資料庫/中文範例資料庫/README.md#匯入方式)
 
 ### 4.2 安裝套件
 
@@ -407,6 +407,6 @@ flowchart LR
 目前我們是在自己的電腦開一個終端機視窗模擬「公司伺服器」，一旦關掉視窗或闔上筆電就會斷線。
 在下一單元，我們要把這支 `server_http.py` **打包成 Docker 容器放進 Raspberry Pi**，與 PostgreSQL 組成 24 小時常駐的雙容器伺服器！
 
-👉 **[單元 4：正式上線：部署至 Raspberry Pi Docker 雙容器](../4_樹莓派Docker容器部署/)**
+👉 **[單元 4：正式上線：部署至 Raspberry Pi Docker 雙容器](../4_樹莓派Docker容器部署/README.md)**
 
-👉 **[單元 5：企業各部門範例集](../5_範例集/)**：5 個部門的 AI 助理，每個都可以用本機或遠端 + Token 執行
+👉 **[單元 5：企業各部門範例集](../5_範例集/README.md)**：5 個部門的 AI 助理，每個都可以用本機或遠端 + Token 執行

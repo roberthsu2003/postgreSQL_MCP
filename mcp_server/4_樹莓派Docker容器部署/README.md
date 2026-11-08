@@ -1,6 +1,6 @@
 # 單元 4：正式上線：部署至 Raspberry Pi Docker 雙容器
 
-> **本單元目標**：把[單元 3](../3_企業導入_遠端MCP與token/) 做好的遠端 Token 版 MCP Server 打包成 Docker 容器，放進 **Raspberry Pi（樹莓派）** 與 PostgreSQL 組成**雙容器架構**，實現 24 小時常駐、資料庫密碼不外洩的企業共用環境。　[← 回第 6 章](../)
+> **本單元目標**：把[單元 3](../3_企業導入_遠端MCP與token/README.md) 做好的遠端 Token 版 MCP Server 打包成 Docker 容器，放進 **Raspberry Pi（樹莓派）** 與 PostgreSQL 組成**雙容器架構**，實現 24 小時常駐、資料庫密碼不外洩的企業共用環境。　[← 回第 6 章](../README.md)
 
 參考設定檔：[Dockerfile](./Dockerfile)、[docker-compose.yml](./docker-compose.yml)
 
@@ -8,7 +8,7 @@
 
 ## 1. 為什麼要放進樹莓派 Docker？
 
-在[單元 1](../1_用AI建立MCP_server/) 與[單元 2](../2_寫入型MCP_server/) 中，我們在**自己的電腦**上執行 MCP Server（個人開發階段）；在[單元 3](../3_企業導入_遠端MCP與token/) 中，我們加上了 HTTP 與 Token 門禁，但如果伺服器還是開在自己的筆電終端機裡，**筆電一闔上，全公司就斷線了**。
+在[單元 1](../1_用AI建立MCP_server/README.md) 與[單元 2](../2_寫入型MCP_server/README.md) 中，我們在**自己的電腦**上執行 MCP Server（個人開發階段）；在[單元 3](../3_企業導入_遠端MCP與token/README.md) 中，我們加上了 HTTP 與 Token 門禁，但如果伺服器還是開在自己的筆電終端機裡，**筆電一闔上，全公司就斷線了**。
 
 將自訂 MCP Server 放進 **Raspberry Pi 的 Docker** 與 PostgreSQL 一起運行，就完成了真正的企業級部署：
 
@@ -51,7 +51,7 @@ graph LR
 ## 2. 事前準備
 
 1. 已完成[第 1 章：在樹莓派使用 Docker Compose 管理伺服器容器](../../raspberry_docker安裝/5_docker_compose雙容器.md)，樹莓派上已有 `~/postgres-compose` 目錄與運作中的 PostgreSQL。
-2. 樹莓派的 PostgreSQL 已建立 `practice` 資料庫並匯入 [shop.sql](../../範例資料庫/中文範例資料庫/#-網路商店-shop)。
+2. 樹莓派的 PostgreSQL 已建立 `practice` 資料庫並匯入 [shop.sql](../../範例資料庫/中文範例資料庫/README.md#-網路商店-shop)。
 
 ---
 
@@ -289,5 +289,5 @@ my-mcp-server  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C 
 
 學會了如何將單一 MCP Server 部署到樹莓派 Docker 後，如果公司有**客服部、教務處、圖書館、理財部**等多個部門，該如何共用同一套 Token 與安全底層？
 
-👉 **[單元 5：企業各部門範例集](../5_範例集/)**：5 個部門的 AI 助理範本，支援本機開發（`stdio`）與樹莓派容器（`http + Token`）一鍵切換！
+👉 **[單元 5：企業各部門範例集](../5_範例集/README.md)**：5 個部門的 AI 助理範本，支援本機開發（`stdio`）與樹莓派容器（`http + Token`）一鍵切換！
 

@@ -1,6 +1,6 @@
 # 範例 2：🎓 教務處助理
 
-程式：[school_office.py](./school_office.py)　資料庫：[school.sql](../../範例資料庫/中文範例資料庫/#-學校選課-school)　[← 回範例集](./README.md)
+程式：[school_office.py](./school_office.py)　資料庫：[school.sql](../../範例資料庫/中文範例資料庫/README.md#-學校選課-school)　[← 回範例集](./README.md)
 
 ## 情境
 

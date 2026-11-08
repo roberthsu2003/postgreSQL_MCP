@@ -53,7 +53,7 @@ networks:
 ```
 
 > 💡 **編輯器操作提示**：按 `Ctrl + O` 儲存，按 `Enter` 確認檔名，按 `Ctrl + X` 離開 nano。
-> 🔗 **未來擴充預告**：這條 `mcp-net` 專屬網路將在 **[第 6 章 單元 4：部署至樹莓派 Docker 雙容器](../mcp_server/4_樹莓派Docker容器部署/)** 派上用場，讓自訂的企業 MCP Server 容器與 PostgreSQL 容器在樹莓派內部高速直連！
+> 🔗 **未來擴充預告**：這條 `mcp-net` 專屬網路將在 **[第 6 章 單元 4：部署至樹莓派 Docker 雙容器](../mcp_server/4_樹莓派Docker容器部署/README.md)** 派上用場，讓自訂的企業 MCP Server 容器與 PostgreSQL 容器在樹莓派內部高速直連！
 
 ---
 

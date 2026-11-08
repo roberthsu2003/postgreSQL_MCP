@@ -10,7 +10,7 @@
 
 ## 開始之前
 
-- [ ] 做完[專案 1 耗材庫存表](../excel1_supplies/)的步驟 1～4
+- [ ] 做完[專案 1 耗材庫存表](../excel1_supplies/README.md)的步驟 1～4
 - [ ] 學完 [DML-6 JSONB](../../SQL語法教學/16json.md)
 
 ## 專案流程

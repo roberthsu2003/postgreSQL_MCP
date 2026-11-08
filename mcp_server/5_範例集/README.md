@@ -1,6 +1,6 @@
 # 單元 5：企業各部門 MCP Server 範例集
 
-> 把課程中**所有的範例資料庫**都做成 MCP Server。每個範例都是一個「部門」的 AI 助理，可以直接使用（支援本機 `stdio` 與遠端 `http + Token` 雙模式；YouBike 未附資料，僅供閱讀），也可以當作請 AI 寫程式與期末專題的參考。　[← 回第 6 章](../)
+> 把課程中**所有的範例資料庫**都做成 MCP Server。每個範例都是一個「部門」的 AI 助理，可以直接使用（支援本機 `stdio` 與遠端 `http + Token` 雙模式；YouBike 未附資料，僅供閱讀），也可以當作請 AI 寫程式與期末專題的參考。　[← 回第 6 章](../README.md)
 
 ## 範例一覽
 
@@ -44,9 +44,9 @@ flowchart LR
 | 3 | [📚 圖書館館員助理](./library_desk.md) | 圖書館館員 | library.sql | 4 | 日期計算（逾期天數）、`RANK()` 排名、可選的篩選條件 |
 | 4 | [🚲 YouBike 查詢](./youbike.md) | 一般民眾 | 需自備 YouBike 資料（本課程未附） | 4 | 時間序列取「最新一筆」、**台／臺**的搜尋問題 |
 | 5 | [📈 股市大盤查詢](./stock.md) | 理財專員 | [stock_market.sql](../../範例資料庫/中文範例資料庫/stock_market.sql) | 4 | 依日／週／月彙總、計算漲跌幅、限制回傳筆數 |
-| — | [🛍️ 網路商店營運助理](../3_企業導入_遠端MCP與token/) | 主管 | shop.sql | 4 | 單元 3–4 的遠端 + Token 範例 |
-| — | [📖 圖書館借還書櫃台](../2_寫入型MCP_server/) | 櫃台館員 | library.sql | 5 | 單元 2 的安全寫入 + 交易範例 |
-| — | [☕ 門市營運查詢](../1_用AI建立MCP_server/) | 店長 | cafe_shop.sql | 3 | 單元 1 的基礎範例 |
+| — | [🛍️ 網路商店營運助理](../3_企業導入_遠端MCP與token/README.md) | 主管 | shop.sql | 4 | 單元 3–4 的遠端 + Token 範例 |
+| — | [📖 圖書館借還書櫃台](../2_寫入型MCP_server/README.md) | 櫃台館員 | library.sql | 5 | 單元 2 的安全寫入 + 交易範例 |
+| — | [☕ 門市營運查詢](../1_用AI建立MCP_server/README.md) | 店長 | cafe_shop.sql | 3 | 單元 1 的基礎範例 |
 
 > 💡 **同一個資料庫，可以有不同的 MCP Server。** 網路商店就有「客服助理」和「營運助理」兩個：客服只能查會員訂單，主管才能看營業額。這就是企業依照**部門**開放不同工具的做法。
 
@@ -110,7 +110,7 @@ uv pip install -r requirements.txt
 
 | 範例 | 資料庫 | 準備方式 |
 |---|---|---|
-| 客服助理、教務處助理、館員助理 | `practice` | 匯入[中文範例資料庫](../../範例資料庫/中文範例資料庫/)的 `cafe_shop.sql`、`shop.sql`、`school.sql`、`library.sql` |
+| 客服助理、教務處助理、館員助理 | `practice` | 匯入[中文範例資料庫](../../範例資料庫/中文範例資料庫/README.md)的 `cafe_shop.sql`、`shop.sql`、`school.sql`、`library.sql` |
 | 門市營運分析 | `practice` | 匯入範例庫的 [`cafe_shop.sql`](../../範例資料庫/中文範例資料庫/cafe_shop.sql) |
 | 客服助理、電商助理 | `practice` | 匯入範例庫的 [`shop.sql`](../../範例資料庫/中文範例資料庫/shop.sql) |
 
@@ -132,7 +132,7 @@ uv run mcp dev shop_service.py
 | 設定 | 不用設定 | `MCP_TRANSPORT=http` |
 | 誰啟動 | Antigravity / Claude Desktop | 終端機或樹莓派 Docker 容器常駐啟動 |
 | token | 不需要 | 需要（`tokens.json`） |
-| 對應單元 | [單元 1](../1_用AI建立MCP_server/)、[單元 2](../2_寫入型MCP_server/) | [單元 3](../3_企業導入_遠端MCP與token/)、[單元 4](../4_樹莓派Docker容器部署/) |
+| 對應單元 | [單元 1](../1_用AI建立MCP_server/README.md)、[單元 2](../2_寫入型MCP_server/README.md) | [單元 3](../3_企業導入_遠端MCP與token/README.md)、[單元 4](../4_樹莓派Docker容器部署/README.md) |
 
 ### 方式一：本機
 
@@ -192,7 +192,7 @@ $env:MCP_TRANSPORT="http"; $env:MCP_PORT="8001"
 uv run school_office.py
 ```
 
-員工的 Antigravity `.agents/mcp_config.json`（或 Claude Desktop）設定（和[單元 3](../3_企業導入_遠端MCP與token/#51-antigravity-專案設定或-claude-desktop) 相同）：
+員工的 Antigravity `.agents/mcp_config.json`（或 Claude Desktop）設定（和[單元 3](../3_企業導入_遠端MCP與token/README.md#51-antigravity-專案設定或-claude-desktop) 相同）：
 
 ```json
 {
@@ -224,12 +224,12 @@ uv run school_office.py
 |---|---|
 | **上課示範** | 同時註冊 2～3 個範例，問 Claude 跨領域的問題，觀察它怎麼挑選工具 |
 | **當作提示詞的參考** | 每個範例的說明頁都附上「產生這個範例的提示詞」，可以照著修改成自己的需求 |
-| **請 AI 擴充** | 把範例程式和「延伸挑戰」交給 AI，練習[步驟 6：請 AI 修改和除錯](../1_用AI建立MCP_server/#步驟-6請-ai-修改和除錯) |
+| **請 AI 擴充** | 把範例程式和「延伸挑戰」交給 AI，練習[步驟 6：請 AI 修改和除錯](../1_用AI建立MCP_server/README.md#步驟-6請-ai-修改和除錯) |
 | **期末專題的起點** | 選一個範例，換一個使用者角色（例如把「教務處」換成「學生自己」），重新規劃工具 |
 
 ---
 
 ## 下一步
 
-- 如果想在範例中加入**新增或修改資料**的工具，請複習 👉 [單元 2：會寫入資料的 MCP Server](../2_寫入型MCP_server/)
-- 準備動手挑戰壓軸任務 👉 [期末專題：為企業打造專屬 MCP Server](../#期末專題)
+- 如果想在範例中加入**新增或修改資料**的工具，請複習 👉 [單元 2：會寫入資料的 MCP Server](../2_寫入型MCP_server/README.md)
+- 準備動手挑戰壓軸任務 👉 [期末專題：為企業打造專屬 MCP Server](../README.md#期末專題)

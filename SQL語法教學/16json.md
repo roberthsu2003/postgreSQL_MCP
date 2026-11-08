@@ -198,7 +198,7 @@ FROM coffee_orders;
 
 學完 JSONB，可以處理每一列欄位都不一樣的 Excel。
 
-👉 **[實戰專案 2：IT 設備規格表](../app_projects/excel2_devices/)**：把滿是空白欄位的設備清單，整理成一個規格欄位，再用 SQL 查詢和升級。
+👉 **[實戰專案 2：IT 設備規格表](../app_projects/excel2_devices/README.md)**：把滿是空白欄位的設備清單，整理成一個規格欄位，再用 SQL 查詢和升級。
 
 ---
 

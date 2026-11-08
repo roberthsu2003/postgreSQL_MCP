@@ -1,9 +1,9 @@
 # 第 6 章：自訂 MCP Server（壓軸單元：從個人本機開發到企業容器化導入）
 
 > 📌 **先修**：
-> - [第 3 章 安裝現成 MCP](../MCP操作資料庫/)（體驗過自然語言查庫）
+> - [第 3 章 安裝現成 MCP](../MCP操作資料庫/README.md)（體驗過自然語言查庫）
 > - [第 4 章 SQL 語法與練功](../SQL語法教學/README.md)（看得懂 SQL 與資料庫關聯）
-> - [第 5 章 實戰專案](../app_projects/)（有請 AI 寫程式、自己驗收的經驗）
+> - [第 5 章 實戰專案](../app_projects/README.md)（有請 AI 寫程式、自己驗收的經驗）
 
 在第 3 章中，我們使用的是別人寫好的開源 MCP（例如 `postgres-mcp`），AI 可以任意執行 SQL。
 但在真實應用與企業環境中，**我們不能讓 AI 隨意下 SQL，也不能讓沒有權限的人隨意撈取機敏資料**。
@@ -80,11 +80,11 @@ flowchart LR
 
 | 階段 | 單元 | 你的角色 | 內容 | 執行位置與連線方式 |
 |:---:|---|---|---|---|
-| **個人篇** | [1. 用 AI 建立自己的 MCP Server（唯讀）](./1_用AI建立MCP_server/) ⭐ | 需求設計者、開發者 | 規劃工具 → 撰寫 FastMCP 程式 → Inspector 測試 → 在 Antigravity 專案掛載 | 💻 本機執行（`stdio`）<br>連樹莓派 DB |
-| **個人篇** | [2. 會寫入資料的 MCP Server（安全寫入）](./2_寫入型MCP_server/) ⭐ | 需求設計者、驗收者 | 圖書館借還書：只開放特定寫入、商業規則寫在程式裡、資料庫交易（Transaction）與鎖定 | 💻 本機執行（`stdio`）<br>連樹莓派 DB |
-| **企業篇** | [3. 企業導入：遠端 MCP 與 Token 門禁](./3_企業導入_遠端MCP與token/) ⭐ | 系統導入者 | 從 `stdio` 升級為 `Streamable HTTP`，員工帶 Bearer Token 連線，留下即時稽核紀錄 | 💻 本機測試遠端架構<br>（`HTTP + Token`） |
-| **企業篇** | [4. 正式上線：部署至樹莓派 Docker 雙容器](./4_樹莓派Docker容器部署/) ⭐ | 系統架構師 | 撰寫 `Dockerfile` 與 `docker-compose.yml`，將 MCP Server 放進樹莓派與 PostgreSQL 雙容器內網直連 | 🍓 樹莓派 Docker 常駐<br>（`HTTP + Token`） |
-| **綜合篇** | [5. 企業各部門範例集](./5_範例集/) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理（共用 `common.py`） | 💻 本機或 🍓 樹莓派皆可 |
+| **個人篇** | [1. 用 AI 建立自己的 MCP Server（唯讀）](./1_用AI建立MCP_server/README.md) ⭐ | 需求設計者、開發者 | 規劃工具 → 撰寫 FastMCP 程式 → Inspector 測試 → 在 Antigravity 專案掛載 | 💻 本機執行（`stdio`）<br>連樹莓派 DB |
+| **個人篇** | [2. 會寫入資料的 MCP Server（安全寫入）](./2_寫入型MCP_server/README.md) ⭐ | 需求設計者、驗收者 | 圖書館借還書：只開放特定寫入、商業規則寫在程式裡、資料庫交易（Transaction）與鎖定 | 💻 本機執行（`stdio`）<br>連樹莓派 DB |
+| **企業篇** | [3. 企業導入：遠端 MCP 與 Token 門禁](./3_企業導入_遠端MCP與token/README.md) ⭐ | 系統導入者 | 從 `stdio` 升級為 `Streamable HTTP`，員工帶 Bearer Token 連線，留下即時稽核紀錄 | 💻 本機測試遠端架構<br>（`HTTP + Token`） |
+| **企業篇** | [4. 正式上線：部署至樹莓派 Docker 雙容器](./4_樹莓派Docker容器部署/README.md) ⭐ | 系統架構師 | 撰寫 `Dockerfile` 與 `docker-compose.yml`，將 MCP Server 放進樹莓派與 PostgreSQL 雙容器內網直連 | 🍓 樹莓派 Docker 常駐<br>（`HTTP + Token`） |
+| **綜合篇** | [5. 企業各部門範例集](./5_範例集/README.md) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理（共用 `common.py`） | 💻 本機或 🍓 樹莓派皆可 |
 | **綜合篇** | [期末專題](#期末專題) | 全部 | 親手為一間「公司」打造專屬的 MCP Server 並部署上線 | 🍓 遠端容器 + Token |
 
 ---
@@ -126,7 +126,7 @@ flowchart LR
 
 以小組或個人為單位，扮演一間公司的系統架構師，**打造一個自訂 MCP Server**，先在本機開發驗收，最後部署到樹莓派 Docker 容器中，讓使用者在 Antigravity 中帶 Token 連線查詢（亦可加入安全受控的寫入功能）。
 
-**資料庫（擇一）**：課程中任何一個範例資料庫（[中文範例資料庫](../範例資料庫/中文範例資料庫/)）
+**資料庫（擇一）**：課程中任何一個範例資料庫（[中文範例資料庫](../範例資料庫/中文範例資料庫/README.md)）
 
 | 項目 | 要求 |
 |---|---|

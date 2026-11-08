@@ -1,9 +1,9 @@
 # 單元 2：會寫入資料的 MCP Server（個人本機進階：交易與商業規則把關）
 
-> **本單元目標**：延續[單元 1](../1_用AI建立MCP_server/) 的本機開發模式，用 AI 建立一個可以**新增、修改資料**的 MCP Server，並學會讓寫入工具保持安全的設計原則。
-> 你的角色是**需求設計者**和**驗收者**。　[← 回第 6 章](../)
+> **本單元目標**：延續[單元 1](../1_用AI建立MCP_server/README.md) 的本機開發模式，用 AI 建立一個可以**新增、修改資料**的 MCP Server，並學會讓寫入工具保持安全的設計原則。
+> 你的角色是**需求設計者**和**驗收者**。　[← 回第 6 章](../README.md)
 
-程式：[library_counter.py](./library_counter.py)　資料庫：[library.sql](../../範例資料庫/中文範例資料庫/#-圖書館借閱-library)
+程式：[library_counter.py](./library_counter.py)　資料庫：[library.sql](../../範例資料庫/中文範例資料庫/README.md#-圖書館借閱-library)
 
 ---
 
@@ -113,7 +113,7 @@ def borrow_book(member_id: int, book_id: int) -> dict:
 
 ### 1. 準備資料庫
 
-匯入[中文範例資料庫](../../範例資料庫/中文範例資料庫/)的 `library.sql`。
+匯入[中文範例資料庫](../../範例資料庫/中文範例資料庫/README.md)的 `library.sql`。
 
 > ⚠️ 這個 MCP Server 會**修改資料**。練習完想恢復原狀時，重新執行一次 `library.sql` 就好。
 
@@ -161,7 +161,7 @@ def borrow_book(member_id: int, book_id: int) -> dict:
 
 ## 請 AI 建立寫入工具的提示詞
 
-把[單元 1 的提示詞範本](../1_用AI建立MCP_server/#步驟-2請-ai-寫程式)的「技術規定」加上以下內容：
+把[單元 1 的提示詞範本](../1_用AI建立MCP_server/README.md#步驟-2請-ai-寫程式)的「技術規定」加上以下內容：
 
 ````markdown
 ## 寫入工具的規定
@@ -194,4 +194,4 @@ def borrow_book(member_id: int, book_id: int) -> dict:
 
 接下來進入**第二階段：企業共用篇**——如何把 MCP Server 升級為網路服務、加上 Token 門禁，並打包放進 **Raspberry Pi 的 Docker 容器**供全公司使用？
 
-👉 **[單元 3：企業導入：遠端 MCP 與 Token 門禁](../3_企業導入_遠端MCP與token/)**
+👉 **[單元 3：企業導入：遠端 MCP 與 Token 門禁](../3_企業導入_遠端MCP與token/README.md)**

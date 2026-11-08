@@ -8,7 +8,7 @@
 
 ## 開始之前
 
-- [ ] 至少做完[專案 1](./excel1_supplies/) 和[專案 3](./excel3_attendance/) 的步驟 1～4
+- [ ] 至少做完[專案 1](./excel1_supplies/README.md) 和[專案 3](./excel3_attendance/README.md) 的步驟 1～4
 - [ ] 選一份符合下面條件的 Excel
 
 | 好的題目 | 先不要選 |
@@ -24,14 +24,14 @@
 
 | 你的 Excel 長這樣 | 參考 |
 |---|---|
-| 一張清單，沒有重複資料 | [專案 1 耗材庫存表](./excel1_supplies/) |
-| 不同類型的資料，每列要填的欄位都不一樣 | [專案 2 IT 設備規格表](./excel2_devices/) |
-| 同一個人或同一項東西重複出現很多列 | [專案 3 打卡表](./excel3_attendance/) |
-| 有部門、類別等好幾種重複資料，而且沒有編號 | [專案 4 差旅報銷單](./excel4_expense/) |
-| 一張單有多個品項，或價格會變動 | [專案 5 網路商店訂單](./excel5_shop/) |
-| 有很多文字紀錄，常常要搜尋和統計 | [專案 6 客服案件紀錄](./excel6_tickets/) |
-| 名單分散在好幾張工作表，要合併使用 | [專案 7 教育訓練報名表](./excel7_training/) |
-| 每月一個檔案，或資料有幾百筆以上 | [專案 8 連鎖門市月報](./excel8_stores/) |
+| 一張清單，沒有重複資料 | [專案 1 耗材庫存表](./excel1_supplies/README.md) |
+| 不同類型的資料，每列要填的欄位都不一樣 | [專案 2 IT 設備規格表](./excel2_devices/README.md) |
+| 同一個人或同一項東西重複出現很多列 | [專案 3 打卡表](./excel3_attendance/README.md) |
+| 有部門、類別等好幾種重複資料，而且沒有編號 | [專案 4 差旅報銷單](./excel4_expense/README.md) |
+| 一張單有多個品項，或價格會變動 | [專案 5 網路商店訂單](./excel5_shop/README.md) |
+| 有很多文字紀錄，常常要搜尋和統計 | [專案 6 客服案件紀錄](./excel6_tickets/README.md) |
+| 名單分散在好幾張工作表，要合併使用 | [專案 7 教育訓練報名表](./excel7_training/README.md) |
+| 每月一個檔案，或資料有幾百筆以上 | [專案 8 連鎖門市月報](./excel8_stores/README.md) |
 
 ## 步驟 1｜寫 3～5 則 user story
 

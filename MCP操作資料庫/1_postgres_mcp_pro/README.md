@@ -3,7 +3,7 @@
 > 💡 本課程主線使用 [Antigravity 的專案級設定](../1_antigravity設定.md)。使用 Claude Desktop 的同學再看這一篇。
 
 > **本單元目標**：安裝**別人寫好的** MCP Server，體驗「AI 直接查詢資料庫」是什麼感覺，並學會在 Claude Desktop 設定 MCP Server。
-> 你的角色是**使用者**。　[← 回第 3 章](../)
+> 你的角色是**使用者**。　[← 回第 3 章](../README.md)
 
 [Postgres MCP Pro](https://github.com/crystaldba/postgres-mcp) 是一個開源的 PostgreSQL MCP Server,除了讓 AI 執行 SQL 之外,還提供查詢計畫分析、索引建議、資料庫健康檢查等功能。
 
@@ -15,7 +15,7 @@
 	docker run --name my-postgres -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres
 	```
 
-2. **已經匯入範例資料庫**:依照第 2 章,把[網路商店 shop.sql](../../範例資料庫/中文範例資料庫/) 匯入 `practice` 資料庫
+2. **已經匯入範例資料庫**:依照第 2 章,把[網路商店 shop.sql](../../範例資料庫/中文範例資料庫/README.md) 匯入 `practice` 資料庫
 3. **安裝 [Claude Desktop](https://claude.ai/download)**
 4. **安裝 Docker**(推薦)**或 Python 3.12 以上 + [uv](https://docs.astral.sh/uv/getting-started/installation/)**
 
@@ -181,7 +181,7 @@ sequenceDiagram
 
 ## 7. 開始使用
 
-設定完成後，👉 [3-2:自然語言查詢資料庫](../2_用中文查詢資料庫/),不用寫 SQL,直接用中文查詢網路商店的資料。
+設定完成後，👉 [3-2:自然語言查詢資料庫](../2_用中文查詢資料庫/README.md),不用寫 SQL,直接用中文查詢網路商店的資料。
 
 ## 8. 連線到 Supabase(雲端 PostgreSQL)
 
@@ -279,4 +279,4 @@ Supabase 也有自己的 [官方 MCP Server](https://supabase.com/docs/guides/ge
 
 ## 下一步
 
-👉 [3-2:自然語言查詢資料庫](../2_用中文查詢資料庫/)
+👉 [3-2:自然語言查詢資料庫](../2_用中文查詢資料庫/README.md)

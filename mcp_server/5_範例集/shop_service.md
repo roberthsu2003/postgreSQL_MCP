@@ -1,6 +1,6 @@
 # 範例 1：🛒 網路商店客服助理
 
-程式：[shop_service.py](./shop_service.py)　資料庫：[shop.sql](../../範例資料庫/中文範例資料庫/#-網路商店-shop)　[← 回範例集](./README.md)
+程式：[shop_service.py](./shop_service.py)　資料庫：[shop.sql](../../範例資料庫/中文範例資料庫/README.md#-網路商店-shop)　[← 回範例集](./README.md)
 
 ## 情境
 

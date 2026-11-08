@@ -75,7 +75,7 @@
 > [!WARNING]
 > `cafe_shop` 和 `shop` 有同名的資料表，匯入同一個資料庫時，後者會**直接覆蓋**前者。請一個範例放一個資料庫。
 
-📚 所有範例的結構和說明：[`中文範例資料庫/`](./中文範例資料庫/)
+📚 所有範例的結構和說明：[`中文範例資料庫/`](./中文範例資料庫/README.md)
 
 ---
 
@@ -92,7 +92,7 @@
 手動改庫存、斷貨才發現
 
 📊 [下載 Excel](../app_projects/excel1_supplies/耗材庫存表.xlsx)<br>
-🚀 [進入專案](../app_projects/excel1_supplies/)<br>
+🚀 [進入專案](../app_projects/excel1_supplies/README.md)<br>
 📍 教完 DDL-5、DML-3 可以開始
 
 </td>
@@ -103,7 +103,7 @@
 每種設備欄位不同，表越加越寬
 
 📊 [下載 Excel](../app_projects/excel2_devices/設備規格表.xlsx)<br>
-🚀 [進入專案](../app_projects/excel2_devices/)<br>
+🚀 [進入專案](../app_projects/excel2_devices/README.md)<br>
 📍 教完 DML-6 可以開始
 
 </td>
@@ -116,7 +116,7 @@
 部門重複填寫、新人放不進表
 
 📊 [下載 Excel](../app_projects/excel3_attendance/打卡表.xlsx)<br>
-🚀 [進入專案](../app_projects/excel3_attendance/)<br>
+🚀 [進入專案](../app_projects/excel3_attendance/README.md)<br>
 📍 教完 一對多入門 可以開始
 
 </td>
@@ -127,7 +127,7 @@
 重複報帳、不知道該催誰審核
 
 📊 [下載 Excel](../app_projects/excel4_expense/差旅報銷單.xlsx)<br>
-🚀 [進入專案](../app_projects/excel4_expense/)<br>
+🚀 [進入專案](../app_projects/excel4_expense/README.md)<br>
 📍 教完 進階-2 可以開始
 
 </td>
@@ -140,7 +140,7 @@
 商品調價後，舊訂單金額算不準
 
 📊 [下載 Excel](../app_projects/excel5_shop/網路商店訂單表.xlsx)<br>
-🚀 [進入專案](../app_projects/excel5_shop/)<br>
+🚀 [進入專案](../app_projects/excel5_shop/README.md)<br>
 📍 教完 進階-3 可以開始
 
 </td>
@@ -151,7 +151,7 @@
 關鍵字寫法不一，舊案件找不到
 
 📊 [下載 Excel](../app_projects/excel6_tickets/客服案件紀錄.xlsx)<br>
-🚀 [進入專案](../app_projects/excel6_tickets/)<br>
+🚀 [進入專案](../app_projects/excel6_tickets/README.md)<br>
 📍 教完 進階-5 可以開始
 
 </td>
@@ -164,7 +164,7 @@
 兩份名單要手動合併
 
 📊 [下載 Excel](../app_projects/excel7_training/教育訓練報名表.xlsx)<br>
-🚀 [進入專案](../app_projects/excel7_training/)<br>
+🚀 [進入專案](../app_projects/excel7_training/README.md)<br>
 📍 教完 進階-7 可以開始
 
 </td>
@@ -175,7 +175,7 @@
 每月複製 Excel，跨月統計困難
 
 📊 [下載 Excel](./excel範例/連鎖門市月報表/)<br>
-🚀 [進入專案](../app_projects/excel8_stores/)<br>
+🚀 [進入專案](../app_projects/excel8_stores/README.md)<br>
 📍 教完 進階-9 可以開始
 
 </td>
@@ -199,7 +199,7 @@
 
 | 上一章 | 目錄 | 下一章 |
 |:---|:---:|---:|
-| [⬅️ 第 1 章 環境安裝](../環境安裝/) | [🏠 課程首頁](../README.md) | [第 3 章 用中文查詢資料庫 ➡️](../MCP操作資料庫/) |
+| [⬅️ 第 1 章 環境安裝](../環境安裝/README.md) | [🏠 課程首頁](../README.md) | [第 3 章 用中文查詢資料庫 ➡️](../MCP操作資料庫/README.md) |
 
 <details>
 <summary>📎 進階資源：10 萬筆資料產生器（進階-10 才會用到）</summary>

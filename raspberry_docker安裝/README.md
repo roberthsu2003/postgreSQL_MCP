@@ -2,7 +2,7 @@
 
 > 🎯 學完你會：在樹莓派上常駐 PostgreSQL，並從自己的電腦連線
 >
-> 沒有樹莓派？改走 [Supabase 雲端方案](../supabase安裝/)。
+> 沒有樹莓派？改走 [Supabase 雲端方案](../supabase安裝/README.md)。
 
 本教學遵循**「伺服器端與操作端分離」**的現代化架構：
 * 🍓 **所有 Server 都在 Raspberry Pi 內的 Docker 執行**（PostgreSQL 資料庫伺服器、未來的自訂 MCP 伺服器容器）。
@@ -69,4 +69,4 @@ graph LR
 - [ ] DBeaver 透過 SSH 隧道顯示 `Connected`
 - [ ] AI 拒絕了寫入的要求，唯讀保護有效
 
-👉 **下一步：[第 2 章：匯入範例資料庫](../範例資料庫/)**
+👉 **下一步：[第 2 章：匯入範例資料庫](../範例資料庫/README.md)**

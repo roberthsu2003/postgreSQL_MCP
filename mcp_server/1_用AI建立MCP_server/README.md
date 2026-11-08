@@ -43,7 +43,7 @@ flowchart LR
 
 ## 為什麼要自己建立 MCP Server？
 
-[第 3 章的 Postgres MCP](../../MCP操作資料庫/) 把**整個資料庫**交給 AI，AI 可以自己寫任何 SQL。
+[第 3 章的 Postgres MCP](../../MCP操作資料庫/README.md) 把**整個資料庫**交給 AI，AI 可以自己寫任何 SQL。
 自己建立的 MCP Server 則只提供**你設計好的幾個工具**，AI 只能呼叫這些工具。
 
 | | Postgres MCP Pro（別人寫的） | 自建 MCP Server |
@@ -105,7 +105,7 @@ flowchart LR
 
 AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（擇一）：
 
-- 參考 [cafe_shop 的關係圖](../../範例資料庫/中文範例資料庫/#-連鎖咖啡門市-cafe_shop)
+- 參考 [cafe_shop 的關係圖](../../範例資料庫/中文範例資料庫/README.md#-連鎖咖啡門市-cafe_shop)
 - 在 DBeaver 對資料表按右鍵 → **Generate SQL → DDL**
 - 在 Antigravity 對話框問：「列出 products、categories、stores、orders、order_items 的欄位與型別」
 
@@ -363,13 +363,13 @@ uv run mcp dev server.py              # 啟動測試工具
 
 ### 練習三：從零開始
 
-用[中文範例資料庫](../../範例資料庫/中文範例資料庫/)的**圖書館借閱** `library.sql`，從步驟 1 的工具規劃表開始，請 AI 建立一個「圖書館館員助理」MCP Server。
+用[中文範例資料庫](../../範例資料庫/中文範例資料庫/README.md)的**圖書館借閱** `library.sql`，從步驟 1 的工具規劃表開始，請 AI 建立一個「圖書館館員助理」MCP Server。
 
-> 🤔 **思考**：如果要讓 AI **新增**資料（例如登記借書），工具要怎麼設計才安全？👉 答案在下一單元：[單元 2：會寫入資料的 MCP Server](../2_寫入型MCP_server/)
+> 🤔 **思考**：如果要讓 AI **新增**資料（例如登記借書），工具要怎麼設計才安全？👉 答案在下一單元：[單元 2：會寫入資料的 MCP Server](../2_寫入型MCP_server/README.md)
 
 ---
 
 ## 下一步
 
-- **繼續個人進階（安全寫入）**：目前的工具全部是唯讀的，若要在個人電腦上開發能安全新增/修改資料的工具 👉 [單元 2：會寫入資料的 MCP Server](../2_寫入型MCP_server/)
-- **進入企業共用階段**：要把做好工具開放給全公司員工使用，並用 Token 管控誰可以連線 👉 [單元 3：企業導入：遠端 MCP 與 Token 門禁](../3_企業導入_遠端MCP與token/)
+- **繼續個人進階（安全寫入）**：目前的工具全部是唯讀的，若要在個人電腦上開發能安全新增/修改資料的工具 👉 [單元 2：會寫入資料的 MCP Server](../2_寫入型MCP_server/README.md)
+- **進入企業共用階段**：要把做好工具開放給全公司員工使用，並用 Token 管控誰可以連線 👉 [單元 3：企業導入：遠端 MCP 與 Token 門禁](../3_企業導入_遠端MCP與token/README.md)
