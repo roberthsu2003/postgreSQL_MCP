@@ -16,7 +16,7 @@
 graph LR
     subgraph Client ["💻 您的個人電腦（所有操作都在這裡）"]
         DBP["DBeaver<br/>(視覺化資料庫管理與 SQL 查詢)"]
-        AG["Antigravity<br/>(AI 助手 / 程式開發 / 專案 MCP)"]
+        AG["Antigravity<br/>(AI 助手 / 程式開發 / 全域 MCP)"]
     end
 
     subgraph Pi ["🍓 Raspberry Pi 樹莓派（伺服器端）"]
@@ -26,7 +26,7 @@ graph LR
     end
 
     DBP ==>|"① 透過 SSH 隧道或區網 IP 管理"| PG
-    AG ==>|"② 透過專案 MCP 連線查庫"| PG
+    AG ==>|"② 透過全域 MCP 連線查庫"| PG
 
     classDef client fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1
     classDef server fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#92400e
@@ -40,7 +40,7 @@ graph LR
 |---|---|---|---|
 | 🍓 **Raspberry Pi（伺服器端）** | 跑 Docker 容器 | **Docker 引擎**<br>• `my-postgres` 容器 (5432)<br>• 具名磁碟卷 (資料持久化) | 專職當作 Backend 伺服器，開機常駐背景運行，不需在此寫程式或開桌面視窗。 |
 | 💻 **個人電腦（操作與開發端）** | 視覺化管理 & 寫 SQL | **DBeaver** | 在自己電腦打開圖形介面，透過 SSH 隧道或區網 IP 遠端管理樹莓派資料庫。 |
-| 💻 **個人電腦（操作與開發端）** | 一般人 AI 查庫 | **Antigravity** | 在自己電腦提問，透過本專案的專案級 MCP 直接用自然語言查詢樹莓派資料庫。 |
+| 💻 **個人電腦（操作與開發端）** | 一般人 AI 查庫 | **Antigravity** | 在自己電腦提問，透過全域 MCP 直接用自然語言查詢樹莓派資料庫。 |
 | 💻 **個人電腦（操作與開發端）** | 程式開發與進階客製 | **Antigravity** | 在自己電腦撰寫 Python、開發自訂 MCP Server 與除錯。 |
 
 ---
@@ -54,7 +54,7 @@ graph LR
 | 1 | **安裝 Docker** | 🍓 樹莓派 | 樹莓派官方腳本安裝、免 sudo 權限、開機自動啟用與版本驗證 | [👉 前往單元 1](./1_安裝docker.md) |
 | 2 | **運行 PostgreSQL 容器** | 🍓 樹莓派 | `docker run` 啟動資料庫、開機自動重啟（`--restart unless-stopped`）與資料持久化磁碟卷 | [👉 前往單元 2](./2_單獨安裝postgresql.md) |
 | 3 | **DBeaver 遠端連線** | 💻 個人電腦 | 在自己電腦開啟 DBeaver，透過 SSH 隧道安全連線至樹莓派資料庫 | [👉 前往單元 3](./3_dbeaver連線.md) |
-| 4 | **Antigravity 專案級 MCP 連線** | 💻 個人電腦 | 在自己電腦的 Antigravity 設定 `.agents/mcp_config.json`，讓 AI 透過自然語言查詢樹莓派資料庫 | [👉 前往單元 4](./4_單獨安裝mcp_server.md) |
+| 4 | **Antigravity 全域 MCP 連線** | 💻 個人電腦 | 在自己電腦的 Antigravity 設定全域 `~/.gemini/config/mcp_config.json`，讓 AI 隨時連線樹莓派資料庫 | [👉 前往單元 4](./4_單獨安裝mcp_server.md) |
 | 5 | **Docker Compose 伺服器管理** ⭐ | 🍓 樹莓派 | **維護推薦**！使用 `docker-compose.yml` 宣告式管理樹莓派上的容器服務 | [👉 前往單元 5](./5_docker_compose雙容器.md) |
 
 ---
