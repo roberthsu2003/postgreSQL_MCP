@@ -85,14 +85,14 @@ flowchart TD
 
 本章專心學 SQL。章節最下面會連到實戰專案，讓你把語法用在真實的 Excel 上，最後做出個人 App。
 
-| 學完 | 可以接著做 |
+| 教完這一課 | 可以接著做 |
 |---|---|
-| DDL 全部 | [專案 1 耗材庫存表](../app_projects/excel1_supplies/) 步驟 1、2 |
-| DML-1 到 DML-3 | [專案 1 耗材庫存表](../app_projects/excel1_supplies/) 步驟 3、4 |
-| DML-4、DML-5、一對多入門 | [專案 2 打卡表](../app_projects/excel2_attendance/) |
-| 進階-1、進階-2 | [專案 3 差旅報銷單](../app_projects/excel3_expense/) |
-| 進階-1、進階-3 | [專案 4 網路商店訂單](../app_projects/excel4_shop/) |
-| 進階-4 到進階-9 | [專案 5 連鎖門市月報](../app_projects/excel5_stores/) |
+| DDL-5 限制條件 | [專案 1 耗材庫存表](../app_projects/excel1_supplies/) 步驟 1、2 |
+| DML-3 修改與刪除 | [專案 1 耗材庫存表](../app_projects/excel1_supplies/) 步驟 3、4 |
+| 一對多入門 | [專案 2 打卡表](../app_projects/excel2_attendance/) |
+| 進階-2 關聯新增 | [專案 3 差旅報銷單](../app_projects/excel3_expense/) |
+| 進階-3 關聯搜尋 | [專案 4 網路商店訂單](../app_projects/excel4_shop/) |
+| 進階-9 ON DELETE | [專案 5 連鎖門市月報](../app_projects/excel5_stores/) |
 | 全部總覽 | 查看[實戰專案大綱](../app_projects/實戰專案大綱.md) |
 
 ## 用到哪些資料庫？

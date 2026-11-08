@@ -159,14 +159,14 @@
 
 本章專心學 SQL 語法，範例都是暖光咖啡。學完一個段落，就到[第 7 章](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app)把語法用在真實的 Excel 上：
 
-| 學完 | 接著做 | 練到什麼 |
+| 教完這一課 | 接著做 | 練到什麼 |
 |---|---|---|
-| DDL 全部 | [專案 1 耗材庫存表](./app_projects/excel1_supplies/) 步驟 1、2 | 從 Excel 決定欄位，手寫建表 |
-| DML-1 到 DML-3 | [專案 1 耗材庫存表](./app_projects/excel1_supplies/) 步驟 3、4 | 匯入資料、對帳，用 DML 完成需求 |
-| DML-4、DML-5、一對多入門 | [專案 2 打卡表](./app_projects/excel2_attendance/) | 一張拆兩張、外來鍵、JOIN |
-| 進階-1、進階-2 | [專案 3 差旅報銷單](./app_projects/excel3_expense/) | 一張拆四張、自動編號 |
-| 進階-1、進階-3 | [專案 4 網路商店訂單](./app_projects/excel4_shop/) | 多對多、歷史價格 |
-| 進階-4 到進階-9 | [專案 5 連鎖門市月報](./app_projects/excel5_stores/) | 跨月 CSV、分組報表、子查詢 |
+| DDL-5 限制條件 | [專案 1 耗材庫存表](./app_projects/excel1_supplies/) 步驟 1、2 | 從 Excel 決定欄位，手寫建表 |
+| DML-3 修改與刪除 | [專案 1 耗材庫存表](./app_projects/excel1_supplies/) 步驟 3、4 | 匯入資料、對帳，用 DML 完成需求 |
+| 一對多入門 | [專案 2 打卡表](./app_projects/excel2_attendance/) | 一張拆兩張、外來鍵、JOIN |
+| 進階-2 關聯新增 | [專案 3 差旅報銷單](./app_projects/excel3_expense/) | 一張拆四張、自動編號 |
+| 進階-3 關聯搜尋 | [專案 4 網路商店訂單](./app_projects/excel4_shop/) | 多對多、歷史價格 |
+| 進階-9 ON DELETE | [專案 5 連鎖門市月報](./app_projects/excel5_stores/) | 跨月 CSV、分組報表、子查詢 |
 
 ---
 
