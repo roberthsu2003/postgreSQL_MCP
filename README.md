@@ -23,16 +23,16 @@
 > [!IMPORTANT]
 > **本專案的核心目標是「讓學員扎實學會 SQL 與資料庫架構」，嚴格遵循以下三大規範：**
 > 
-> 1. **AI 是助教，手寫才是真功夫**：所有 Prompt **嚴禁**讓 MCP 在背景自動建立或修改資料庫！AI 的任務是提供結構建議與 SQL 程式碼區塊，學員必須親自在 **DBeaver** 中檢視並手動執行。
+> 1. **AI 是助教，手寫才是真功夫**：學習 DDL、DML 和關聯資料庫時，AI **不連資料庫**，只提供建議與 SQL，學員必須親自在 **DBeaver** 中檢視並手動執行。到實戰專案寫 PRD 時，才讓 AI 透過 MCP 以**唯讀帳號**讀取資料庫結構。
 > 2. **拒絕線上架站繁瑣，聚焦個人本機桌面軟體**：捨棄需要伺服器與雲端維運的 Web / Streamlit 線上版，專注使用 **PyQt5**（高質感商業管理視窗）與 **Tkinter**（Python 內建、免繁複環境安裝），開發在自己電腦上即開即用的個人管理小工具。
-> 3. **Python 程式中全數手寫 SQL**：在桌面 App 的按鈕與表格背後，使用 `psycopg2` 撰寫原生 SQL 語法（`cursor.execute("SELECT ...")`），體會 SQL 如何靈活驅動桌面視窗畫面。
+> 3. **SQL 自己寫，App 由 AI 做**：每則需求的 SQL 都由學員親手寫好並在 DBeaver 跑過。桌面 App 的 Python 由 AI 產生，學員依 `todolist.md` 逐項驗收畫面，並確認每句 SQL 都看得懂。
 
 ---
 
 ## 🚀 第一次來？這樣開始
 
 1. **選環境**：有樹莓派走 [Docker 方案](./raspberry_docker安裝/)，沒有就走 [Supabase 雲端方案](./supabase安裝/)（最快）。
-2. **照順序走**：第 1 章走到第 7 章，每一章都接著前一章。
+2. **照順序走**：第 1 章走到第 7 章，每一章都接著前一章。第 4 章學完一個段落，就可以接著做第 7 章對應的實戰專案。
 3. **每課都親手打**：看懂不等於會寫。每課結尾的 ✅ 過關檢查都打勾了，再往下走。
 4. **卡住了**：先看該課的「⚠️ 常見卡關」，再把 SQL 和錯誤訊息貼給 AI，問它「錯在哪裡，為什麼」。
 
@@ -44,7 +44,7 @@
 | 4 | [SQL 語法與練功](#4-sql-語法與實戰練功) | **親手寫出跨表報表，並抓出 AI 的錯** |
 | 5 | [Python 串接](#5-python-串接psycopg2) | 用程式自動查詢，並防止資料庫被駭 |
 | 6 | [自訂 MCP Server](#6-讓自己的-ai-可以查詢自己的資料庫自訂-mcp-server) | 讓 AI 只能呼叫你設計的工具 |
-| 7 | [桌面 App 專題](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app) | 做出工作用得上的小工具 |
+| 7 | [Excel 實戰專案](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app) | 把工作上的 Excel 變成資料庫和個人小工具 |
 
 **只想學 SQL？** 做完第 1、2 章，直接跳到第 4 章。
 
@@ -59,7 +59,7 @@
 | **一** | **[1. 環境安裝](#1-環境安裝)**<br>**[2. 範例資料庫](#2-範例資料庫)**<br>**[3. 自然語言查詢資料庫初體驗](#3-自然語言查詢資料庫初體驗免寫-sql)** | • 安裝 PostgreSQL（樹莓派 Docker / Supabase）與 DBeaver<br>• 匯入 5 大職場範例資料庫（報銷、差勤、資產、門市、CRM）<br>• 體驗自備 Excel 轉 SQL 交易檔流程與中文自然語言查詢資料庫 | Docker / Supabase / DBeaver / Antigravity |
 | **二** | **[4. SQL 語法與實戰練功](#4-sql-語法與實戰練功)** | • **講義與實戰題合一**：完整 DDL、DML、JOIN、JSONB<br>• 每課都有職場情境、真實執行結果、常見卡關與附答案的練習<br>• 每課附 AI 提示詞，學生親手在 DBeaver 執行 | DBeaver + Antigravity 對話 |
 | **三** | **[5. Python 串接](#5-python-串接psycopg2)**<br>**[6. 讓 AI 查詢自己的資料庫](#6-讓自己的-ai-可以查詢自己的資料庫自訂-mcp-server)** | • 使用 `psycopg2` 進行參數化查詢（`%s` 防注入）與交易管理<br>• **讓 AI 查詢自己的資料庫**：用 FastMCP 寫幾行 Python，AI 就能用中文查庫<br>• 從個人本機查庫，進階到企業 Token 門禁與樹莓派 Docker 容器部署 | Python (`psycopg2`) + FastMCP + Docker |
-| **四** | **[7. 職場桌面 App 實戰開發](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app)** | • **全課程壓軸大專題**：規格驅動開發 (SDD)，手寫 SQL 貫穿<br>• 結合 **PyQt5** 與 **Tkinter** 打造 5 款職場個人獨立桌面視窗<br>• 會計報銷、人資排班、總務資產、門市營運、業務 CRM | PyQt5 / Tkinter |
+| **四** | **[7. 職場桌面 App 實戰開發](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app)** | • **五張職場 Excel，由淺入深**：耗材庫存、打卡、差旅報銷、網路商店、門市月報<br>• 從 user story 開始，手寫 DDL 與 DML，AI 產生交易檔後與 Excel 對帳<br>• AI 透過唯讀 MCP 產生 `PRD.md` 與 `todolist.md`，再做成個人桌面 App | DBeaver + Antigravity + Tkinter / PyQt5 |
 
 ---
 
@@ -155,6 +155,19 @@
 | 9 | [ON DELETE](./SQL語法教學/15on_delete_action.md) | 查規則、預測後果、軟刪除 | [.sql](./SQL語法教學/15on_delete_action.sql) |
 | 10 | [AI 助教與結業挑戰](./SQL語法教學/關聯資料庫實作_用Prompt操作.md) | 抓出 AI 的錯、五大職務實戰、結業五題 | — |
 
+### 🚀 學完接實戰專案
+
+本章專心學 SQL 語法，範例都是暖光咖啡。學完一個段落，就到[第 7 章](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app)把語法用在真實的 Excel 上：
+
+| 學完 | 接著做 | 練到什麼 |
+|---|---|---|
+| DDL 全部 | [專案 1 耗材庫存表](./app_projects/excel1_supplies/) 步驟 1、2 | 從 Excel 決定欄位，手寫建表 |
+| DML-1 到 DML-3 | [專案 1 耗材庫存表](./app_projects/excel1_supplies/) 步驟 3、4 | 匯入資料、對帳，用 DML 完成需求 |
+| DML-4、DML-5、一對多入門 | [專案 2 打卡表](./app_projects/excel2_attendance/) | 一張拆兩張、外來鍵、JOIN |
+| 進階-1、進階-2 | [專案 3 差旅報銷單](./app_projects/excel3_expense/) | 一張拆四張、自動編號 |
+| 進階-1、進階-3 | [專案 4 網路商店訂單](./app_projects/excel4_shop/) | 多對多、歷史價格 |
+| 進階-4 到進階-9 | [專案 5 連鎖門市月報](./app_projects/excel5_stores/) | 跨月 CSV、分組報表、子查詢 |
+
 ---
 
 ## 5. Python 串接（psycopg2）
@@ -217,11 +230,43 @@ conn.close()
 
 ## 7. 實戰專案：規格驅動開發 SDD（打造 5 大職場個人桌面 App）
 
-當我們掌握了手寫 SQL 語法、Python 驅動程式，並且擁有專屬的 AI 查庫助理後，我們邁向全課程的**壓軸實戰專案**！
+每個專案都從一張職場 Excel 開始，由淺入深，最後做成自己電腦上的小工具。完整規劃請見[實戰專案大綱](./app_projects/實戰專案大綱.md)。
 
-我們採用現代軟體工程的 **規格驅動開發 (SDD, Spec-Driven Development)**：透過 `PRD.md` 規範商業功能，由 AI 閱讀資料庫結構並引導架構，學員在自己電腦上以純本機視窗（**PyQt5** 與 **Tkinter**）親手手寫 SQL，開發出完全屬於自己的 5 大職場桌面管理工具！
+```mermaid
+flowchart LR
+    A["Excel<br>與 user story"] --> B["手寫 DDL<br>蓋結構"]
+    B --> C["AI 依結構<br>產生交易檔"]
+    C --> D["匯入<br>與 Excel 對帳"]
+    D --> E["手寫 DML<br>回答故事"]
+    E --> F["AI 用唯讀 MCP<br>寫 PRD.md"]
+    F --> G["todolist.md"]
+    G --> H["個人桌面 App"]
+```
 
-**本目錄 5 大實戰專案，100% 完整對應五大職場範例資料庫！**
+| 專案 | Excel | 職場角色 | 結構 | 這個專案的重點 | 先學完 |
+|:---:|---|---|---|---|---|
+| 1 | [耗材庫存表](./app_projects/excel1_supplies/) | 🏢 總務 | 單表 | 從 Excel 訂欄位規格、限制條件、基本 DML | DDL、DML-1～3 |
+| 2 | [打卡表](./app_projects/excel2_attendance/) | 👥 人資 | 一對多 | 拆成兩張表、處理矛盾資料、`JOIN` 與 `LEFT JOIN` | DML-4、DML-5、一對多入門 |
+| 3 | [差旅報銷單](./app_projects/excel3_expense/) | 💼 會計 / 出納 | 一張拆四張 | 自動編號與 `setval`、防重複報帳、審核流程 | 進階-1、進階-2 |
+| 4 | [網路商店訂單](./app_projects/excel4_shop/) | 🛒 業務 / 客服 | 多對多 | 明細表、成交單價與目前售價、用交易建立訂單 | 進階-1、進階-3 |
+| 5 | [連鎖門市月報](./app_projects/excel5_stores/) | ☕ 店長 / 營運 | 跨月多檔 | CSV 暫存表、每月重複匯入、SQL 版樞紐分析 | 進階-4～9 |
+
+**怎麼進行：** 每個專案的步驟 1～4（看懂 Excel、建表、匯入對帳、用 SQL 完成需求）只需要第 4 章的內容。步驟 5 之後（PRD、todolist、App）建議學完第 5 章再做，並依照 [MCP 設定教學](./MCP操作資料庫/1_antigravity設定.md)連線。
+
+| 工作 | 學員 | AI |
+|---|:---:|:---:|
+| 寫 user story、驗收條件 | ✅ | 協助檢查 |
+| 手寫 DDL、DML | ✅ | 只當助教，不連資料庫 |
+| 把 Excel 轉成資料交易檔 | 檢查與對帳 | ✅ |
+| `PRD.md`、`todolist.md` | 審核與修改 | ✅ 用唯讀 MCP 讀結構 |
+| Python 與視窗程式 | 依 `todolist.md` 驗收 | ✅ |
+
+### 延伸專題
+
+做完五個專案後，想挑戰功能更完整的版本，可以參考以下專案：
+
+<details>
+<summary>展開五個延伸專題</summary>
 
 | 專案目錄 | 對應範例庫 | 本機 GUI 框架 | 職場角色 | 核心手寫 SQL 技術與亮點功能 |
 |---|---|:---:|:---:|---|
@@ -230,6 +275,8 @@ conn.close()
 | **[project3_assets_inventory](./app_projects/project3_assets_inventory/)** | `assets_inventory.sql` | 🔵 **PyQt5** | 🏢 總務 / 倉管 | • **固定資產借還登記**：手寫 SQL 篩選逾期未歸還名冊與天數<br>• **耗材安全庫存預警**：庫存低於預警線自動標記「建議採購」<br>• **部門領用追蹤**：領用即時扣庫存並留存完整歷史紀錄 |
 | **[project4_cafe_dashboard](./app_projects/project4_cafe_dashboard/)** | `cafe_shop.sql` | 🔵 **PyQt5** | ☕ 門市店長 | • **跨月營收戰情室**：解決多份 Excel 拼湊痛點，即時跨月切換<br>• **明星熱銷排行**：手寫 SQL `GROUP BY` 與視窗函式計算商品佔比<br>• **員工提成計算**：銷售杯數階梯試算各店員當月提成獎金 |
 | **[project5_shop_crm](./app_projects/project5_shop_crm/)** | `shop.sql` | 🟢 **Tkinter** | 🛒 業務 / 電商 | • **主從訂單履約**：點選訂單，下方手寫 SQL JOIN 即時帶出明細品項<br>• **訂單狀態流水線**：未處理 ➡️ 已出貨 ➡️ 已完成流動控管<br>• **RFM 客戶價值模型**：試算消費頻次與貢獻金額，標記 VIP 客戶 |
+
+</details>
 
 ---
 
