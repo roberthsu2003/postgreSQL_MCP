@@ -66,7 +66,7 @@ graph LR
 ```json
 {
   "mcpServers": {
-    "postgres": {
+    "raspberry-postgres": {
       "command": "uvx",
       "args": [
         "postgres-mcp",
