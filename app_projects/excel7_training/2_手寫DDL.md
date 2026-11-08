@@ -108,4 +108,4 @@ TRUNCATE guest_enrollments, employee_enrollments, guests, employees, courses RES
 
 | 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [⬅️ 步驟 1：兩份名單怎麼設計](./1_兩份名單怎麼設計.md) | [🏠 實戰專案大綱](../實戰專案大綱.md) | [步驟 3：AI 產生資料交易檔 ➡️](./3_AI產生資料交易檔.md) |
+| [⬅️ 步驟 1：兩份名單怎麼設計](./1_兩份名單怎麼設計.md) | [🏠 專案說明](./README.md) | [步驟 3：AI 產生資料交易檔 ➡️](./3_AI產生資料交易檔.md) |

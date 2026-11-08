@@ -4,8 +4,6 @@
 
 **八張職場 Excel，由淺入深，做成八個自己電腦上的小工具**
 
-[← 回課程首頁](../README.md)
-
 </div>
 
 ![八個實戰專案的學習路線](./images/projects_path.svg)

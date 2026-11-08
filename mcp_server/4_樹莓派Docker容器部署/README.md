@@ -1,6 +1,6 @@
 # 單元 4：正式上線：部署至 Raspberry Pi Docker 雙容器
 
-> **本單元目標**：把[單元 3](../3_企業導入_遠端MCP與token/README.md) 做好的遠端 Token 版 MCP Server 打包成 Docker 容器，放進 **Raspberry Pi（樹莓派）** 與 PostgreSQL 組成**雙容器架構**，實現 24 小時常駐、資料庫密碼不外洩的企業共用環境。　[← 回第 6 章](../README.md)
+> **本單元目標**：把前一單元做好的遠端 Token 版 MCP Server 打包成 Docker 容器，放進 **Raspberry Pi（樹莓派）** 與 PostgreSQL 組成**雙容器架構**，實現 24 小時常駐、資料庫密碼不外洩的企業共用環境。
 
 參考設定檔：[Dockerfile](./Dockerfile)、[docker-compose.yml](./docker-compose.yml)
 

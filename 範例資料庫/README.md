@@ -4,8 +4,6 @@
 
 **從下載一份 CSV 開始，學會把資料放進資料庫，再用 AI 處理工作上的 Excel**
 
-[← 回課程首頁](../README.md)
-
 </div>
 
 ![範例資料庫四個步驟](./images/sample_db_steps.svg)

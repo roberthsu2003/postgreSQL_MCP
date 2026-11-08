@@ -121,4 +121,4 @@ SELECT setval(pg_get_serial_sequence('departments', 'dept_id'), (SELECT MAX(dept
 
 | 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [⬅️ 步驟 2：手寫 DDL](./2_手寫DDL.md) | [🏠 實戰專案大綱](../實戰專案大綱.md) | [步驟 4：多表 JOIN 回答故事 ➡️](./4_多表JOIN回答故事.md) |
+| [⬅️ 步驟 2：手寫 DDL](./2_手寫DDL.md) | [🏠 專案說明](./README.md) | [步驟 4：多表 JOIN 回答故事 ➡️](./4_多表JOIN回答故事.md) |

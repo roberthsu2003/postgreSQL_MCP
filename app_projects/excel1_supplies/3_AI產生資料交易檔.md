@@ -150,4 +150,4 @@ ALTER TABLE supplies RENAME COLUMN place TO location;
 
 | 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [⬅️ 步驟 2：手寫 DDL](./2_手寫DDL.md) | [🏠 實戰專案大綱](../實戰專案大綱.md) | [步驟 4：DML 回答故事 ➡️](./4_DML回答故事.md) |
+| [⬅️ 步驟 2：手寫 DDL](./2_手寫DDL.md) | [🏠 專案說明](./README.md) | [步驟 4：DML 回答故事 ➡️](./4_DML回答故事.md) |

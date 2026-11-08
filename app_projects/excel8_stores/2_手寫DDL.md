@@ -218,4 +218,4 @@ TRUNCATE order_items, orders, customers, products, staff, stores RESTART IDENTIT
 
 | 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [⬅️ 步驟 1：跨月資料與暫存表](./1_跨月資料與暫存表.md) | [🏠 實戰專案大綱](../實戰專案大綱.md) | [步驟 3：AI 產生匯入腳本 ➡️](./3_AI產生匯入腳本.md) |
+| [⬅️ 步驟 1：跨月資料與暫存表](./1_跨月資料與暫存表.md) | [🏠 專案說明](./README.md) | [步驟 3：AI 產生匯入腳本 ➡️](./3_AI產生匯入腳本.md) |

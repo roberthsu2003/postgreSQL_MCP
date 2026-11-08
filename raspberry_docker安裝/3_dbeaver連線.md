@@ -1,7 +1,5 @@
 # 3. 使用 DBeaver 透過 SSH 隧道連線至 Raspberry Pi
 
-[← 回樹莓派 Docker 目錄](./README.md)
-
 在個人電腦（Mac / Windows）上管理樹莓派的 PostgreSQL，最推薦且最安全的方式是**使用 DBeaver 內建的 SSH 隧道（SSH Tunnel）**。
 
 ---
