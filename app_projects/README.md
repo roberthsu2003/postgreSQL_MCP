@@ -10,12 +10,6 @@
 
 ![八個實戰專案的學習路線](./images/projects_path.svg)
 
-<div align="center">
-
-**快速前往**　[📋 八個專案](#-八個-excel-專案)　·　[🛠 怎麼做](#-每個專案怎麼做)
-
-</div>
-
 > [!TIP]
 > 不用等第 4 章全部學完。**教完對應的課程，就可以開始做專案**，邊學語法邊用在真實的 Excel 上。
 
@@ -129,48 +123,6 @@ CSV 暫存表、每月重複匯入、SQL 版樞紐分析
 </td>
 </tr>
 </table>
-
----
-
-## 🛠 每個專案怎麼做
-
-每個專案都是同樣的八個步驟，前半段親手寫 SQL，後半段請 AI 做成 App。
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-**✍️ 步驟 1～4：親手寫 SQL**
-
-1. 看懂 Excel 和工作需求
-2. 手寫 DDL，建立資料表
-3. AI 轉資料，匯入後和 Excel 對帳
-4. 手寫 DML，完成每則需求
-
-</td>
-<td width="50%" valign="top">
-
-**🤖 步驟 5～8：AI 做成 App**
-
-5. AI 用唯讀 MCP 讀結構，寫 `PRD.md`
-6. AI 把 PRD 拆成 `todolist.md`
-7. 設定資料庫連線
-8. AI 一次做一項，你一次驗收一項
-
-</td>
-</tr>
-</table>
-
-| 工作 | 學員 | AI |
-|---|:---:|:---:|
-| 寫 user story、驗收條件 | ✅ | 協助檢查 |
-| 手寫 DDL、DML | ✅ | 只當助教 |
-| 把 Excel 轉成資料交易檔 | 檢查與對帳 | ✅ |
-| `PRD.md`、`todolist.md` | 審核與修改 | ✅ 用唯讀 MCP 讀結構 |
-| Python 與視窗程式 | 依 `todolist.md` 驗收 | ✅ |
-
-> [!NOTE]
-> 步驟 5 之前，請先依照 [MCP 設定教學](../MCP操作資料庫/1_antigravity設定.md)連線。
 
 ---
 
