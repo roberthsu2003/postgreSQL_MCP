@@ -42,28 +42,45 @@ graph LR
 
 ---
 
-## 步驟 4.1：確認電腦安裝 Node.js（附帶 `npx`）
+## 步驟 4.1：請 Antigravity 檢查與安裝 Node.js（附帶 `npx`）
 
-微軟的 `@microsoft/postgres-mcp` 是透過 npm 發行的工具，執行時使用 **`npx`**。
+微軟官方的 `@microsoft/postgres-mcp` 是透過 npm 發行的工具，執行時使用 **`npx`**。
 
-請確認您的電腦已安裝 Node.js（終端機可輸入 `node -v` 與 `npx -v` 驗證）。如果尚未安裝，可至 [Node.js 官方網站](https://nodejs.org/) 下載安裝 LTS 版本。
+您完全不需要自己手動開終端機或下載安裝檔，直接在 Antigravity 聊天框發送以下中文指令：
+
+> 「請幫我檢查這台電腦有沒有安裝 Node.js（包含 `npx`）。如果沒有安裝，請幫我自動下載並安裝好最新的 Node.js LTS 版本，並確認 `node -v` 與 `npx -v` 安裝成功。」
+
+* **AI 自動化成果**：Antigravity 會自動辨識您的作業系統（Windows 或 Mac）、呼叫適當的套件管理工具（如 Mac 的 Homebrew 或 Windows 的 winget）自動完成安裝，並在完成後驗證輸出版本號！
 
 ---
 
-## 步驟 4.2：設定全域 `~/.gemini/config/mcp_config.json`
+## 步驟 4.2：請 Antigravity 設定全域 `~/.gemini/config/mcp_config.json`
 
 全域 MCP 設定檔位於使用者的個人家目錄下：
 * **Mac / Linux**：`~/.gemini/config/mcp_config.json`（即 `/Users/使用者名稱/.gemini/config/mcp_config.json`）
 * **Windows**：`%USERPROFILE%\.gemini\config\mcp_config.json`（即 `C:\Users\使用者名稱\.gemini\config\mcp_config.json`）
 
-### 1. 設定內容（無 Profile 模式）
+### 🌟 讓 Antigravity 自動幫你設定（複製貼上自然語言）
+
+您完全不需要手動翻找隱藏資料夾與編輯 JSON，直接複製貼上以下指令給 Antigravity（請自行替換密碼與樹莓派 IP）：
+
+> 「請幫我在全域設定檔（Mac/Linux 為 `~/.gemini/config/mcp_config.json`，Windows 為 `%USERPROFILE%\.gemini\config\mcp_config.json`）中設定微軟的 `postgres` MCP Server：
+> 1. command 使用 `npx`
+> 2. args 為 `["-y", "@microsoft/postgres-mcp", "run"]`
+> 3. 環境變數 `POSTGRES_MCP_CONNECTION_STRING` 設定為：`postgresql://postgres:<您的密碼>@<樹莓派IP>:5432/postgres`」
+
+* **AI 自動化成果**：Antigravity 會自動辨識作業系統並定位設定檔路徑，自動建立或覆寫標準 JSON 設定，格式精確無誤！
+
+---
+
+### 1. 設定內容檢閱（無 Profile 模式）
 
 根據微軟官方文件，在不需要本機 Keyring 憑證管理的環境下，直接設定環境變數 `POSTGRES_MCP_CONNECTION_STRING` 即可：
 
 ```json
 {
   "mcpServers": {
-    "raspberry-postgres": {
+    "postgres": {
       "command": "npx",
       "args": [
         "-y",
