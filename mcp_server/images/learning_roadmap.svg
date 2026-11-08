@@ -25,11 +25,11 @@
   <!-- 箭頭 1 → 2 -->
   <line x1="232" y1="115" x2="252" y2="115" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
 
-  <!-- 階段二：第 4-5 章 -->
+  <!-- 階段二：第 4 章 -->
   <g transform="translate(256, 18)">
     <rect x="0" y="0" width="212" height="194" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
     <rect x="14" y="12" width="184" height="26" rx="6" fill="#d97706"/>
-    <text x="106" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">【階段二】手寫 SQL 與 AI 驗證</text>
+    <text x="106" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">【階段二】手寫 SQL 與 AI 驗證</text>
     <text x="106" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#78350f">第 4 章</text>
     <line x1="18" y1="68" x2="194" y2="68" stroke="#fde68a" stroke-width="1.5"/>
     <text x="18" y="92" font-size="13" fill="#78350f" font-weight="600">• ① 親自動手寫正規 SQL</text>
@@ -42,35 +42,35 @@
   <!-- 箭頭 2 → 3 -->
   <line x1="470" y1="115" x2="490" y2="115" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
 
-  <!-- 階段三：第 5-6 章 -->
+  <!-- 階段三：第 5 章 -->
   <g transform="translate(494, 18)">
     <rect x="0" y="0" width="212" height="194" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
     <rect x="14" y="12" width="184" height="26" rx="6" fill="#16a34a"/>
-    <text x="106" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">【階段三】Python 與 AI 查庫</text>
-    <text x="106" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#14532d">第 5–6 章</text>
+    <text x="106" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">【階段三】Excel 實戰專案</text>
+    <text x="106" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#14532d">第 5 章</text>
     <line x1="18" y1="68" x2="194" y2="68" stroke="#bbf7d0" stroke-width="1.5"/>
-    <text x="18" y="92" font-size="13" fill="#14532d" font-weight="600">• Python 串接 psycopg2</text>
-    <text x="28" y="111" font-size="12" fill="#475569">連線安全、交易與參數化查詢</text>
-    <text x="18" y="136" font-size="13" fill="#14532d" font-weight="600">• 讓 AI 查詢自己的資料庫</text>
-    <text x="28" y="155" font-size="12" fill="#475569">用 FastMCP 打造專屬 AI 助理</text>
-    <text x="28" y="173" font-size="12" fill="#475569">本機開發 ➡️ 樹莓派容器常駐</text>
+    <text x="18" y="92" font-size="13" fill="#14532d" font-weight="600">• 五張職場 Excel 由淺入深</text>
+    <text x="28" y="111" font-size="12" fill="#475569">耗材、打卡、報銷、訂單、月報</text>
+    <text x="18" y="136" font-size="13" fill="#14532d" font-weight="600">• AI 寫規格，做成個人 App</text>
+    <text x="28" y="155" font-size="12" fill="#475569">PRD → todolist → 桌面視窗</text>
+    <text x="28" y="173" font-size="12" fill="#475569">最後換成自己的 Excel</text>
   </g>
 
   <!-- 箭頭 3 → 4 -->
   <line x1="708" y1="115" x2="728" y2="115" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
 
-  <!-- 階段四：第 7 章 -->
+  <!-- 階段四：第 6 章 -->
   <g transform="translate(732, 18)">
     <rect x="0" y="0" width="210" height="194" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
     <rect x="14" y="12" width="182" height="26" rx="6" fill="#db2777"/>
-    <text x="105" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">【階段四】職場桌面小 App</text>
-    <text x="105" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#831843">第 7 章（壓軸實戰）</text>
+    <text x="105" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">【階段四】自訂 MCP Server</text>
+    <text x="105" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#831843">第 6 章（壓軸實戰）</text>
     <line x1="18" y1="68" x2="192" y2="68" stroke="#fbcfe8" stroke-width="1.5"/>
-    <text x="18" y="92" font-size="13" fill="#831843" font-weight="600">• 規格驅動開發 (SDD)</text>
-    <text x="28" y="111" font-size="12" fill="#475569">PRD 需求導向、手寫 SQL 貫穿</text>
-    <text x="18" y="136" font-size="13" fill="#831843" font-weight="600">• 5 大職場個人桌面視窗</text>
-    <text x="28" y="155" font-size="12" fill="#475569">會計、人資、總務、店長、業務</text>
-    <text x="28" y="173" font-size="12" fill="#475569">PyQt5 / Tkinter 本機獨立視窗</text>
+    <text x="18" y="92" font-size="13" fill="#831843" font-weight="600">• 讓 AI 查詢自己的資料庫</text>
+    <text x="28" y="111" font-size="12" fill="#475569">用 FastMCP 打造專屬助理</text>
+    <text x="18" y="136" font-size="13" fill="#831843" font-weight="600">• 從個人到企業導入</text>
+    <text x="28" y="155" font-size="12" fill="#475569">Token 門禁與稽核紀錄</text>
+    <text x="28" y="173" font-size="12" fill="#475569">樹莓派 Docker 容器常駐</text>
   </g>
 </svg>
 

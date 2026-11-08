@@ -18,6 +18,12 @@
 
 ---
 
+## 🗺️ 學習路線
+
+![學習路線](./mcp_server/images/learning_roadmap.svg)
+
+---
+
 ## 🎯 核心教學理念與安全規範
 
 > [!IMPORTANT]
@@ -46,17 +52,6 @@
 | 6 | [自訂 MCP Server](./mcp_server/) | 讓 AI 只能呼叫你設計的工具 |
 
 **只想學 SQL？** 做完第 1、2 章，直接跳到第 4 章。
-
----
-
-## 🗺️ 學習路線
-
-```mermaid
-flowchart LR
-    A["第 1～3 章<br>環境與中文查詢"] --> B["第 4 章<br>親手學 SQL"]
-    B --> C["第 5 章<br>Excel 實戰專案"]
-    C --> D["第 6 章<br>自訂 MCP Server"]
-```
 
 ---
 
