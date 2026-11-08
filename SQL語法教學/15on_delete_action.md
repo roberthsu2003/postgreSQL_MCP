@@ -1,6 +1,6 @@
 # 進階-9｜ON DELETE：刪資料前先看連帶後果
 
-> ⏱️ **20 分鐘** ｜ 💻 DBeaver（資料庫：`cafe_shop`）｜ 📄 練習腳本：[`15on_delete_action.sql`](./15on_delete_action.sql) ｜ 🎯 學完你會：查出現有的刪除規則、預測刪除後果、事後修改規則
+> 💻 DBeaver（資料庫：`cafe_shop`）｜ 📄 練習腳本：[`15on_delete_action.sql`](./15on_delete_action.sql) ｜ 🎯 學完你會：查出現有的刪除規則、預測刪除後果、事後修改規則
 
 > 📖 三種規則的基本說明，請見 [DML-4 外來鍵](./7_0FOREIGN_KEY.md)。本課看它們在真實資料庫上的作用。
 

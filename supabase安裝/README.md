@@ -1,6 +1,6 @@
 # Supabase 雲端 PostgreSQL 資料庫申請、DBeaver 連線與 MCP Server 設定
 
-> ⏱️ **約 40 分鐘** ｜ 🎯 學完你會：擁有一個雲端 PostgreSQL，並用 DBeaver 和 AI 助教連上它
+> 🎯 學完你會：擁有一個雲端 PostgreSQL，並用 DBeaver 和 AI 助教連上它
 >
 > 💡 DBeaver 的快捷鍵和常用操作，請見 [DBeaver 速查表](../raspberry_docker安裝/3_dbeaver連線.md#步驟-33dbeaver-常用操作速查表)。
 

@@ -1,8 +1,8 @@
 # 在 Raspberry Pi 上使用 Docker 運行伺服器與本機連線指南
 
-> ⏱️ **約 2 小時** ｜ 🎯 學完你會：在樹莓派上常駐 PostgreSQL，並從自己的電腦連線
+> 🎯 學完你會：在樹莓派上常駐 PostgreSQL，並從自己的電腦連線
 >
-> 沒有樹莓派？改走 [Supabase 雲端方案](../supabase安裝/)，40 分鐘就能開始。
+> 沒有樹莓派？改走 [Supabase 雲端方案](../supabase安裝/)。
 
 本教學遵循**「伺服器端與操作端分離」**的現代化架構：
 * 🍓 **所有 Server 都在 Raspberry Pi 內的 Docker 執行**（PostgreSQL 資料庫伺服器、未來的自訂 MCP 伺服器容器）。

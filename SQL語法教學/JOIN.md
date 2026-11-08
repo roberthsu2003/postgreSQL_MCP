@@ -1,6 +1,6 @@
 # DML-5｜JOIN：SQL 版的 VLOOKUP
 
-> ⏱️ **60 分鐘** ｜ 💻 DBeaver（`cafe_db` 加 `cafe_shop`）｜ 🎯 學完你會：INNER、LEFT、RIGHT、FULL、CROSS JOIN，以及何時用哪一種
+> 💻 DBeaver（`cafe_db` 加 `cafe_shop`）｜ 🎯 學完你會：INNER、LEFT、RIGHT、FULL、CROSS JOIN，以及何時用哪一種
 
 ## 🎬 情境
 

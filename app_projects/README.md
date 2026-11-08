@@ -52,7 +52,7 @@ flowchart TD
 | 想要質感更好的介面 | **專案 1、3、4（PyQt5）** |
 | 想馬上用在工作上 | 選和你職務相同的專案 |
 
-每個專案預計 **4～8 小時**。先修：[第 4 章 SQL](../SQL語法教學/README.md)、[第 5 章 Python](../python/)。
+先修：[第 4 章 SQL](../SQL語法教學/README.md)、[第 5 章 Python](../python/)。
 
 ## 🛠️ 開發流程三步驟
 
