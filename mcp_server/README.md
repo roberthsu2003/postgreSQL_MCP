@@ -15,6 +15,18 @@
 
 ---
 
+## ✅ 開課前檢查
+
+上課前先確認環境，第一天才能直接開始：
+
+- [ ] 終端機執行 `uv --version` 有出現版本號（[安裝說明](https://docs.astral.sh/uv/getting-started/installation/)）
+- [ ] Antigravity 可以開啟這個專案
+- [ ] DBeaver 連得上自己樹莓派的 PostgreSQL
+- [ ] 在樹莓派執行 `docker ps` 沒有出現錯誤
+- [ ] 已匯入[範例資料庫](../範例資料庫/中文範例資料庫/README.md)：`cafe_shop.sql`（單元 1）、`library.sql`（單元 2）、`shop.sql`（單元 3）
+
+---
+
 ## 個人開發 vs. 企業導入架構演進
 
 ![企業導入 MCP 架構圖](./images/mcp_enterprise.svg)

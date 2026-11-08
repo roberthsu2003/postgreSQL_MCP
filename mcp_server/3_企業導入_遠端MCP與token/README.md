@@ -138,7 +138,26 @@ MCP Server 已啟動:http://127.0.0.1:8000/mcp(共 2 組 token)
 
 ### 4.5 測試門禁：沒有 token 會被擋下
 
-開**另一個**終端機視窗：
+開**另一個**終端機視窗，切換到同一個資料夾，把「你的token」換成 4.3 產生的 token：
+
+```bash
+uv run test_token.py 你的token
+```
+
+**執行結果**
+
+```
+沒有 token:HTTP 401 ✅ 被擋下
+錯誤 token:HTTP 401 ✅ 被擋下
+正確 token:HTTP 200 ✅ 可以連線
+```
+
+`401` 代表被門禁擋下，`200` 代表可以進入。看到這三行，就表示門禁正常運作。
+
+<details>
+<summary>想知道實際送出了什麼？（選讀）</summary>
+
+腳本做的事，等同於用 `curl` 送出下面的請求：
 
 ```bash
 curl -i -X POST http://localhost:8000/mcp \
@@ -169,6 +188,8 @@ data: {"jsonrpc":"2.0","id":1,"result":{..."serverInfo":{"name":"網路商店營
 ```
 
 > Windows 的 PowerShell 請改用 `curl.exe`，並把每行結尾的 `\` 改成 `` ` ``。
+
+</details>
 
 ---
 
