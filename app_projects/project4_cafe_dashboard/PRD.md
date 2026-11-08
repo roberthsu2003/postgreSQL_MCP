@@ -5,7 +5,7 @@
 * **開發模式**：規格驅動開發 (SDD, Spec-Driven Development)
 * **資料庫環境**：PostgreSQL / Supabase (對應 [`cafe_shop.sql`](../../範例資料庫/中文範例資料庫/cafe_shop.sql))
 * **前端框架**：**PyQt5** (現代商業桌面視窗 GUI)
-* **資料庫存取方式**：Python 原生手寫 SQL (`psycopg2`)，嚴禁使用 MCP 或 ORM 遮蔽 SQL
+* **資料庫存取方式**：Python 原生手寫 SQL (`psycopg2`)，不使用 ORM 遮蔽 SQL
 
 ---
 

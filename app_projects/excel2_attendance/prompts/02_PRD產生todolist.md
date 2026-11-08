@@ -18,7 +18,7 @@
 - SQL 請沿用 我的查詢.sql，放在 queries.py；視窗程式放在 app.py。
 - 使用者輸入一律用 psycopg2 的 %s 參數傳遞，不可以用字串拼接 SQL。
 - 連線資訊從 .env 的 DATABASE_URL 讀取，不可以寫在程式裡。
-- App 使用 .env 的帳號連線，不要透過 MCP 寫入資料。
+- App 使用 .env 的帳號連線。
 
 先產生 todolist.md 就好，不要開始寫程式。
 ```

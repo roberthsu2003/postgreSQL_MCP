@@ -31,7 +31,7 @@
 3. customers、products 寫完後，用 setval 和 pg_get_serial_sequence 把兩個自動編號設定成目前的最大值。
 4. 10 張訂單和 16 筆明細全部轉換，不可省略。
 
-請直接在對話中輸出 SQL 程式碼。不要使用 MCP 或任何工具連線到我的資料庫，我會自己在 DBeaver 檢查後執行。
+請直接在對話中輸出 SQL 程式碼，我會自己在 DBeaver 檢查後執行。
 ```
 
 ## 2. 回答 AI 的問題
