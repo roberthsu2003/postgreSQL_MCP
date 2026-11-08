@@ -3,6 +3,9 @@
 本目錄包含結合 **PostgreSQL + Python 原生手寫 SQL (psycopg2) + 現代桌面視窗 (PyQt5 & Tkinter)** 的綜合實戰專案。  
 **專門為企業各部門上班族打造：將每天面對的混亂 Excel 報表，轉化為在自己個人電腦上隨開即用的專業管理小 App！**
 
+> [!NOTE]
+> **新版實戰專案製作中：** 每個專案都從一張 Excel 開始，一路做到個人 App。請見[實戰專案大綱](./實戰專案大綱.md)，五個專案依序是[耗材庫存表](./excel1_supplies/)、[打卡表](./excel2_attendance/)、[差旅報銷單](./excel3_expense/)、[網路商店訂單](./excel4_shop/)和[連鎖門市月報](./excel5_stores/)。
+
 ---
 
 ## 🏢 五大職場核心職能完美對照
