@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="176" viewBox="0 0 960 176" font-family="'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="958" height="174" rx="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <g transform="translate(18, 18)">
+    <rect x="0" y="0" width="212" height="140" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="106" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#1e3a8a">入門</text>
+    <text x="106" y="58" text-anchor="middle" font-size="13" fill="#475569">一張資料表</text>
+    <line x1="24" y1="72" x2="188" y2="72" stroke="#bfdbfe" stroke-width="1.5"/>
+    <text x="106" y="98" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">1 耗材庫存表</text>
+    <text x="106" y="122" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">2 IT 設備規格表</text>
+  </g>
+  <line x1="232" y1="88" x2="252" y2="88" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g transform="translate(256, 18)">
+    <rect x="0" y="0" width="212" height="140" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="106" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#78350f">拆表</text>
+    <text x="106" y="58" text-anchor="middle" font-size="13" fill="#475569">一張工作表變多張表</text>
+    <line x1="24" y1="72" x2="188" y2="72" stroke="#fde68a" stroke-width="1.5"/>
+    <text x="106" y="98" text-anchor="middle" font-size="14" font-weight="600" fill="#78350f">3 打卡表</text>
+    <text x="106" y="122" text-anchor="middle" font-size="14" font-weight="600" fill="#78350f">4 差旅報銷單</text>
+  </g>
+  <line x1="470" y1="88" x2="490" y2="88" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g transform="translate(494, 18)">
+    <rect x="0" y="0" width="212" height="140" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+    <text x="106" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#14532d">關聯與統計</text>
+    <text x="106" y="58" text-anchor="middle" font-size="13" fill="#475569">多對多、搜尋、分組</text>
+    <line x1="24" y1="72" x2="188" y2="72" stroke="#bbf7d0" stroke-width="1.5"/>
+    <text x="106" y="98" text-anchor="middle" font-size="14" font-weight="600" fill="#14532d">5 網路商店訂單</text>
+    <text x="106" y="122" text-anchor="middle" font-size="14" font-weight="600" fill="#14532d">6 客服案件紀錄</text>
+  </g>
+  <line x1="708" y1="88" x2="728" y2="88" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g transform="translate(732, 18)">
+    <rect x="0" y="0" width="210" height="140" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
+    <text x="105" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#831843">整合</text>
+    <text x="105" y="58" text-anchor="middle" font-size="13" fill="#475569">多份名單、跨月資料</text>
+    <line x1="24" y1="72" x2="186" y2="72" stroke="#fbcfe8" stroke-width="1.5"/>
+    <text x="105" y="98" text-anchor="middle" font-size="14" font-weight="600" fill="#831843">7 教育訓練報名表</text>
+    <text x="105" y="122" text-anchor="middle" font-size="14" font-weight="600" fill="#831843">8 連鎖門市月報</text>
+  </g>
+</svg>
