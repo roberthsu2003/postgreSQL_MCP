@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="166" viewBox="0 0 960 166" font-family="'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="958" height="164" rx="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <g transform="translate(18, 18)">
+    <rect x="0" y="0" width="212" height="130" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <circle cx="106" cy="30" r="16" fill="#2563eb"/>
+    <text x="106" y="36" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">1</text>
+    <text x="106" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">下載 CSV，練習匯入</text>
+    <text x="106" y="96" text-anchor="middle" font-size="12" fill="#475569">建表 → 匯入 → 確認筆數</text>
+    <text x="106" y="115" text-anchor="middle" font-size="12" fill="#475569">從 22 筆資料開始</text>
+  </g>
+  <line x1="232" y1="83" x2="252" y2="83" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g transform="translate(256, 18)">
+    <rect x="0" y="0" width="212" height="130" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <circle cx="106" cy="30" r="16" fill="#d97706"/>
+    <text x="106" y="36" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">2</text>
+    <text x="106" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#78350f">用 AI 轉 SQL 交易檔</text>
+    <text x="106" y="96" text-anchor="middle" font-size="12" fill="#475569">Excel 先脫敏</text>
+    <text x="106" y="115" text-anchor="middle" font-size="12" fill="#475569">檢查 SQL 後親手執行</text>
+  </g>
+  <line x1="470" y1="83" x2="490" y2="83" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g transform="translate(494, 18)">
+    <rect x="0" y="0" width="212" height="130" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+    <circle cx="106" cy="30" r="16" fill="#16a34a"/>
+    <text x="106" y="36" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">3</text>
+    <text x="106" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#14532d">匯入範例資料庫</text>
+    <text x="106" y="96" text-anchor="middle" font-size="12" fill="#475569">一個範例放一個資料庫</text>
+    <text x="106" y="115" text-anchor="middle" font-size="12" fill="#475569">改壞了重新匯入就好</text>
+  </g>
+  <line x1="708" y1="83" x2="728" y2="83" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g transform="translate(732, 18)">
+    <rect x="0" y="0" width="210" height="130" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
+    <circle cx="105" cy="30" r="16" fill="#db2777"/>
+    <text x="105" y="36" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">4</text>
+    <text x="105" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#831843">認識五大職場範例</text>
+    <text x="105" y="96" text-anchor="middle" font-size="12" fill="#475569">找出最接近你工作的範例</text>
+    <text x="105" y="115" text-anchor="middle" font-size="12" fill="#475569">之後課程陸續用到</text>
+  </g>
+</svg>
