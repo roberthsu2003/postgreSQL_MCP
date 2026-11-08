@@ -46,8 +46,8 @@ flowchart TD
 | 專案目錄 | 適用職務 | 對應範例資料庫 | 解決之 Excel 職場痛點 | 桌面 GUI 框架 |
 |---|---|---|---|:---:|
 | 💼 **[專案 1：企業費用報銷審核與預算系統](./project1_expense_manager/)** | **會計、出納、財務主管** | [`expense_tracker.sql`](../範例資料庫/中文範例資料庫/expense_tracker.sql)<br>([報銷單 Excel](../範例資料庫/excel範例/自備Excel轉SQL實戰示範/)) | • 員工差旅請款 Excel 滿天飛、公式損壞<br>• 部門預算防超支即時預警<br>• 一鍵批次審批（核准/駁回/出納撥款） | 🔵 **PyQt5**<br>(KPI 卡片 + QSS) |
-| 👥 **[專案 2：員工排班考勤與薪資試算](./project2_hr_attendance/)** | **人資 (HR)、考勤計薪** | [`hr_attendance.sql`](../範例資料庫/中文範例資料庫/hr_attendance.sql) | • 手動排班撞期與連上 6 天違反勞基法<br>• 打卡鐘工時加總算到眼睛痛<br>• 遲到、加班、請假扣款自動結算薪資 | 🟢 **Tkinter**<br>(零設定免安裝) |
-| 📦 **[專案 3：企業資產借還與耗材庫存](./project3_assets_inventory/)** | **總務、行政庶務、IT 網管** | [`assets_inventory.sql`](../範例資料庫/中文範例資料庫/assets_inventory.sql) | • 筆電/投影機借出沒還找不到人<br>• 耗材庫存斷貨才發現（低庫存警報）<br>• 固定資產盤點編號不再重複 | 🔵 **PyQt5**<br>(流通櫃台視窗) |
+| 👥 **[專案 2：員工排班考勤與薪資試算](./project2_hr_attendance/)** | **人資 (HR)、考勤計薪** | [`hr_attendance.sql`](../範例資料庫/中文範例資料庫/hr_attendance.sql)<br>([打卡表 Excel，簡化版](./excel2_attendance/打卡表.xlsx)) | • 手動排班撞期與連上 6 天違反勞基法<br>• 打卡鐘工時加總算到眼睛痛<br>• 遲到、加班、請假扣款自動結算薪資 | 🟢 **Tkinter**<br>(零設定免安裝) |
+| 📦 **[專案 3：企業資產借還與耗材庫存](./project3_assets_inventory/)** | **總務、行政庶務、IT 網管** | [`assets_inventory.sql`](../範例資料庫/中文範例資料庫/assets_inventory.sql)<br>([耗材庫存 Excel，簡化版](./excel1_supplies/耗材庫存表.xlsx)) | • 筆電/投影機借出沒還找不到人<br>• 耗材庫存斷貨才發現（低庫存警報）<br>• 固定資產盤點編號不再重複 | 🔵 **PyQt5**<br>(流通櫃台視窗) |
 | ☕ **[專案 4：門市營運分析與業績抽成](./project4_cafe_dashboard/)** | **門市店長、營運經理** | [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql)<br>([門市月報 Excel](../範例資料庫/excel範例/連鎖門市月報表/)) | • 解決「每個月複製一份 Excel」痛點<br>• 跨月跨店營收即時動態對比<br>• 明星熱銷排行與 VIP 連續回購名冊 | 🔵 **PyQt5**<br>(商業 BI 多分頁) |
 | 🛒 **[專案 5：業務客戶 CRM 與訂單履約](./project5_shop_crm/)** | **業務、業務助理、電商運營** | [`shop.sql`](../範例資料庫/中文範例資料庫/shop.sql)<br>([網路商店 Excel](../範例資料庫/從Excel到關聯資料庫_正規化.md)) | • 客戶電話地址在 Excel 容易矛盾衝突<br>• 訂單履約狀態追蹤與點選展開明細<br>• 客戶 RFM 價值模型自動貼標（VIP/流失客） | 🟢 **Tkinter**<br>(雙分頁工作台) |
 

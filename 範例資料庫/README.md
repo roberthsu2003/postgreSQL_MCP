@@ -27,8 +27,8 @@
 | 適用職務 | 範例資料庫檔案 | 解決之職場 Excel 痛點 | 最終打造的個人桌面 App | 桌面框架 |
 |---|---|---|---|:---:|
 | 💼 **會計 / 出納** | [`expense_tracker.sql`](./中文範例資料庫/expense_tracker.sql)<br>([報銷單 Excel](./excel範例/自備Excel轉SQL實戰示範/)) | 員工差旅請款 Excel 滿天飛、重複報帳、部門預算超支無預警 | **[企業費用報銷審核與預算系統](../app_projects/project1_expense_manager/)** | 🔵 **PyQt5** |
-| 👥 **人資 (HR)** | [`hr_attendance.sql`](./中文範例資料庫/hr_attendance.sql) | 手動排班撞期與違反勞基法、打卡工時加總繁瑣、請假加班算薪算到眼花 | **[員工排班出勤與薪資試算小工具](../app_projects/project2_hr_attendance/)** | 🟢 **Tkinter** |
-| 📦 **總務 / 倉管** | [`assets_inventory.sql`](./中文範例資料庫/assets_inventory.sql) | 筆電投影機借出沒還找不到人、耗材臨時斷貨缺安全庫存預警、資產編號重複 | **[固定資產借還與耗材庫存系統](../app_projects/project3_assets_inventory/)** | 🔵 **PyQt5** |
+| 👥 **人資 (HR)** | [`hr_attendance.sql`](./中文範例資料庫/hr_attendance.sql)<br>([打卡表 Excel，簡化版](../app_projects/excel2_attendance/打卡表.xlsx)) | 手動排班撞期與違反勞基法、打卡工時加總繁瑣、請假加班算薪算到眼花 | **[員工排班出勤與薪資試算小工具](../app_projects/project2_hr_attendance/)** | 🟢 **Tkinter** |
+| 📦 **總務 / 倉管** | [`assets_inventory.sql`](./中文範例資料庫/assets_inventory.sql)<br>([耗材庫存 Excel，簡化版](../app_projects/excel1_supplies/耗材庫存表.xlsx)) | 筆電投影機借出沒還找不到人、耗材臨時斷貨缺安全庫存預警、資產編號重複 | **[固定資產借還與耗材庫存系統](../app_projects/project3_assets_inventory/)** | 🔵 **PyQt5** |
 | ☕ **店長 / 營運** | [`cafe_shop.sql`](./中文範例資料庫/cafe_shop.sql)<br>([門市月報 Excel](./excel範例/連鎖門市月報表/)) | 解決「每個月複製一份 Excel」痛點、跨月營收與明星熱銷排行、VIP 常客名單 | **[門市營運分析與業績抽成看板](../app_projects/project4_cafe_dashboard/)** | 🔵 **PyQt5** |
 | 🛒 **業務 / 電商** | [`shop.sql`](./中文範例資料庫/shop.sql)<br>([網路商店 Excel](./從Excel到關聯資料庫_正規化.md)) | 客戶電話地址在 Excel 容易矛盾、訂單狀態履約追蹤、客戶 RFM 價值分群 | **[客戶關係 CRM 與訂單履約系統](../app_projects/project5_shop_crm/)** | 🟢 **Tkinter** |
 
