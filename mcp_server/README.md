@@ -76,7 +76,7 @@ flowchart LR
     subgraph Team ["🏢 第二階段：企業共用篇（遠端 Token + 樹莓派 Docker 容器）"]
         U3["<b>單元 3</b><br/>遠端 MCP + Token 門禁<br/><i>HTTP・身分驗證與稽核</i>"]
         U4["<b>單元 4</b><br/>部署至樹莓派 Docker<br/><i>雙容器內網直連常駐</i>"]
-        U5["<b>單元 5</b><br/>各部門範例集 & 專題<br/><i>5 大部門 AI 助理範本</i>"]
+        U5["<b>單元 5</b><br/>各部門範例集<br/><i>5 大部門 AI 助理範本</i>"]
         U3 -->|"容器化常駐"| U4 --> U5
     end
 
@@ -97,7 +97,6 @@ flowchart LR
 | **企業篇** | [3. 企業導入：遠端 MCP 與 Token 門禁](./3_企業導入_遠端MCP與token/README.md) ⭐ | 系統導入者 | 從 `stdio` 升級為 `Streamable HTTP`，員工帶 Bearer Token 連線，留下即時稽核紀錄 | 💻 本機測試遠端架構<br>（`HTTP + Token`） |
 | **企業篇** | [4. 正式上線：部署至樹莓派 Docker 雙容器](./4_樹莓派Docker容器部署/README.md) ⭐ | 系統架構師 | 撰寫 `Dockerfile` 與 `docker-compose.yml`，將 MCP Server 放進樹莓派與 PostgreSQL 雙容器內網直連 | 🍓 樹莓派 Docker 常駐<br>（`HTTP + Token`） |
 | **綜合篇** | [5. 企業各部門範例集](./5_範例集/README.md) | 參考、示範 | 網路商店客服、教務處、圖書館、YouBike、股市，5 個部門的 AI 助理（共用 `common.py`） | 💻 本機或 🍓 樹莓派皆可 |
-| **綜合篇** | [期末專題](#期末專題) | 全部 | 親手為一間「公司」打造專屬的 MCP Server 並部署上線 | 🍓 遠端容器 + Token |
 
 ---
 
@@ -131,19 +130,3 @@ flowchart LR
 | **stdio（本機）** | 個人開發階段使用：MCP Server 在本機作為子程序啟動，透過標準輸入輸出溝通 |
 | **Streamable HTTP（遠端）** | 企業共用階段使用：MCP Server 架在樹莓派 Docker 容器上，透過網路 URL 提供多人共用 |
 | **Token** | 身分驗證金鑰，連線時必須附帶，確保只有授權員工才能使用並留下稽核紀錄 |
-
----
-
-## 期末專題
-
-以小組或個人為單位，扮演一間公司的系統架構師，**打造一個自訂 MCP Server**，先在本機開發驗收，最後部署到樹莓派 Docker 容器中，讓使用者在 Antigravity 中帶 Token 連線查詢（亦可加入安全受控的寫入功能）。
-
-**資料庫（擇一）**：課程中任何一個範例資料庫（[中文範例資料庫](../範例資料庫/中文範例資料庫/README.md)）
-
-| 項目 | 要求 |
-|---|---|
-| 情境設計 | 說明目標使用者是誰，以及他們最常問的 5 個業務問題 |
-| 工具規劃 | 至少 3 個自訂工具，附上工具規劃表（輸入參數、回傳結構） |
-| 安全規範 | 堅持參數化查詢（防止 SQL Injection）、限制單次最大回傳筆數 |
-| 寫入控制（加分） | 若有寫入工具，需實作身分檢查、業務條件驗證與資料庫交易（Transaction） |
-| 容器部署與掛載 | 部署為遠端 HTTP + Token 服務（可放進樹莓派 Docker），並在 `.agents/mcp_config.json` 掛載展示 |
