@@ -46,8 +46,9 @@ BEGIN
     CROSS JOIN LATERAL (
         SELECT product_id, price 
         FROM products 
+        WHERE o.order_id IS NOT NULL -- 參考外層訂單，每張訂單才會各自重新抽商品
         ORDER BY random() 
-        LIMIT (TRUNC(random() * 2) + 1)::INT
+        LIMIT (TRUNC(random() * 3) + 1)::INT
     ) p
     ON CONFLICT (order_id, product_id) DO NOTHING;
 
