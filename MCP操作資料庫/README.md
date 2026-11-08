@@ -54,8 +54,8 @@ flowchart LR
 ```mermaid
 flowchart LR
     C3["<b>第 3 章</b><br/>用中文查庫<br/>不用會 SQL"] --> C4["<b>第 4 章 SQL 語法與練習</b><br/>① 自己動手寫 SQL<br/>② 請 AI 助教批改<br/>③ 學會抓出 AI 的錯"]
-    C4 --> C6["<b>第 5 章</b><br/>寫 Python<br/>存取資料庫"]
-    C6 --> C8["<b>第 6 章</b><br/>自己用 Python<br/>寫自訂 MCP Server"]
+    C4 --> C6["<b>第 5 章</b><br/>用 Excel<br/>做實戰專案"]
+    C6 --> C8["<b>第 6 章</b><br/>打造自訂<br/>MCP Server"]
 
     classDef mcp fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
     class C3,C8 mcp
