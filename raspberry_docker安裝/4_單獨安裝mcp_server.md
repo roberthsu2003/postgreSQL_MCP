@@ -109,15 +109,14 @@ graph LR
 {
   "mcpServers": {
     "raspberry-postgres": {
-      "command": "uvx",
+      "command": "uv",
       "args": [
-        "--python",
-        ".venv",
-        "postgres-mcp==0.3.0",
+        "run",
+        "postgres-mcp",
         "--access-mode=restricted"
       ],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@<樹莓派IP或主機名稱>:5432/postgres"
+        "DATABASE_URI": "postgresql://[使用者帳號]]:[使用者密碼]@[電腦名稱]:5432/postgres"
       }
     }
   }
