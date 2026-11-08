@@ -56,10 +56,10 @@
 
 | 階段 | 章節模組 | 你會學到與產出 | 使用工具與環境 |
 |:---:|---|---|---|
-| **一** | **[1. 環境安裝](#1-環境安裝)**<br>**[2. 範例資料庫](#2-範例資料庫)**<br>**[3. 自然語言查詢資料庫初體驗](#3-自然語言查詢資料庫初體驗免寫-sql)** | • 安裝 PostgreSQL（樹莓派 Docker / Supabase）與 DBeaver<br>• 匯入 5 大職場範例資料庫（報銷、差勤、資產、門市、CRM）<br>• 體驗自備 Excel 轉 SQL 交易檔流程與中文自然語言查詢資料庫 | Docker / Supabase / DBeaver / Antigravity |
+| **一** | **[1. 環境安裝](#1-環境安裝)**<br>**[2. 範例資料庫](#2-範例資料庫)**<br>**[3. 自然語言查詢資料庫初體驗](#3-自然語言查詢資料庫初體驗免寫-sql)** | • 安裝 PostgreSQL（樹莓派 Docker / Supabase）與 DBeaver<br>• 匯入 5 大職場範例資料庫（報銷、差勤、資產、門市、CRM）<br>• 體驗用中文自然語言查詢資料庫 | Docker / Supabase / DBeaver / Antigravity |
 | **二** | **[4. SQL 語法與實戰練功](#4-sql-語法與實戰練功)** | • **講義與實戰題合一**：完整 DDL、DML、JOIN、JSONB<br>• 每課都有職場情境、真實執行結果、常見卡關與附答案的練習<br>• 每課附 AI 提示詞，學生親手在 DBeaver 執行 | DBeaver + Antigravity 對話 |
 | **三** | **[5. Python 串接](#5-python-串接psycopg2)**<br>**[6. 讓 AI 查詢自己的資料庫](#6-讓自己的-ai-可以查詢自己的資料庫自訂-mcp-server)** | • 使用 `psycopg2` 進行參數化查詢（`%s` 防注入）與交易管理<br>• **讓 AI 查詢自己的資料庫**：用 FastMCP 寫幾行 Python，AI 就能用中文查庫<br>• 從個人本機查庫，進階到企業 Token 門禁與樹莓派 Docker 容器部署 | Python (`psycopg2`) + FastMCP + Docker |
-| **四** | **[7. 職場桌面 App 實戰開發](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app)** | • **五張職場 Excel，由淺入深**：耗材庫存、打卡、差旅報銷、網路商店、門市月報<br>• 從 user story 開始，手寫 DDL 與 DML，AI 產生交易檔後與 Excel 對帳<br>• AI 透過唯讀 MCP 產生 `PRD.md` 與 `todolist.md`，再做成個人桌面 App | DBeaver + Antigravity + Tkinter / PyQt5 |
+| **四** | **[7. 職場桌面 App 實戰開發](#7-實戰專案規格驅動開發-sdd打造-5-大職場個人桌面-app)** | • **五張職場 Excel，由淺入深**：耗材庫存、打卡、差旅報銷、網路商店、門市月報<br>• 從 user story 開始，手寫 DDL 與 DML，AI 產生交易檔後與 Excel 對帳<br>• AI 透過唯讀 MCP 產生 `PRD.md` 與 `todolist.md`，再做成個人桌面 App<br>• **畢業專題**：換成自己工作上的 Excel 走一次 | DBeaver + Antigravity + Tkinter / PyQt5 |
 
 ---
 
@@ -80,17 +80,9 @@
 
 ## 2. 範例資料庫
 
-資料庫不能紙上談兵！我們針對上班族最常見的 5 大部門職能（會計、人資、總務、店長、業務），設計了開箱即用的範例資料庫與轉換工具。
+資料庫不能紙上談兵！我們針對上班族最常見的 5 大部門職能（會計、人資、總務、店長、業務），設計了開箱即用的範例資料庫，內附關聯式架構圖、業務痛點解析與 DBeaver 一鍵匯入步驟。
 
-![Excel 到桌面 App 實戰流程](./mcp_server/images/excel_to_app_flow.svg)
-
-請依據你的學習需求，選擇點擊進入查看詳細說明與下載：
-
-| 學習情境與需求 | 包含內容與特色 | 前往詳細說明與檔案 |
-|---|---|:---:|
-| 🏢 **五大職場繁中範例資料庫** | • 涵蓋：**會計報銷、人資差勤、總務資產、門市營運、業務 CRM**<br>• 內附 3NF 關聯式架構圖、業務痛點解析與 DBeaver 一鍵匯入步驟 | **[查看詳細結構與匯入教學 ➡️](./範例資料庫/)** |
-| 📑 **自備上班 Excel 轉 SQL** | • 告別手動 key-in！用 AI Prompt 將自己的 Excel 轉為標準 SQL 交易檔<br>• 附真實「員工差旅報銷單.xlsx」實戰示範與標準提問詞 | **[查看 Excel 轉 SQL 實戰 ➡️](./範例資料庫/excel範例/自備Excel轉SQL實戰示範/)** |
-| ⚡ **10 萬筆巨量資料壓測** | • 零網路下載！利用 PostgreSQL 內建指令 1 秒動態生成 10 萬筆訂單<br>• 專門用於索引 (INDEX) 與查詢效能壓測 | **[取得 1 秒生成腳本 ➡️](./範例資料庫/中文範例資料庫/generate_100k_orders.sql)** |
+👉 **[查看詳細結構與匯入教學](./範例資料庫/)**
 
 ---
 
@@ -153,7 +145,8 @@
 | 7 | [綜合連結](./SQL語法教學/13連結.md) | 條件放 `ON` 還是 `WHERE` | [.sql](./SQL語法教學/13連結.sql) | — |
 | 8 | [子查詢](./SQL語法教學/14子查詢.md) | `WITH`、`EXISTS`、`NOT IN` 遇到 NULL 的大坑 | [.sql](./SQL語法教學/14子查詢.sql) | — |
 | 9 | [ON DELETE](./SQL語法教學/15on_delete_action.md) | 查規則、預測後果、軟刪除 | [.sql](./SQL語法教學/15on_delete_action.sql) | [專案 5](./app_projects/excel5_stores/) |
-| 10 | [AI 助教與結業挑戰](./SQL語法教學/關聯資料庫實作_用Prompt操作.md) | 抓出 AI 的錯、五大職務實戰、結業五題 | — | — |
+| 10 | [索引與效能](./SQL語法教學/17索引與效能.md) | 用 5 萬筆資料實測 `INDEX`、`EXPLAIN` | [腳本](./範例資料庫/中文範例資料庫/generate_100k_orders.sql) | — |
+| 11 | [AI 助教與結業挑戰](./SQL語法教學/關聯資料庫實作_用Prompt操作.md) | 抓出 AI 的錯、五大職務實戰、結業五題 | — | — |
 
 ---
 
@@ -247,6 +240,12 @@ flowchart LR
 | 把 Excel 轉成資料交易檔 | 檢查與對帳 | ✅ |
 | `PRD.md`、`todolist.md` | 審核與修改 | ✅ 用唯讀 MCP 讀結構 |
 | Python 與視窗程式 | 依 `todolist.md` 驗收 | ✅ |
+
+### 🎓 畢業專題：換你的 Excel
+
+做完專案後，拿自己工作上的 Excel 走一次同樣的流程：先脫敏、自己手寫建表，再請 AI 處理資料，最後做成自己的小工具。
+
+👉 **[開始畢業專題](./app_projects/畢業專題_換你的Excel.md)**
 
 ### 延伸專題
 

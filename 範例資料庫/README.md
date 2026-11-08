@@ -66,6 +66,8 @@ flowchart LR
 
 📄 **檔案**：[`generate_100k_orders.sql`](./中文範例資料庫/generate_100k_orders.sql)
 
+📘 **對應課程**：[進階-10 索引與效能](../SQL語法教學/17索引與效能.md)。請在獨立的 `cafe_perf` 資料庫執行，不要灌進 `cafe_shop`。
+
 利用 PostgreSQL 內建的 `generate_series()` 引擎：
 * **零網路傳輸**：完全不需要下載或上傳大檔案。
 * **極速生成**：在 DBeaver 執行此腳本，**僅需 1~2 秒**，即可動態產生 5 萬筆訂單與 10 萬筆商品明細，專門用來練習索引（INDEX）優化與 EXPLAIN 效能分析！

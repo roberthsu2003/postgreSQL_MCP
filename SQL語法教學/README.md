@@ -79,7 +79,8 @@ flowchart TD
 | 進階-7 | [綜合連結](./13連結.md) | 條件放 ON 還是 WHERE | `cafe_shop` | [.sql](./13連結.sql) |
 | 進階-8 | [子查詢](./14子查詢.md) | NOT IN 的大坑 | `cafe_shop` 等 | [.sql](./14子查詢.sql) |
 | 進階-9 | [ON DELETE](./15on_delete_action.md) | 刪除前先看後果 | `cafe_shop` | [.sql](./15on_delete_action.sql) |
-| 進階-10 | [AI 助教與結業挑戰](./關聯資料庫實作_用Prompt操作.md) | 抓出 AI 的錯 | 五大範例庫 | — |
+| 進階-10 | [索引與效能](./17索引與效能.md) | 資料變多也不會卡 | `cafe_perf` | — |
+| 進階-11 | [AI 助教與結業挑戰](./關聯資料庫實作_用Prompt操作.md) | 抓出 AI 的錯 | 五大範例庫 | — |
 
 ## 🚀 學完接實戰專案
 
@@ -103,6 +104,7 @@ flowchart TD
 |---|---|---|
 | `cafe_db` | 自己從零建立 | DDL 和 DML 的手寫練習 |
 | `cafe_lab` | 自己從零建立 | 進階-1、2 親手蓋七張表 |
+| `cafe_perf` | 匯入 `cafe_shop.sql` 後再產生 5 萬筆訂單 | 進階-10 索引練習，不要和 `cafe_shop` 混用 |
 | `cafe_shop` | 匯入 [`cafe_shop.sql`](../範例資料庫/中文範例資料庫/cafe_shop.sql) | 主要查詢練習，改壞了重匯即可 |
 | `expense_tracker` | 匯入 [`expense_tracker.sql`](../範例資料庫/中文範例資料庫/expense_tracker.sql) | 會計案例 |
 | `hr_attendance` | 匯入 [`hr_attendance.sql`](../範例資料庫/中文範例資料庫/hr_attendance.sql) | 人資案例 |
