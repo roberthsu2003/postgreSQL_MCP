@@ -117,12 +117,6 @@ SELECT setval(pg_get_serial_sequence('departments', 'dept_id'), (SELECT MAX(dept
 
 > 我執行交易檔時出現這個錯誤：（貼上完整錯誤訊息）。這是我的 CREATE TABLE：（貼上）。請告訴我錯在哪裡、為什麼，由我自己修改。
 
-## ✅ 過關檢查
-
-- [ ] 我執行前檢查過寫入順序和 `setval`
-- [ ] 對帳結果是 4、9、5、13、33360
-- [ ] 我親眼看過撞號，也把自動編號修回來了
-
 ---
 
 | 上一步 | 目錄 | 下一步 |

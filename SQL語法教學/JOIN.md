@@ -382,12 +382,6 @@ ORDER BY l.expected_return_date;
 
 > 我寫了這段 JOIN，結果筆數比預期多很多，請幫我找原因，用「VLOOKUP」的概念解釋。請不要幫我執行：（貼上你的 SQL）
 
-## ✅ 過關檢查
-
-- [ ] 我能用自己的話解釋 INNER 和 LEFT 的差別
-- [ ] 我會用 `LEFT JOIN ... IS NULL` 找「沒有對應」的資料
-- [ ] 我能依關係圖寫出三張表以上的 JOIN
-
 ---
 
 | 上一步 | 目錄 | 下一步 |

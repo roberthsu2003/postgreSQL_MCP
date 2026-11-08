@@ -310,10 +310,4 @@ graph LR
 3. **密碼安全性與全域設定保護：**
    * 全域設定檔（`~/.gemini/config/mcp_config.json`）獨立儲存於您的本機個人家目錄，不會被 Git 追蹤或推送到 GitHub，確保密碼安全不外洩。
 
-## ✅ 過關檢查
-
-- [ ] DBeaver 的 **Test Connection** 顯示 `Connected`
-- [ ] 在 SQL 編輯器執行 `SELECT version();` 有結果
-- [ ] Antigravity 透過微軟 MCP 連線 Supabase 成功，能列出資料庫版本或資料表
-
 👉 **下一步：[第 2 章：匯入範例資料庫](../範例資料庫/README.md)**

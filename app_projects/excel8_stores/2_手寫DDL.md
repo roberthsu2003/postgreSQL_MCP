@@ -214,13 +214,6 @@ TRUNCATE order_items, orders, customers, products, staff, stores RESTART IDENTIT
 
 > 這是我手寫的 PostgreSQL 資料表：（貼上你的 SQL）。請檢查同名會員、散客訂單和店員調店時的情況能不能正確記錄。有問題的話給我提示，不要直接重寫。
 
-## ✅ 過關檢查
-
-- [ ] 七張表的欄位數和講義相同
-- [ ] 同名會員和散客訂單都能成功新增
-- [ ] 八列有問題的資料都被擋下，我能說出原因
-- [ ] 已執行含 `RESTART IDENTITY` 的 `TRUNCATE`，六張正式表都是 0 筆
-
 ---
 
 | 上一步 | 目錄 | 下一步 |

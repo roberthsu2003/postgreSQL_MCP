@@ -186,12 +186,6 @@ ALTER TABLE supplies ALTER COLUMN spec TYPE VARCHAR(50);  -- 改回來，下一�
 
 > 這是我手寫的 PostgreSQL CREATE TABLE：（貼上你的 SQL）。請告訴我它和下列需求有沒有不符合的地方，但不要直接重寫：單價和庫存不能是負數、品號不能重複、類別只能有四種。我會自己在 DBeaver 修改。
 
-## ✅ 過關檢查
-
-- [ ] 結構查詢的結果和講義相同，共 10 個欄位
-- [ ] 七列有問題的資料都被擋下，我能說出原因
-- [ ] 已執行 `TRUNCATE`，`SELECT COUNT(*) FROM supplies;` 回傳 0
-
 ---
 
 | 上一步 | 目錄 | 下一步 |

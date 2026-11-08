@@ -146,13 +146,6 @@ ALTER TABLE supplies RENAME COLUMN place TO location;
 
 > 我執行交易檔時出現這個錯誤：（貼上完整錯誤訊息）。這是我的 CREATE TABLE：（貼上）。請告訴我錯在哪裡、為什麼，由我自己修改。
 
-## ✅ 過關檢查
-
-- [ ] 我能說明為什麼要把 `CREATE TABLE` 一起給 AI
-- [ ] 我執行前檢查過 AI 的 SQL
-- [ ] 對帳結果是 25、546、66474
-- [ ] 我知道失敗時要先 `ROLLBACK;`
-
 ---
 
 | 上一步 | 目錄 | 下一步 |

@@ -36,13 +36,6 @@ graph LR
     class Docker docker
 ```
 
-| 設備角色 | 負責項目 | 執行軟體與環境 | 說明 |
-|---|---|---|---|
-| 🍓 **Raspberry Pi（伺服器端）** | 跑 Docker 容器 | **Docker 引擎**<br>• `my-postgres` 容器 (5432)<br>• 具名磁碟卷 (資料持久化) | 專職當作 Backend 伺服器，開機常駐背景運行，不需在此寫程式或開桌面視窗。 |
-| 💻 **個人電腦（操作與開發端）** | 視覺化管理 & 寫 SQL | **DBeaver** | 在自己電腦打開圖形介面，透過 SSH 隧道或區網 IP 遠端管理樹莓派資料庫。 |
-| 💻 **個人電腦（操作與開發端）** | 一般人 AI 查庫 | **Antigravity** | 在自己電腦提問，透過全域 MCP 直接用自然語言查詢樹莓派資料庫。 |
-| 💻 **個人電腦（操作與開發端）** | 程式開發與進階客製 | **Antigravity** | 在自己電腦撰寫 Python、開發自訂 MCP Server 與除錯。 |
-
 ---
 
 ## 🧭 學習路徑導覽
@@ -62,11 +55,5 @@ graph LR
 ## 🛠️ 工具手冊速查
 
 * 📖 **[Docker 常用指令速查](./docker基本指令.md)**：包含 `docker run`、`docker ps`、`docker logs`、`docker compose` 等伺服器維護必備指令。
-
-## ✅ 過關檢查
-
-- [ ] 樹莓派重開機後，`docker ps` 仍看得到 `my-postgres`
-- [ ] DBeaver 透過 SSH 隧道顯示 `Connected`
-- [ ] AI 拒絕了寫入的要求，唯讀保護有效
 
 👉 **下一步：[第 2 章：匯入範例資料庫](../範例資料庫/README.md)**

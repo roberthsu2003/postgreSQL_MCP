@@ -104,11 +104,6 @@ TRUNCATE guest_enrollments, employee_enrollments, guests, employees, courses RES
 | `cannot truncate a table referenced in a foreign key constraint` | 沒有一起清空 | 五張表寫在同一句 `TRUNCATE` |
 | `current transaction is aborted` | 交易中發生過錯誤 | 先執行 `ROLLBACK;` |
 
-## ✅ 過關檢查
-
-- [ ] 五列有問題的資料都被擋下，我能說出原因
-- [ ] 已執行含 `RESTART IDENTITY` 的 `TRUNCATE`，五張表都是 0 筆
-
 ---
 
 | 上一步 | 目錄 | 下一步 |

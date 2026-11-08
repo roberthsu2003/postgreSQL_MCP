@@ -167,11 +167,6 @@ JOIN products ON order_items.product_id = products.product_id;
 
 </details>
 
-## ✅ 過關檢查
-
-- [ ] 我能舉例說明重複、修改、刪除、新增四種問題
-- [ ] 我能解釋 VLOOKUP 和 JOIN 的相似之處
-
 ---
 
 | 上一步 | 目錄 | 下一步 |

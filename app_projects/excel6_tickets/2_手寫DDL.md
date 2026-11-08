@@ -92,11 +92,6 @@ TRUNCATE tickets, categories, agents RESTART IDENTITY;
 | `tickets_check` | 狀態和結案日期對不上 | 已結案要有日期，其他狀態不能有日期 |
 | `current transaction is aborted` | 交易中發生過錯誤 | 先執行 `ROLLBACK;` |
 
-## ✅ 過關檢查
-
-- [ ] 五列有問題的資料都被擋下，我能說出原因
-- [ ] 已執行含 `RESTART IDENTITY` 的 `TRUNCATE`，三張表都是 0 筆
-
 ---
 
 | 上一步 | 目錄 | 下一步 |

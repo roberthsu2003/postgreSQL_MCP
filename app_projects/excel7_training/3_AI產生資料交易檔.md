@@ -78,11 +78,6 @@ SELECT (SELECT COUNT(*) FROM employee_enrollments WHERE attended) AS 內部出�
 | 出席數對不上 | AI 把空白當成 `false` | 請 AI 改成 `NULL` |
 | 結構真的修不好 | 想從乾淨狀態重來 | 執行 [`training_full.sql`](./training_full.sql)，它會**取代你手寫的表** |
 
-## ✅ 過關檢查
-
-- [ ] 我確認過空白的出席是 `NULL`
-- [ ] 對帳結果全部相符
-
 ---
 
 | 上一步 | 目錄 | 下一步 |

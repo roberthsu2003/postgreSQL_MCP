@@ -175,12 +175,6 @@ TRUNCATE claims, employees, categories, departments RESTART IDENTITY;
 
 > 這是我手寫的四張 PostgreSQL 資料表：（貼上你的 SQL）。請檢查建表順序、外來鍵型別，以及能不能擋下重複發票和金額為 0，有問題的話給我提示，不要直接重寫。
 
-## ✅ 過關檢查
-
-- [ ] 四張表的欄位數和講義相同
-- [ ] 六列有問題的資料都被擋下，我能說出原因
-- [ ] 已執行含 `RESTART IDENTITY` 的 `TRUNCATE`，四張表都是 0 筆
-
 ---
 
 | 上一步 | 目錄 | 下一步 |
