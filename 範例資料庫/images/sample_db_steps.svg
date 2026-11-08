@@ -41,7 +41,7 @@
     <rect x="0" y="0" width="210" height="130" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
     <circle cx="105" cy="30" r="16" fill="#db2777"/>
     <text x="105" y="36" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">4</text>
-    <text x="105" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#831843">認識五大職場範例</text>
+    <text x="105" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#831843">認識 8 個 Excel 範例</text>
     <text x="105" y="96" text-anchor="middle" font-size="12" fill="#475569">找出最接近你工作的範例</text>
     <text x="105" y="115" text-anchor="middle" font-size="12" fill="#475569">之後課程陸續用到</text>
   </g>

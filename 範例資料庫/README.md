@@ -12,7 +12,7 @@
 
 <div align="center">
 
-**快速前往**　[① 匯入 CSV](#第-1-步下載-csv練習匯入)　·　[② AI 交易檔](#第-2-步用-ai-把-excel-轉成-sql-交易檔)　·　[③ 範例資料庫](#第-3-步匯入範例資料庫)　·　[④ 職場範例](#第-4-步認識五大職場範例)　·　[✅ 過關檢查](#-過關檢查)
+**快速前往**　[① 匯入 CSV](#第-1-步下載-csv練習匯入)　·　[② AI 交易檔](#第-2-步用-ai-把-excel-轉成-sql-交易檔)　·　[③ 範例資料庫](#第-3-步匯入範例資料庫)　·　[④ 8 個 Excel 範例](#第-4-步認識-8-個-excel-範例)　·　[✅ 過關檢查](#-過關檢查)
 
 </div>
 
@@ -79,82 +79,110 @@
 
 ---
 
-## 第 4 步：認識五大職場範例
+## 第 4 步：認識 8 個 Excel 範例
 
-> 🎯 **完成後你會：** 知道哪個範例最接近你的工作。這些範例會在後面的課程陸續用到，現在先認識就好。
+> 🎯 **完成後你會：** 知道哪個範例最接近你的工作。這些範例會在第 5 章的實戰專案用到，現在先認識就好。
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-**💼 會計 / 出納**
+**1. 🏢 耗材庫存表**（總務）
 
-請款單滿天飛、重複報帳、預算超支
+手動改庫存、斷貨才發現
 
-📄 資料庫：[`expense_tracker`](./中文範例資料庫/expense_tracker.sql)<br>
-📊 Excel：[報銷單](./excel範例/自備Excel轉SQL實戰示範/)<br>
-🚀 專案：[專案 4 差旅報銷單](../app_projects/excel4_expense/)
+📊 [下載 Excel](../app_projects/excel1_supplies/耗材庫存表.xlsx)<br>
+🚀 [進入專案](../app_projects/excel1_supplies/)<br>
+📍 教完 DDL-5、DML-3 可以開始
 
 </td>
 <td width="50%" valign="top">
 
-**👥 人資**
+**2. 💻 IT 設備規格表**（資訊）
 
-排班撞期、工時加總繁瑣、算薪費時
+每種設備欄位不同，表越加越寬
 
-📄 資料庫：[`hr_attendance`](./中文範例資料庫/hr_attendance.sql)<br>
-📊 Excel：[打卡表（簡化版）](../app_projects/excel3_attendance/打卡表.xlsx)<br>
-🚀 專案：[專案 3 打卡表](../app_projects/excel3_attendance/)
-
-</td>
-</tr>
-<tr>
-<td valign="top">
-
-**📦 總務 / 倉管**
-
-設備找不到人、耗材斷貨、編號重複
-
-📄 資料庫：[`assets_inventory`](./中文範例資料庫/assets_inventory.sql)<br>
-📊 Excel：[耗材庫存（簡化版）](../app_projects/excel1_supplies/耗材庫存表.xlsx)<br>
-🚀 專案：[專案 1 耗材庫存表](../app_projects/excel1_supplies/)
-
-</td>
-<td valign="top">
-
-**☕ 店長 / 營運**
-
-每月複製 Excel、跨月營收難統計
-
-📄 資料庫：[`cafe_shop`](./中文範例資料庫/cafe_shop.sql)<br>
-📊 Excel：[門市月報](./excel範例/連鎖門市月報表/)<br>
-🚀 專案：[專案 8 連鎖門市月報](../app_projects/excel8_stores/)
+📊 [下載 Excel](../app_projects/excel2_devices/設備規格表.xlsx)<br>
+🚀 [進入專案](../app_projects/excel2_devices/)<br>
+📍 教完 DML-6 可以開始
 
 </td>
 </tr>
 <tr>
 <td valign="top">
 
-**🛒 業務 / 電商**
+**3. 👥 打卡表**（人資）
 
-客戶資料矛盾、訂單難追蹤
+部門重複填寫、新人放不進表
 
-📄 資料庫：[`shop`](./中文範例資料庫/shop.sql)<br>
-📊 Excel：[網路商店](./從Excel到關聯資料庫_正規化.md)<br>
-🚀 專案：[專案 5 網路商店訂單](../app_projects/excel5_shop/)
+📊 [下載 Excel](../app_projects/excel3_attendance/打卡表.xlsx)<br>
+🚀 [進入專案](../app_projects/excel3_attendance/)<br>
+📍 教完 一對多入門 可以開始
 
 </td>
 <td valign="top">
 
-**🎓 你的工作不在這裡？**
+**4. 💼 差旅報銷單**（會計 / 出納）
 
-學完八個專案後，可以換成自己工作上的 Excel，走一次完整流程。
+重複報帳、不知道該催誰審核
 
-👉 [畢業專題：換你的 Excel](../app_projects/畢業專題_換你的Excel.md)
+📊 [下載 Excel](../app_projects/excel4_expense/差旅報銷單.xlsx)<br>
+🚀 [進入專案](../app_projects/excel4_expense/)<br>
+📍 教完 進階-2 可以開始
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+**5. 🛒 網路商店訂單**（業務）
+
+商品調價後，舊訂單金額算不準
+
+📊 [下載 Excel](../app_projects/excel5_shop/網路商店訂單表.xlsx)<br>
+🚀 [進入專案](../app_projects/excel5_shop/)<br>
+📍 教完 進階-3 可以開始
+
+</td>
+<td valign="top">
+
+**6. 🎧 客服案件紀錄**（客服）
+
+關鍵字寫法不一，舊案件找不到
+
+📊 [下載 Excel](../app_projects/excel6_tickets/客服案件紀錄.xlsx)<br>
+🚀 [進入專案](../app_projects/excel6_tickets/)<br>
+📍 教完 進階-5 可以開始
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+**7. 🎓 教育訓練報名表**（訓練承辦）
+
+兩份名單要手動合併
+
+📊 [下載 Excel](../app_projects/excel7_training/教育訓練報名表.xlsx)<br>
+🚀 [進入專案](../app_projects/excel7_training/)<br>
+📍 教完 進階-7 可以開始
+
+</td>
+<td valign="top">
+
+**8. ☕ 連鎖門市月報**（店長 / 營運）
+
+每月複製 Excel，跨月統計困難
+
+📊 [下載 Excel](./excel範例/連鎖門市月報表/)<br>
+🚀 [進入專案](../app_projects/excel8_stores/)<br>
+📍 教完 進階-9 可以開始
 
 </td>
 </tr>
 </table>
+
+🎓 **你的工作不在這裡？** 學完之後可以換成自己的 Excel，走一次完整流程：[畢業專題：換你的 Excel](../app_projects/畢業專題_換你的Excel.md)
 
 ---
 
