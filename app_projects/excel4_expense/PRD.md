@@ -29,7 +29,7 @@
 
 ## 4. 驗收條件
 
-以下數字以 `expense_full.sql` 的初始資料為準。
+以下數字以你在步驟 2 親手建立四張表並執行步驟 3「AI 產生資料交易檔（完成對帳後）」的 13 張初始報銷單（總金額 33,360）為準。若測試時把資料改亂，在 DBeaver 執行 `TRUNCATE TABLE claims, employees, categories, departments RESTART IDENTITY;` 後重新執行步驟 3 產生的交易檔即可恢復。
 
 ### 待撥款清單（S1）
 - 我打開待撥款清單，應該看到 **2 張**單據，都是周美玲，合計 **5,180**。

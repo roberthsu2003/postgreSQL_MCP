@@ -1,153 +1,159 @@
-# 步驟 3｜AI 產生資料交易檔：表是你蓋的，資料讓 AI 轉
+# 步驟 3｜AI 產生資料交易檔：把 Excel 寫進 `BEGIN ... COMMIT` 交易
 
-> 💻 AI 對話框 + DBeaver（資料庫：`supplies`）｜ 🎯 學完你會：請 AI 依照你的結構產生 INSERT，匯入後和 Excel 對帳
-
-> 📚 先修：[DML-3 修改與刪除的交易](../../SQL語法教學/5修改和刪除.md)。語法細節請回章節複習，這裡把它用在真實的 Excel 上。
-
-## 🎬 情境
-
-資料表蓋好了，但裡面是空的。25 筆資料一筆一筆打太慢，這種機械式的轉換正好交給 AI。
-
-重點是：**把你手寫的 `CREATE TABLE` 一起給 AI**。這樣它才會照你的欄位名稱產生資料，而不是自己另外設計一套。
-
-## 1. 什麼是交易檔
-
-交易（transaction）就是「要嘛全部成功，要嘛全部不算」：
-
-```sql
-BEGIN;     -- 開始
-INSERT ...;
-COMMIT;    -- 全部沒問題，正式寫入
-```
-
-中間只要有一筆失敗，整份都不會寫入，不會留下只匯入一半的資料。
-
-## 2. 請 AI 產生交易檔
-
-開啟 AI 對話框，附加 `耗材庫存表.xlsx`，貼上以下提示詞，並填入你手寫的 SQL：
-
-```text
-你是 PostgreSQL 教學助教。我附上一份 Excel，請只讀取「耗材庫存」工作表。
-
-這是我親手建立的資料表，請嚴格依照它的欄位名稱，不要新增或更改欄位：
-（貼上你的 CREATE TABLE）
-
-請產生一份資料交易檔：
-1. 只能有 BEGIN; 一句 INSERT INTO ... VALUES; 和 COMMIT;，不要 CREATE、DROP 或 ALTER。
-2. INSERT 要明確寫出欄位名稱。
-3. 25 筆資料全部轉換，不可省略，也不可修改內容。空白的儲存格請寫 NULL。
-4. 日期請用 'YYYY-MM-DD' 格式。
-5. 如果有主鍵是 SERIAL 且你指定了編號，請在 COMMIT 前加上 setval，讓下一筆的編號正確。
-
-請直接在對話中輸出 SQL 程式碼，我會自己在 DBeaver 檢查後執行。
-```
-
-## 3. 執行前先檢查
-
-| 檢查項目 | 應該看到 |
-|---|---|
-| 開頭和結尾 | `BEGIN;` 和 `COMMIT;` 都有 |
-| 有沒有多餘的動作 | 沒有 `CREATE`、`DROP`、`ALTER` |
-| 欄位名稱 | 和你的資料表完全相同 |
-| 資料筆數 | 第一筆是 `MAT-P-A470`，最後一筆是 `CLN-WIPE-80`，沒有「以下省略」 |
-
-> [!WARNING]
-> **AI 給的 SQL，一定要看過才執行。** 特別是 `DROP`，它會把你親手建的表刪掉。
-
-如果 AI 的結果怪怪的，可以和標準答案 [`supplies_data.sql`](./supplies_data.sql) 對照。
-
-## 4. 匯入資料
-
-把 SQL 貼到 DBeaver，確認工具列是 `supplies`，按 `Alt + X`（Mac：`Opt + X`）執行整份。
-
-如果執行失敗，**先執行 `ROLLBACK;`**，讀懂錯誤訊息、修好問題後再執行一次。
-
-## 5. 和 Excel 對帳
-
-資料進來不代表資料正確。先在 Excel 空白處輸入公式，算出正確答案：
-
-| 項目 | Excel 公式（在「耗材庫存」工作表） | 答案 |
-|---|---|---:|
-| 品項數 | `=COUNTA(A2:A26)` | 25 |
-| 總庫存量 | `=SUM(G2:G26)` | 546 |
-| 庫存總金額 | `=SUMPRODUCT(F2:F26,G2:G26)` | 66474 |
-
-> [!NOTE]
-> `SUM` 就是 Excel 的 SUM，`COUNT` 是算筆數。這裡只算一個總數，要依門市、月份分組統計時，[進階-4](../../SQL語法教學/10聚合函式.md)會完整教。
-
-再用 SQL 算一次：
-
-```sql
-SELECT COUNT(*) AS 品項數,
-       SUM(current_stock) AS 總庫存量,
-       SUM(unit_price * current_stock) AS 庫存總金額
-FROM supplies;
-```
-
-**執行結果**
-
-| 品項數 | 總庫存量 | 庫存總金額 |
-|---:|---:|---:|
-| 25 | 546 | 66474 |
-
-三個數字都相同，才算匯入成功。
-
-## 6. AI 轉資料的界線
-
-| 狀況 | 建議做法 |
-|---|---|
-| 幾十筆、內容不敏感 | 可以請 AI 直接轉成 INSERT |
-| 資料有客戶姓名、電話、薪資 | 先脫敏，例如改成假名，再給 AI |
-| 上千筆，或每月都有新檔案 | AI 只看 10～20 筆樣本寫語法，真實資料用 CSV 匯入（專案 8 會教） |
-
-資料量越大，AI 越容易漏列或輸出到一半就截斷，所以對帳這一步不能省。
-
-## ⚠️ 常見卡關
-
-| 錯誤訊息 | 原因 | 怎麼解 |
-|---|---|---|
-| `column "..." of relation "supplies" does not exist` | 你的欄位名稱和 INSERT 不同 | 先 `ROLLBACK;`，再用 `ALTER TABLE ... RENAME COLUMN` 修正 |
-| `duplicate key value violates unique constraint` | 測試資料沒清，或這份已經匯入過 | 先 `ROLLBACK;`，查 `SELECT COUNT(*) FROM supplies;`，已經是 25 筆就不用再匯入 |
-| `current transaction is aborted` | 前一步失敗，交易還沒結束 | 先執行 `ROLLBACK;` |
-| 結構真的修不好 | 想從乾淨狀態重來 | 執行 [`supplies_full.sql`](./supplies_full.sql)，它會**取代你手寫的表** |
-
-## ✍️ 動手練
-
-**體驗一次「結構寫錯時的保護」**：這一題會暫時改壞結構。先清空資料，把欄位 `location` 改名，再執行交易檔，看看會發生什麼事。
-
-```sql
-TRUNCATE supplies;
-ALTER TABLE supplies RENAME COLUMN location TO place;
-```
-
-接著用 `Alt + X` 執行 [`supplies_data.sql`](./supplies_data.sql)，然後：
-
-```sql
-ROLLBACK;
-SELECT COUNT(*) FROM supplies;
-```
-
-<details>
-<summary>看答案</summary>
-
-執行時會出現 `column "location" of relation "supplies" does not exist`，`COUNT(*)` 回傳 **0**。整份都沒有寫入，沒有留下半套資料。
-
-記得把結構改回來，再匯入一次：
-
-```sql
-ALTER TABLE supplies RENAME COLUMN place TO location;
-```
-
-重新執行交易檔後，再跑一次對帳查詢，應該回到 25、546、66474。
-
-</details>
-
-## 🤖 問 AI 助教
-
-> 我執行交易檔時出現這個錯誤：（貼上完整錯誤訊息）。這是我的 CREATE TABLE：（貼上）。請告訴我錯在哪裡、為什麼，由我自己修改。
+> **本步驟核心：不用匯入現成 `.sql`、也不用 CSV 匯入精靈！**  
+> 資料表是你自己在步驟 2 手寫的，現在要**由你親自把自己的 `CREATE TABLE` ＋ `耗材庫存表.xlsx` 交給 AI**，請 AI 產出標準的 **SQL Transaction 交易檔**，經你檢查無誤後在 DBeaver 執行。
 
 ---
 
-| 上一步 | 目錄 | 下一步 |
-|:---|:---:|---:|
-| [⬅️ 步驟 2：手寫 DDL](./2_手寫DDL.md) | [🏠 專案說明](./README.md) | [步驟 4：DML 回答故事 ➡️](./4_DML回答故事.md) |
+## 為什麼要包成「交易（Transaction）」？
+
+把 25 筆資料塞進 `BEGIN; ... COMMIT;` 裡面有三層意義：
+1. **全有或全無（原子性）**：只要第 18 筆有錯（例如型別錯、違反 `CHECK`），整批寫入會停止並全部 `ROLLBACK`，不會留下一半半殘的資料。
+2. **與日常業務一致**：往後領用耗材、調整單價、批次補貨全部都要靠交易保護，現在先看懂交易的長相。
+3. **純手寫驗證**：SQL 在你的畫面上看得到每一行，確認無誤才送給資料庫。
+
+---
+
+## 給 AI 的「建立交易檔 Prompt」
+
+打開聊天視窗，附上 [耗材庫存表.xlsx](耗材庫存表.xlsx) 的 `耗材庫存` 工作表，**貼上你在步驟 2 親手寫好的 `CREATE TABLE supplies (...)` 語法**，並發送這段 Prompt：
+
+```text
+請幫我把附件「耗材庫存表.xlsx」裡的「耗材庫存」工作表（25 筆），轉成 PostgreSQL 的資料寫入交易檔（純 SQL）。
+
+我的資料表定義如下：
+（把你在步驟 2 寫的 CREATE TABLE supplies (...) 貼在這裡）
+
+嚴格規則：
+1. 只能產生交易控制（BEGIN; ... COMMIT;）和 INSERT INTO supplies (...) VALUES (...)，禁止任何 CREATE、DROP、ALTER、TRUNCATE 指令。
+2. 不可自行透過 MCP 修改或寫入資料庫，請直接輸出 SQL 文字讓我審查後自行在 DBeaver 執行。
+3. Excel 裡「規格（spec）」或「最後盤點日（last_checked）」空白的儲存格，SQL 必須寫成 NULL（不加引號），不可寫成空字串 '' 或 'NULL'。
+4. 單價、現有庫存、安全庫存必須是不帶千分位逗號的純整數。
+5. 日期格式請轉成 'YYYY-MM-DD'，字串內的單引號若有需要請正確跳脫。
+```
+
+---
+
+## 執行前自我檢查（花 30 秒看這 5 點，能抓出 9 成 AI 小毛病）
+
+1. **開頭與結尾**：有 `BEGIN;` 開頭、`COMMIT;` 結尾嗎？中間有偷渡 `DROP TABLE` 或 `CREATE TABLE` 嗎？
+2. **共 25 筆**：數一下 `VALUES` 括號是不是從 `MAT-P-A470` 到 `CLN-WIPE-80` 共 25 筆？
+3. **空白變 `NULL`**：檢查 `STA-MRK-BK`（白板筆 黑色）的 `spec` 是 `NULL` 而不是 `''`；檢查 `STA-TAPE-18`（透明膠帶）和 `CLN-ALC-500`（75% 酒精）的 `last_checked` 是 `NULL`。
+4. **數字沒引號**：`unit_price`、`current_stock`、`safety_stock` 不加單引號（例如 `650, 3, 5`）。
+5. **類別字完全一致**：只有 `'紙張'`、`'碳粉墨水'`、`'文具'`、`'清潔用品'` 四種，沒有被 AI 擅自翻譯或改字。
+
+檢查沒問題後，請在 DBeaver 打開新 SQL 編輯器，另存為 `建立資料.sql`，貼進去按「執行 SQL 腳本」（`Alt+X` / `Cmd+Enter` 選取全部）。
+
+---
+
+## 三方對帳：Excel 公式 vs DBeaver SQL vs MCP 查詢
+
+寫入完成後，用下面三個管道核對三個核心數字是否完全一致：
+
+### ① Excel 公式（在 `耗材庫存表.xlsx` 的 `耗材庫存` 工作表驗算）
+- 品項數：`=COUNTA(A2:A26)` → **25**
+- 總庫存數量：`=SUM(G2:G26)` → **546**
+- 庫存總金額：`=SUMPRODUCT(F2:F26, G2:G26)` → **66,474**
+
+### ② DBeaver 手寫對帳 SQL
+```sql
+SELECT
+    COUNT(*)                         AS 品項數,
+    SUM(current_stock)               AS 總庫存數量,
+    SUM(unit_price * current_stock)  AS 庫存總金額
+FROM supplies;
+```
+
+### ③ 🤖 Microsoft Postgres MCP 對帳查詢 Prompt
+```text
+請透過 Microsoft Postgres MCP 連線到我的 supplies 資料庫，只用唯讀查詢（SELECT）幫我計算 supplies 資料表目前的：
+1. 總筆數（品項數）
+2. 所有現有庫存的加總
+3. 每項「單價 * 現有庫存」的總金額
+4. NULL 值筆數（spec 為 NULL 的筆數、last_checked 為 NULL 的筆數）
+請列出結果表格與你執行的 SQL，嚴禁修改資料庫。
+```
+
+**三個數字完全對上 `25`、`546`、`66,474`（且 spec 與 last_checked 各有 2 筆 NULL）才算對帳過關！**
+
+---
+
+## ✍️ 動手練（體驗 Transaction 原子性 ＋ 請 AI 設計業務交易）
+
+1. **原子性與 `ROLLBACK` 保護測試**：  
+   在 DBeaver 開一個新查詢分頁（**不要影響原本已寫好的 `建立資料.sql`**），執行以下「一半正確、一半刻意觸發錯誤」的交易：
+   ```sql
+   BEGIN;
+   -- 第一步正確：幫藍色原子筆補貨 10 支（180 -> 190）
+   UPDATE supplies SET current_stock = current_stock + 10 WHERE item_code = 'STA-PEN-B05';
+   -- 第二步故意違法：把類別改成不存在的 '雜項'
+   UPDATE supplies SET category = '雜項' WHERE item_code = 'STA-PEN-B05';
+   ```
+   此時 PostgreSQL 會報錯 `violates check constraint "supplies_category_check"`，整個交易進入失敗狀態。請接著執行：
+   ```sql
+   ROLLBACK;
+   SELECT item_code, current_stock, category FROM supplies WHERE item_code = 'STA-PEN-B05';
+   ```
+   <details>
+   <summary>👀 應該看到什麼？</summary>
+
+   `STA-PEN-B05` 的 `current_stock` 仍然是 **`180`**，而不是 `190`！這就是交易保護的威力：第一步雖然先執行成功，但只要整筆交易沒能全部完成並 `COMMIT`，就全部自動回到原本狀態。
+   </details>
+
+2. **請 AI 幫你寫多步驟「業務交易」Prompt 實作**：  
+   假設今天總務要一次處理三件事：同事領走 `2 箱` A4 80g 影印紙（`MAT-P-A480`）、同時領走 `3 包` A4 資料夾（`STA-FOLD-A4`），而且要把透明膠帶（`STA-TAPE-18`）的 `last_checked` 更新成今天（`CURRENT_DATE`）。請試著用下面這段 Prompt 讓 AI 產出交易 SQL，在 DBeaver 執行後先查出更新後結果，再用 `ROLLBACK;` 復原以免影響步驟 4 的初始數字！
+   ```text
+   請根據 supplies 資料表結構，幫我撰寫一個 PostgreSQL Transaction（不要用 MCP 寫入，只給我 SQL）：
+   1. 用 BEGIN 開頭，但最後先不要自動寫 COMMIT;，改在最後加上查詢三項品號的 SELECT 與一句註解掉的 -- ROLLBACK; 方便我在 DBeaver 測試確認沒問題後才自行決定 COMMIT 或 ROLLBACK。
+   2. 交易內容：
+      - MAT-P-A480 扣庫存 2，並加上防護條件確保扣完不會失敗或清楚呈現原本數量檢查
+      - STA-FOLD-A4 扣庫存 3
+      - STA-TAPE-18 將 last_checked 設為 CURRENT_DATE
+   ```
+   <details>
+   <summary>👀 參考答案（測試完記得執行 ROLLBACK; 復原！）</summary>
+
+   ```sql
+   BEGIN;
+
+   UPDATE supplies
+   SET current_stock = current_stock - 2
+   WHERE item_code = 'MAT-P-A480';
+
+   UPDATE supplies
+   SET current_stock = current_stock - 3
+   WHERE item_code = 'STA-FOLD-A4';
+
+   UPDATE supplies
+   SET last_checked = CURRENT_DATE
+   WHERE item_code = 'STA-TAPE-18';
+
+   SELECT item_code, name, current_stock, last_checked
+   FROM supplies
+   WHERE item_code IN ('MAT-P-A480', 'STA-FOLD-A4', 'STA-TAPE-18')
+   ORDER BY item_code;
+
+   -- 練習測試完請執行下方指令復原，保持 25 筆初始狀態給步驟 4！
+   ROLLBACK;
+   ```
+   </details>
+
+---
+
+## 🤖 問 AI 助教（常見資料卡關解法）
+
+如果你的交易檔執行的時候出現 `syntax error` 或 `check constraint` 報錯，不要盲目重試，把**完整錯誤訊息**與出錯前後 5 行貼給 AI：
+
+```text
+我在 DBeaver 執行你幫我產生的 supplies 資料交易檔時，PostgreSQL 回傳以下錯誤：
+（貼上完整 ERROR 訊息與行數）
+
+這是出錯那一行附近的 SQL：
+（貼上該筆 INSERT 語法）
+
+請不要用 MCP 修改資料庫，先告訴我為什麼錯、是哪個欄位不符型別或 CHECK 規則，並給我修正後的完整 BEGIN ... COMMIT 交易檔。
+```
+
+---
+
+👉 **對帳完成且資料乾淨無誤了嗎？前往 [步驟 4｜10 題 DML 實戰練功與 MCP 雙軌驗證](4_DML回答故事.md)**

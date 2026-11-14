@@ -49,4 +49,4 @@
 ```
 
 > [!TIP]
-> 測試時資料被改亂了，在 DBeaver 執行 [`training_full.sql`](../training_full.sql) 就能恢復。這會把手動做過的修改一起還原。
+> 如果測試時資料被改亂了，在 DBeaver 用 `TRUNCATE guest_enrollments, employee_enrollments, guests, employees, courses RESTART IDENTITY;` 清空並重跑步驟 3 產生的資料交易檔就能回到初始狀態。

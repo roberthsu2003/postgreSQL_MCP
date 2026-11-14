@@ -1,16 +1,59 @@
-# 步驟 2｜手寫 DDL：一張表，一個規格欄位
+# 步驟 2｜手寫 DDL：親手建立包含 JSONB 欄位的 `devices` 資料表
 
-> 💻 DBeaver（資料庫：`devices`）｜ 🎯 學完你會：建立有 JSONB 欄位的資料表，並看懂 JSON 格式錯誤
+> **本步驟鐵則：不匯入現成 `.sql` 救援檔！**  
+> 打開 DBeaver Query Tool，照下方架構圖與欄位規格卡親手敲出建庫與建表語法。
 
-> 📚 先修：[DML-6 JSONB](../../SQL語法教學/16json.md)。
+---
 
-## 1. 建立資料庫和資料表
+## 任務一：建立並切換到 `devices` 資料庫
+
+在 DBeaver 連線到 PostgreSQL 後先建立資料庫，**接著在左側重新整理並連進 `devices` 再開新 SQL 視窗**：
 
 ```sql
 CREATE DATABASE devices;
 ```
 
-切換到 `devices`，建立資料表：
+> [!TIP]
+> **Supabase 免費方案替代方案**：若無法執行 `CREATE DATABASE`，請連線 `postgres` 資料庫改建獨立 Schema：
+> ```sql
+> CREATE SCHEMA IF NOT EXISTS devices;
+> SET search_path TO devices;
+> ```
+
+---
+
+## 任務二：看懂架構圖與手寫 DDL 規格卡
+
+```mermaid
+erDiagram
+    DEVICES {
+        VARCHAR(10) device_id PK "設備編號（例如 NB-001）"
+        VARCHAR(50) name "品名（必填）"
+        VARCHAR(10) device_type "類型（預留擴充彈性）"
+        DATE purchase_date "購入日（必填）"
+        INT price "單價（>=0）"
+        VARCHAR(20) department "使用部門（必填）"
+        JSONB specs "各類設備動態規格（必填）"
+    }
+```
+
+### 手寫規格卡（請逐欄敲出 `CREATE TABLE devices (...)`）
+
+| 英文欄位名 | 中文含義 | 建議資料型別 | 必填 / 制限條件（Constraint） | 設計原因 |
+|---|---|---|---|---|
+| `device_id` | 設備編號 | `VARCHAR(10)` | `PRIMARY KEY` | 唯一識別碼（`NB-001` 等） |
+| `name` | 品名 | `VARCHAR(50)` | `NOT NULL` | 每台設備都要有名稱 |
+| `device_type` | 類型 | `VARCHAR(10)` | `NOT NULL` | **故意不加 `CHECK IN`**，讓 S5 新增「平板」也不用改表結構 |
+| `purchase_date` | 購入日 | `DATE` | `NOT NULL` | 自動擋下 `2024-02-30` 等非法日期 |
+| `price` | 單價 | `INT` | `NOT NULL CHECK (price >= 0)` | 價格不得為負數 |
+| `department` | 使用部門 | `VARCHAR(20)` | `NOT NULL` | 每台設備都需歸屬部門 |
+| `specs` | 動態規格 | `JSONB` | `NOT NULL` | 必須提供合法雙引號 JSON，不可空白 |
+
+> ✍️ **現在先在 DBeaver 自己敲完 `CREATE TABLE devices (...)` 並執行！**  
+> 完成後再點開下方 `<details>` 逐字對照欄位名與型別。
+
+<details>
+<summary>👀 自己寫完再打開：參考 DDL 解答（務必核對欄位名稱與型別）</summary>
 
 ```sql
 CREATE TABLE devices (
@@ -24,81 +67,99 @@ CREATE TABLE devices (
 );
 ```
 
-`device_type` 沒有限制只能填哪幾種，因為之後可能買新類型的設備。
-
-> [!IMPORTANT]
-> 表名和欄位名稱請和上面**完全相同**，否則下一步匯入會失敗。
-
-## 2. 測試保護機制
-
-先放進一筆正確的資料：
-
-```sql
-INSERT INTO devices VALUES ('NB-001', 'ThinkPad X1 Carbon', '筆電', '2023-03-15', 48500, '資訊技術部', '{"cpu": "i7-1365U", "ram_gb": 16, "screen_inch": 14}');
-```
-
-打開「有問題的資料」工作表，**先猜會被哪個規則擋下**，再一句一句執行：
-
-```sql
--- 第 1 列：編號重複
-INSERT INTO devices VALUES ('NB-001', '重複的筆電', '筆電', '2024-04-01', 30000, '資訊技術部', '{"ram_gb": 8}');
-
--- 第 2 列：規格完全空白
-INSERT INTO devices VALUES ('NB-101', '規格沒填的筆電', '筆電', '2024-04-01', 30000, '資訊技術部', NULL);
-
--- 第 3 列：單價是負數
-INSERT INTO devices VALUES ('NB-102', '單價錯誤的筆電', '筆電', '2024-04-01', -100, '資訊技術部', '{"ram_gb": 8}');
-
--- 第 4 列：沒有這一天
-INSERT INTO devices VALUES ('NB-103', '日期錯誤的筆電', '筆電', '2024-02-30', 30000, '資訊技術部', '{"ram_gb": 8}');
-
--- 第 5 列：JSON 裡用了單引號
-INSERT INTO devices VALUES ('NB-104', '規格格式錯誤', '筆電', '2024-04-01', 30000, '資訊技術部', '{''ram_gb'': 8}');
-```
-
-**執行結果：五句全部被擋下**
-
-| 列 | 錯誤訊息 | 擋下它的是 |
-|:---:|---|---|
-| 1 | `duplicate key ... "devices_pkey"` | 主鍵 |
-| 2 | `null value in column "specs"` | `NOT NULL` |
-| 3 | `violates check constraint "devices_price_check"` | `CHECK` |
-| 4 | `date/time field value out of range` | 型別 `DATE` |
-| 5 | `invalid input syntax for type json` | 型別 `JSONB` |
-
-`JSONB` 欄位會自動檢查格式，寫錯的 JSON 根本進不來。
-
-## 3. 清空測試資料
-
-```sql
-TRUNCATE devices;
-```
-
-## ⚠️ 常見卡關
-
-| 錯誤訊息 | 原因 | 怎麼解 |
-|---|---|---|
-| `invalid input syntax for type json` | JSON 裡用了單引號，或多了逗號 | JSON 內部用雙引號，外層用單引號 |
-| `relation "devices" does not exist` | 連錯資料庫 | 檢查工具列是不是 `devices` |
-| `current transaction is aborted` | 交易中發生過錯誤 | 先執行 `ROLLBACK;` |
-
-## ✍️ 動手練
-
-**為什麼 `specs` 要設 `NOT NULL`，裡面的內容卻可以每台不同？**
-
-<details>
-<summary>看答案</summary>
-
-`NOT NULL` 只確保每台設備都有填規格。至於裡面放哪些項目，資料庫不會限制，這正是 JSONB 的彈性。
-
 </details>
-
-## 🤖 問 AI 助教
-
-> 這是我手寫的 PostgreSQL 資料表：（貼上）。請檢查哪些規則能擋下錯誤資料，還有什麼風險。有問題的話給我提示，不要直接重寫。
 
 ---
 
-| 上一步 | 目錄 | 下一步 |
-|:---|:---:|---:|
-| [⬅️ 步驟 1：哪些欄位放 JSONB](./1_哪些欄位放JSONB.md) | [🏠 專案說明](./README.md) | [步驟 3：AI 產生資料交易檔 ➡️](./3_AI產生資料交易檔.md) |
+## 任務三：測試警衛！挑戰 5 筆「有問題的資料」
+
+先放入 **1 筆正常筆電**：
+
+```sql
+INSERT INTO devices VALUES
+('NB-001', 'ThinkPad X1 Carbon', '筆電', '2023-03-15', 48500, '資訊技術部',
+ '{"cpu": "i7-1365U", "ram_gb": 16, "screen_inch": 14}');
+```
+
+接著對照 [設備規格表.xlsx](設備規格表.xlsx) 的 **`有問題的資料`** 工作表（5 筆），**先別偷看解答**，自己試寫 `INSERT` 一筆一筆執行，看資料庫用哪個規則把關：
+
+| 測試項 | 錯誤情形 | 你猜會觸發什麼錯誤？ |
+|---|---|---|
+| 測試 1 | `NB-001` 重複新增 | ？ |
+| 測試 2 | `NB-101` 的 `specs` 填 `NULL` | ？ |
+| 測試 3 | `NB-102` 單價 `-100` | ？ |
+| 測試 4 | `NB-103` 購入日 `'2024-02-30'` | ？ |
+| 測試 5 | `NB-104` 規格寫成單引號 JSON `'{''cpu'': ''i5''}'` | ？ |
+
+<details>
+<summary>👀 實測完再打開：5 筆壞資料測試 SQL 與真實攔截訊息</summary>
+
+```sql
+-- 測試 1：重複主鍵 → duplicate key value violates unique constraint "devices_pkey"
+INSERT INTO devices VALUES ('NB-001', '重複的筆電', '筆電', '2024-04-01', 30000, '資訊技術部', '{"cpu": "i5"}');
+
+-- 測試 2：specs 為 NULL → null value in column "specs" of relation "devices" violates not-null constraint
+INSERT INTO devices VALUES ('NB-101', '規格沒填的筆電', '筆電', '2024-04-01', 30000, '資訊技術部', NULL);
+
+-- 測試 3：單價負數 → violates check constraint "devices_price_check"
+INSERT INTO devices VALUES ('NB-102', '單價錯誤的筆電', '筆電', '2024-04-01', -100, '資訊技術部', '{"cpu": "i5"}');
+
+-- 測試 4：2 月沒有 30 號 → date/time field value out of range: "2024-02-30"
+INSERT INTO devices VALUES ('NB-103', '日期錯誤的筆電', '筆電', '2024-02-30', 30000, '資訊技術部', '{"cpu": "i5"}');
+
+-- 測試 5：JSON 用單引號 → invalid input syntax for type json
+INSERT INTO devices VALUES ('NB-104', '規格格式錯誤', '筆電', '2024-04-01', 30000, '資訊技術部', '{''cpu'': ''i5''}');
+```
+
+</details>
+
+---
+
+## ✍️ 動手練（3 題 DDL ／ JSONB 結構實驗）
+
+1. **測一測「空物件 `'{}'`」能不能過關？**：我們設定 `specs JSONB NOT NULL`，如果寫入 `INSERT INTO devices VALUES ('TEST-01', '無規格設備', '其他', CURRENT_DATE, 1000, '管理行政部', '{}');` 會成功還是失敗？想想 `NULL` 與 `'{}'` 的差別！
+   <details>
+   <summary>👀 點開看解答</summary>
+
+   - **會成功**！`'{}'` 代表「一個合法的空 JSON 物件」，不是 `NULL`。試完記得順便做第 3 題 `TRUNCATE` 清掉。
+   </details>
+
+2. **幫 `specs` 體驗「加上 GIN 索引」再移除**：實務上當 JSONB 資料上萬筆時，替 `specs` 加上 `GIN` 索引可以大幅加速查詢。請試著執行 `CREATE INDEX idx_devices_specs ON devices USING GIN (specs);`，確認建好後再用 `DROP INDEX idx_devices_specs;` 清理（保持環境單純）。
+   <details>
+   <summary>👀 點開看解答</summary>
+
+   ```sql
+   CREATE INDEX idx_devices_specs ON devices USING GIN (specs);
+   DROP INDEX idx_devices_specs;
+   ```
+   </details>
+
+3. **清空測試資料準備步驟 3**：用 `TRUNCATE TABLE devices;` 把剛才測過的 `NB-001` 與 `TEST-01` 清乾淨，用 `SELECT COUNT(*) FROM devices;` 確認回傳 `0`。
+   <details>
+   <summary>👀 點開看解答</summary>
+
+   ```sql
+   TRUNCATE TABLE devices;
+   SELECT COUNT(*) FROM devices; -- 應為 0
+   ```
+   </details>
+
+---
+
+## 🤖 用 Microsoft Postgres MCP 驗收結構（Prompt）
+
+```text
+請透過 Microsoft Postgres MCP 連線到我的 devices 資料庫，只用唯讀方式檢查 public schema 底下 devices 資料表的欄位定義、型別、NOT NULL、PRIMARY KEY 與 CHECK 限制條件。
+嚴禁修改或新增任何資料，並確認以下規格是否全部符合：
+- device_id VARCHAR(10) PRIMARY KEY
+- name VARCHAR(50) NOT NULL
+- device_type VARCHAR(10) NOT NULL
+- purchase_date DATE NOT NULL
+- price INT NOT NULL CHECK (price >= 0)
+- department VARCHAR(20) NOT NULL
+- specs JSONB NOT NULL
+```
+
+---
+
+👉 **建表檢查完成！前往 [步驟 3｜AI 產生 JSONB 資料交易檔](3_AI產生資料交易檔.md)**

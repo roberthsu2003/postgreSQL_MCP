@@ -1,20 +1,98 @@
-# 步驟 2｜手寫 DDL：建立會員、商品、訂單和明細
+# 步驟 2｜手寫 DDL：親手建立多對多關聯與 `CASCADE` 保護規則
 
-> 💻 DBeaver（資料庫：`online_shop`）｜ 🎯 學完你會：建立多對多的明細表，並設定刪除訂單時的連動規則
+> **本步驟鐵則：完全不匯入現成 `.sql` 檔！**  
+> 打開 DBeaver Query Tool，看著下方建立順序圖、ER 關聯圖與四表規格卡，親手敲出建庫與建表語法。
 
-> 📚 先修：[進階-1 建立七張表](../../SQL語法教學/7創建關聯資料庫.md)。語法細節請回章節複習，這裡把它用在真實的 Excel 上。
+---
 
-## 1. 建立資料庫
+## 任務一：建立並切換到 `online_shop` 資料庫
+
+在 DBeaver 建立獨立資料庫，**完成後在左側重新整理、連進 `online_shop` 再開新的 SQL 編輯器**：
 
 ```sql
 CREATE DATABASE online_shop;
 ```
 
-建好後，在 DBeaver 工具列把資料庫切換成 `online_shop`。
+> [!TIP]
+> **Supabase 免費方案替代方案**：若無法使用 `CREATE DATABASE`，請連線 `postgres` 資料庫改建獨立 Schema：
+> ```sql
+> CREATE SCHEMA IF NOT EXISTS online_shop;
+> SET search_path TO online_shop;
+> ```
 
-## 2. 建立四張表
+---
 
-順序是會員、商品、訂單，最後才是同時參照訂單和商品的明細。
+## 任務二：看懂建表順序、ER 圖與四表規格卡
+
+```mermaid
+flowchart LR
+    C["1a. customers（會員）"] --> O["2. orders（訂單，參照會員）"]
+    O --> OI["3. order_items（訂單明細，同時參照訂單與商品）"]
+    P["1b. products（商品）"] --> OI
+```
+
+```mermaid
+erDiagram
+    CUSTOMERS ||--o{ ORDERS : "1 會員可下多張單"
+    ORDERS ||--|{ ORDER_ITEMS : "1 訂單有多明細（CASCADE）"
+    PRODUCTS ||--o{ ORDER_ITEMS : "1 商品出現在多明細"
+    CUSTOMERS {
+        SERIAL customer_id PK
+        VARCHAR(20) name "會員姓名"
+        VARCHAR(10) city "城市（可空）"
+        VARCHAR(50) email UK "信箱（唯一）"
+    }
+    PRODUCTS {
+        SERIAL product_id PK
+        VARCHAR(50) name UK "商品名稱（唯一）"
+        VARCHAR(20) category "分類"
+        INT price "目前售價（>=0）"
+    }
+    ORDERS {
+        INT order_id PK "沿用訂單編號"
+        INT customer_id FK "參照 customers"
+        DATE order_date "訂單日期"
+        VARCHAR(20) payment_method "信用卡/LINE Pay/貨到付款"
+        VARCHAR(10) status "處理中/已完成/已取消"
+    }
+    ORDER_ITEMS {
+        INT order_id PK,FK "ON DELETE CASCADE"
+        INT product_id PK,FK "參照 products"
+        INT quantity "數量（>0）"
+        INT unit_price "當時成交單價（>=0）"
+    }
+```
+
+### 手寫規格卡（請照 1 → 2 → 3 順序在 DBeaver 手寫執行）
+
+1. **`customers`（會員）**
+   - `customer_id SERIAL PRIMARY KEY`
+   - `name VARCHAR(20) NOT NULL`
+   - `city VARCHAR(10)`（可空白）
+   - `email VARCHAR(50) NOT NULL UNIQUE`
+2. **`products`（商品）**
+   - `product_id SERIAL PRIMARY KEY`
+   - `name VARCHAR(50) NOT NULL UNIQUE`
+   - `category VARCHAR(20) NOT NULL`
+   - `price INT NOT NULL CHECK (price >= 0)`
+3. **`orders`（訂單）**
+   - `order_id INT PRIMARY KEY`（沿用 Excel 既有的 `1001..1010`，不加 `SERIAL`）
+   - `customer_id INT NOT NULL REFERENCES customers(customer_id)`
+   - `order_date DATE NOT NULL`
+   - `payment_method VARCHAR(20) NOT NULL CHECK (payment_method IN ('信用卡', 'LINE Pay', '貨到付款'))`
+   - `status VARCHAR(10) NOT NULL DEFAULT '處理中' CHECK (status IN ('處理中', '已完成', '已取消'))`
+4. **`order_items`（訂單明細 — 多對多橋接表）**
+   - `order_id INT NOT NULL REFERENCES orders(order_id) ON DELETE CASCADE`（刪訂單時明細連動刪除！）
+   - `product_id INT NOT NULL REFERENCES products(product_id)`（被買過的商品不準亂刪！）
+   - `quantity INT NOT NULL CHECK (quantity > 0)`
+   - `unit_price INT NOT NULL CHECK (unit_price >= 0)`
+   - `PRIMARY KEY (order_id, product_id)`（同張訂單同商品只有一列）
+
+> ✍️ **現在請先在 DBeaver 自己敲出這四張表的 `CREATE TABLE` 並執行！**  
+> 完成後再點開下方 `<details>` 逐字對照欄位名與連動規則。
+
+<details>
+<summary>👀 自己寫完再打開：參考 DDL 解答（務必核對欄位名稱與限制條件）</summary>
 
 ```sql
 CREATE TABLE customers (
@@ -48,136 +126,106 @@ CREATE TABLE order_items (
 );
 ```
 
-| 寫法 | 白話 |
-|---|---|
-| `ON DELETE CASCADE` | 訂單被刪除時，明細跟著刪除 |
-| `PRIMARY KEY (order_id, product_id)` | 同一張訂單的同一項商品只能有一筆 |
+</details>
 
-> [!IMPORTANT]
-> 表名和欄位名稱請和上面**完全相同**，否則下一步匯入會失敗。
+---
 
-確認四張表都建好了：
+## 任務三：測試警衛！挑戰 8 筆壞資料與刪表保護
+
+先放入一組正常資料作為基準：
 
 ```sql
-SELECT table_name AS 資料表, COUNT(*) AS 欄位數
-FROM information_schema.columns
-WHERE table_name IN ('customers', 'products', 'orders', 'order_items')
-GROUP BY table_name
-ORDER BY table_name;
-```
-
-**執行結果**
-
-| 資料表 | 欄位數 |
-|---|---:|
-| customers | 4 |
-| order_items | 4 |
-| orders | 5 |
-| products | 4 |
-
-## 3. 測試保護機制
-
-先放進一組正確的資料：
-
-```sql
-INSERT INTO customers (name, city, email) VALUES ('陳小華', '台北市', 'hua@example.com') RETURNING customer_id, name;
-INSERT INTO products (name, category, price) VALUES ('保溫鋼杯', '生活用品', 450) RETURNING product_id, name;
-INSERT INTO products (name, category, price) VALUES ('快充行動電源', '3C配件', 890) RETURNING product_id, name;
+INSERT INTO customers (name, city, email) VALUES ('陳小華', '台北市', 'hua@example.com');
+INSERT INTO products (name, category, price) VALUES ('保溫鋼杯', '生活用品', 450);
+INSERT INTO products (name, category, price) VALUES ('快充行動電源', '3C配件', 890);
 INSERT INTO orders VALUES (1001, 1, '2024-03-01', '信用卡', '已完成');
 INSERT INTO order_items VALUES (1001, 1, 2, 450);
 ```
 
-打開「有問題的資料」工作表，**先猜會被哪個規則擋下**，再一句一句執行：
+接著打開 [網路商店訂單表.xlsx](網路商店訂單表.xlsx) 的 **`有問題的資料`** 工作表（8 筆）與刪會員／刪商品保護，**先猜會被哪條規則擋下**再逐句執行測試：
+
+<details>
+<summary>👀 實測完再打開：8 筆壞資料 ＋ 2 筆誤刪保護 SQL 與攔截訊息</summary>
 
 ```sql
--- 第 1 列：同一張訂單的同一項商品出現兩列
+-- 1. 同一張訂單同一商品重複列 → duplicate key ... "order_items_pkey"
 INSERT INTO order_items VALUES (1001, 1, 1, 450);
 
--- 第 2 列：數量是 0
+-- 2. 數量為 0 → violates check constraint "order_items_quantity_check"
 INSERT INTO order_items VALUES (1001, 2, 0, 890);
 
--- 第 3 列：單價是負數
+-- 3. 成交單價為負 → violates check constraint "order_items_unit_price_check"
 INSERT INTO order_items VALUES (1001, 2, 1, -100);
 
--- 第 4 列：沒有這張訂單
+-- 4. 訂單不存在 → violates foreign key constraint "order_items_order_id_fkey"
 INSERT INTO order_items VALUES (9999, 1, 1, 450);
 
--- 第 5 列：商品表沒有「隱形商品」，這裡用不存在的編號 99 代表
+-- 5. 商品不存在 → violates foreign key constraint "order_items_product_id_fkey"
 INSERT INTO order_items VALUES (1001, 99, 1, 100);
 
--- 第 6 列：信箱已經被別的會員使用
+-- 6. 信箱重複 → duplicate key ... "customers_email_key"
 INSERT INTO customers (name, city, email) VALUES ('冒名者', '台北市', 'hua@example.com');
 
--- 第 7 列：付款方式不在三種之內
+-- 7. 付款方式不符 → violates check constraint "orders_payment_method_check"
 INSERT INTO orders VALUES (1011, 1, '2024-04-01', '現金', '處理中');
 
--- 第 8 列：訂單狀態不在三種之內
+-- 8. 訂單狀態不符 → violates check constraint "orders_status_check"
 INSERT INTO orders VALUES (1012, 1, '2024-04-01', '信用卡', '退貨中');
-```
 
-**執行結果：八句全部被擋下**
-
-| 列 | 錯誤訊息 | 擋下它的是 |
-|:---:|---|---|
-| 1 | `duplicate key ... "order_items_pkey"` | 兩欄主鍵 |
-| 2 | `violates check constraint "order_items_quantity_check"` | `CHECK` |
-| 3 | `violates check constraint "order_items_unit_price_check"` | `CHECK` |
-| 4 | `violates foreign key constraint "order_items_order_id_fkey"` | 外來鍵 |
-| 5 | `violates foreign key constraint "order_items_product_id_fkey"` | 外來鍵 |
-| 6 | `duplicate key ... "customers_email_key"` | `UNIQUE` |
-| 7 | `violates check constraint "orders_payment_method_check"` | `CHECK` |
-| 8 | `violates check constraint "orders_status_check"` | `CHECK` |
-
-再試試刪除還在使用的會員和商品：
-
-```sql
+-- 9/10. 刪除已有訂單的會員與已有明細的商品 → 被外來鍵擋下
 DELETE FROM customers WHERE customer_id = 1;
 DELETE FROM products WHERE product_id = 1;
 ```
 
-**執行結果**：分別被 `orders_customer_id_fkey` 和 `order_items_product_id_fkey` 擋下。會員和商品不會因為被誤刪，讓訂單失去對象。
-
-## 4. 清空測試資料
-
-```sql
-TRUNCATE order_items, orders, products, customers RESTART IDENTITY;
-```
-
-## ⚠️ 常見卡關
-
-| 錯誤訊息 | 原因 | 怎麼解 |
-|---|---|---|
-| `relation "orders" does not exist` | 建表順序錯了，或連錯資料庫 | 依照講義順序建立，並檢查工具列 |
-| `multiple primary keys ... not allowed` | 兩個欄位各寫了 `PRIMARY KEY` | 改成最後一行 `PRIMARY KEY (order_id, product_id)` |
-| `cannot truncate a table referenced in a foreign key constraint` | 沒有把相關的表一起清空 | 四張表寫在同一句 `TRUNCATE` |
-| `current transaction is aborted` | 交易中發生過錯誤 | 先執行 `ROLLBACK;` |
-
-## ✍️ 動手練
-
-**第 1 題**：為什麼 `orders.order_id` 不用 `SERIAL`，`products.product_id` 卻要用？
-
-<details>
-<summary>看答案</summary>
-
-Excel 已經有訂單編號，直接沿用；商品沒有編號，所以要由資料庫自動產生。
-
 </details>
-
-**第 2 題**：`order_items` 的兩個外來鍵，為什麼只有訂單設了 `ON DELETE CASCADE`？
-
-<details>
-<summary>看答案</summary>
-
-明細離開訂單就沒有意義，所以訂單刪除時明細跟著刪除。商品還被訂單使用時不應該被刪掉，否則歷史訂單會失去商品資訊，所以維持預設的禁止刪除。
-
-</details>
-
-## 🤖 問 AI 助教
-
-> 這是我手寫的四張 PostgreSQL 資料表：（貼上你的 SQL）。請檢查多對多的設計、外來鍵的刪除規則，以及商品調價時舊訂單金額會不會變。有問題的話給我提示，不要直接重寫。
 
 ---
 
-| 上一步 | 目錄 | 下一步 |
-|:---|:---:|---:|
-| [⬅️ 步驟 1：多對多與歷史價格](./1_多對多與歷史價格.md) | [🏠 專案說明](./README.md) | [步驟 3：AI 產生資料交易檔 ➡️](./3_AI產生資料交易檔.md) |
+## ✍️ 動手練（3 題 DDL ／ `ON DELETE CASCADE` 演練）
+
+1. **測試 `DEFAULT '處理中'` 並驗證 `ON DELETE CASCADE`**：新增訂單 `1099`（不填 `status`）＋ 明細（購買商品 `2`），再用 `DELETE FROM orders WHERE order_id = 1099;` 刪除它，看看不用手動刪 `order_items`，明細是不是跟著自動消失、而會員 `陳小華` 依然安好？
+   <details>
+   <summary>👀 點開看解答</summary>
+
+   ```sql
+   INSERT INTO orders (order_id, customer_id, order_date, payment_method)
+   VALUES (1099, 1, '2024-04-01', '信用卡')
+   RETURNING order_id, status; -- status 自動為 '處理中'
+
+   INSERT INTO order_items VALUES (1099, 2, 1, 890);
+
+   DELETE FROM orders WHERE order_id = 1099;
+   SELECT COUNT(*) FROM order_items WHERE order_id = 1099; -- 應為 0（CASCADE 成功）
+   ```
+   </details>
+
+2. **思考外來鍵為什麼只在 `order_id` 加 `CASCADE`**：為什麼 `order_items.product_id` **沒有**加 `ON DELETE CASCADE`？（答：若允許刪商品就把全公司過去幾年的訂單明細一併刪光，歷史營收會整個消失！所以商品一定要擋刪，改用下架狀態。）
+3. **清空測試資料並歸零序號準備步驟 3**：請寫一句 `TRUNCATE TABLE ... RESTART IDENTITY;` 清空四張表，確認皆為 `0` 筆。
+   <details>
+   <summary>👀 點開看解答</summary>
+
+   ```sql
+   TRUNCATE TABLE order_items, orders, products, customers RESTART IDENTITY;
+   SELECT
+       (SELECT COUNT(*) FROM customers)   AS cust_cnt,
+       (SELECT COUNT(*) FROM products)    AS prod_cnt,
+       (SELECT COUNT(*) FROM orders)      AS ord_cnt,
+       (SELECT COUNT(*) FROM order_items) AS item_cnt;
+   ```
+   </details>
+
+---
+
+## 🤖 用 Microsoft Postgres MCP 驗收結構（Prompt）
+
+```text
+請透過 Microsoft Postgres MCP 連線到我的 online_shop 資料庫，只用唯讀方式檢查 public schema 下 customers, products, orders, order_items 四張資料表的欄位定義、主外來鍵與 CHECK / UNIQUE / CASCADE 設定。
+嚴禁修改任何資料，確認：
+1. order_items 是否為複合主鍵 (order_id, product_id)，且對 orders(order_id) 設有 ON DELETE CASCADE？
+2. products.price 與 order_items.unit_price 兩邊是否各自存在且 CHECK >= 0？
+3. orders.payment_method 與 status 是否設有 CHECK IN 與預設值 '處理中'？
+```
+
+---
+
+👉 **四表與連動防護已就緒！前往 [步驟 3｜AI 產生資料交易檔](3_AI產生資料交易檔.md)**

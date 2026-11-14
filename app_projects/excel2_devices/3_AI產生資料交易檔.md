@@ -1,86 +1,133 @@
-# 步驟 3｜AI 產生資料交易檔：把寬表轉成 JSON
+# 步驟 3｜AI 產生資料交易檔：把 14 欄寬表打包進 JSONB Transaction
 
-> 💻 AI 對話框 + DBeaver（資料庫：`devices`）｜ 🎯 學完你會：請 AI 把很多空白欄位轉成 JSON，並驗收結果
-
-> 📚 先修：[專案 1 步驟 3](../excel1_supplies/3_AI產生資料交易檔.md)。
-
-## 🎬 情境
-
-這次 AI 要做的轉換比較多：把 CPU、記憶體這些欄位組成 JSON，空白的要略過，「是／否」要變成 `true` / `false`。
-
-## 1. 請 AI 產生交易檔
-
-附加 `設備規格表.xlsx`，貼上以下提示詞，並填入你手寫的 SQL：
-
-```text
-你是 PostgreSQL 教學助教。我附上一份 Excel，請只讀取「設備清單」工作表。
-
-這是我親手建立的資料表，請嚴格依照它的表名和欄位名稱：
-（貼上你的 CREATE TABLE）
-
-規格欄位請組成 specs 的 JSON，名稱對照如下，空白的儲存格不要放進 JSON：
-CPU=cpu、記憶體(GB)=ram_gb、螢幕(吋)=screen_inch、亮度(流明)=lumens、解析度=resolution、列印速度(頁/分)=ppm、雙面列印=duplex、紙張=paper
-
-型別規則：ram_gb、screen_inch、lumens、ppm 是數字；duplex 是 true 或 false（是=true，否=false）；其他是文字。
-
-請產生一份資料交易檔：
-1. 只能有 BEGIN;、INSERT 和 COMMIT;，不要 CREATE、DROP、ALTER 或 TRUNCATE。
-2. INSERT 要明確寫出欄位名稱。
-3. 16 筆全部轉換，不可省略，也不可修改內容。
-
-請直接輸出 SQL 程式碼，我會自己在 DBeaver 檢查後執行。
-```
-
-## 2. 執行前先檢查
-
-| 檢查項目 | 應該看到 |
-|---|---|
-| 開頭和結尾 | `BEGIN;` 和 `COMMIT;` 都有 |
-| 筆電的規格 | 只有 `cpu`、`ram_gb`、`screen_inch` |
-| 數字 | `"ram_gb": 16`，16 沒有雙引號 |
-| 雙面列印 | `"duplex": true`，不是 `"是"` |
-
-可以和標準答案 [`devices_data.sql`](./devices_data.sql) 對照。
-
-## 3. 匯入並對帳
-
-按 `Alt + X`（Mac：`Opt + X`）執行整份。失敗時**先執行 `ROLLBACK;`**。
-
-先在「設備清單」工作表輸入公式：
-
-| 項目 | Excel 公式 | 答案 |
-|---|---|---:|
-| 設備數 | `=COUNTA(A2:A17)` | 16 |
-| 總金額 | `=SUM(E2:E17)` | 466000 |
-| 筆電數 | `=COUNTIF(C2:C17,"筆電")` | 8 |
-| 記憶體 16 以上 | `=COUNTIF(H2:H17,">=16")` | 5 |
-
-再用 SQL 算一次：
-
-```sql
-SELECT COUNT(*) AS 設備數,
-       SUM(price) AS 總金額,
-       COUNT(*) FILTER (WHERE device_type = '筆電') AS 筆電數,
-       COUNT(*) FILTER (WHERE (specs->>'ram_gb')::INT >= 16) AS 記憶體16以上
-FROM devices;
-```
-
-**執行結果**
-
-| 設備數 | 總金額 | 筆電數 | 記憶體16以上 |
-|---:|---:|---:|---:|
-| 16 | 466000 | 8 | 5 |
-
-## ⚠️ 常見卡關
-
-| 狀況 | 原因 | 怎麼解 |
-|---|---|---|
-| `invalid input syntax for type json` | AI 的 JSON 格式有誤 | 先 `ROLLBACK;`，把錯誤訊息貼給 AI |
-| 記憶體 16 以上是 0 筆 | AI 沒有存成數字，或欄位名稱不同 | 檢查 JSON 的名稱是不是 `ram_gb` |
-| 結構真的修不好 | 想從乾淨狀態重來 | 執行 [`devices_full.sql`](./devices_full.sql)，它會**取代你手寫的表** |
+> **本步驟核心：不用匯入現成 `.sql` 救援檔！**  
+> 你自己貼上步驟 2 親手建好的 `CREATE TABLE devices (...)` 與 [設備規格表.xlsx](設備規格表.xlsx)，請 AI 幫你轉換成只保留非空屬性、塞進 `JSONB` 的 **`BEGIN; ... COMMIT;` 交易檔**。
 
 ---
 
-| 上一步 | 目錄 | 下一步 |
-|:---|:---:|---:|
-| [⬅️ 步驟 2：手寫 DDL](./2_手寫DDL.md) | [🏠 專案說明](./README.md) | [步驟 4：JSONB 回答故事 ➡️](./4_JSONB回答故事.md) |
+## 給 AI 的「建立 JSONB 交易檔 Prompt」
+
+附上 [設備規格表.xlsx](設備規格表.xlsx) 的 `設備清單` 工作表，**貼上你在步驟 2 寫的 `CREATE TABLE devices (...)`**，發送這段 Prompt：
+
+```text
+請幫我把附件「設備規格表.xlsx」的「設備清單」工作表（共 16 筆），轉成 PostgreSQL 的資料寫入交易檔（純 SQL）。
+
+我的資料表結構如下：
+（把你在步驟 2 手寫的 CREATE TABLE devices (...) 貼在這裡）
+
+嚴格轉換規則：
+1. 只能輸出交易控制（BEGIN; ... COMMIT;）與 INSERT INTO devices (...) VALUES (...)，禁止任何 CREATE、DROP、ALTER、TRUNCATE，也禁止透過 MCP 直接修改資料庫。
+2. 共 7 個欄位：device_id, name, device_type, purchase_date, price, department, specs（JSONB）。
+3. 規格（specs）欄位請依設備類型只收錄非空白的欄位，空白的格子絕對不要放進 JSON，也不要填 null：
+   - 筆電：cpu（字串）, ram_gb（整數）, screen_inch（整數）
+   - 投影機：lumens（整數）, resolution（字串）
+   - 印表機：ppm（整數）, duplex（Excel 寫「是」轉 JSON 布林 true，「否」轉 false，不加雙引號）, paper（字串）
+4. JSON 裡的鍵與字串值必須用雙引號 " 包住，整個 JSON 字串外層用單引號 ' 包住。
+5. 單價 price 請輸出純整數。
+```
+
+---
+
+## 執行前自我檢查（特別小心這 4 個 JSONB 地雷）
+
+1. **看頭尾**：有 `BEGIN;` 和 `COMMIT;` 包住整批 `16` 筆 `INSERT` 嗎？
+2. **沒有把空白寫進去**：筆電的 JSON 裡面**不該**出現 `"lumens": null` 或 `"duplex": null`，只有 `cpu`、`ram_gb`、`screen_inch` 三個鍵。
+3. **數字與布林沒多包雙引號**：確認是 `"ram_gb": 16`、`"duplex": true`（如果變成 `"ram_gb": "16"` 或 `"duplex": "是"` 就叫 AI 重產）。
+4. **雙引號格式**：JSON 裡全部都用雙引號 `"`，例如 `'{"cpu": "M3", "ram_gb": 18, "screen_inch": 14}'`。
+
+檢查完成後貼進 DBeaver 新編輯器（存成 `建立資料.sql`）按執行！
+
+---
+
+## 三方對帳：Excel 公式 vs DBeaver SQL vs MCP 查詢
+
+### ① Excel 公式（在 `設備規格表.xlsx` 的 `設備清單` 工作表）
+- 總台數：`=COUNTA(A2:A17)` → **16**
+- 採購總金額：`=SUM(E2:E17)` → **466,000**
+
+### ② DBeaver 手寫對帳 SQL
+```sql
+SELECT COUNT(*) AS 設備總數, SUM(price) AS 採購總金額 FROM devices;
+SELECT device_type AS 類型, COUNT(*) AS 台數 FROM devices GROUP BY device_type ORDER BY 台數 DESC;
+```
+
+### ③ 🤖 Microsoft Postgres MCP 對帳查詢 Prompt
+```text
+請透過 Microsoft Postgres MCP 連線到我的 devices 資料庫，只用唯讀查詢（SELECT）幫我核對：
+1. devices 總共有幾筆、price 總金額是多少？
+2. 依 device_type 分組各有多少台？
+3. 幫我抽查 NB-001（筆電）、PJ-001（投影機）、PR-001（印表機）的 specs 欄位，確認有沒有混入多餘的 null 鍵值或文字型別數字。
+嚴禁呼叫修改資料庫工具。
+```
+
+對上 **16 台**、總金額 **466,000**（筆電 8、投影機 4、印表機 4）才算對帳完成！
+
+---
+
+## ✍️ 動手練（原子性 `ROLLBACK` 測試 ＋ 請 AI 建立資產交易）
+
+1. **交易原子性與 `ROLLBACK` 保護測試**：  
+   在 DBeaver 開一個新查詢分頁執行以下「半對半錯」的交易：
+   ```sql
+   BEGIN;
+   -- 第一步正確：將 NB-003 部門改為 資訊技術部
+   UPDATE devices SET department = '資訊技術部' WHERE device_id = 'NB-003';
+   -- 第二步故意違法：把 PJ-001 單價設成 -500（違反 CHECK）
+   UPDATE devices SET price = -500 WHERE device_id = 'PJ-001';
+   ```
+   看到 `violates check constraint "devices_price_check"` 後立刻執行：
+   ```sql
+   ROLLBACK;
+   SELECT device_id, department FROM devices WHERE device_id = 'NB-003';
+   ```
+   <details>
+   <summary>👀 應該看到什麼？</summary>
+
+   `NB-003` 的 `department` 依然是原本的 **`業務發展部`**，證明同一個交易裡的任何錯誤都會連帶保護第一步不會意外生效！
+   </details>
+
+2. **請 AI 幫你寫「批次設備調撥 ＋ 升級」業務交易 Prompt**：  
+   假設業務發展部要把 `NB-004` 調撥給「行銷企劃部」，同時幫 `PJ-001` 在 JSONB 規格裡加上保養日期 `"calibrated_at": "2024-04-01"`，請貼上這段 Prompt 讓 AI 寫出安全交易（測試完先 `ROLLBACK;`）：
+   ```text
+   請根據 devices 資料表（含 JSONB specs），寫一個 PostgreSQL 交易（不要用 MCP 寫入，只給我 SQL）：
+   1. 用 BEGIN; 開頭，最後幫我加上 SELECT 查詢受影響設備並附上 -- ROLLBACK; 讓我先測試不破壞資料。
+   2. 交易動作：
+      - 將 NB-004 的 department 改為 '行銷企劃部'
+      - 用 jsonb_set 替 PJ-001 的 specs 加上 '"calibrated_at": "2024-04-01"'
+   ```
+   <details>
+   <summary>👀 參考答案（測試完請執行 ROLLBACK;）</summary>
+
+   ```sql
+   BEGIN;
+
+   UPDATE devices
+   SET department = '行銷企劃部'
+   WHERE device_id = 'NB-004';
+
+   UPDATE devices
+   SET specs = jsonb_set(specs, '{calibrated_at}', '"2024-04-01"')
+   WHERE device_id = 'PJ-001';
+
+   SELECT device_id, department, specs
+   FROM devices
+   WHERE device_id IN ('NB-004', 'PJ-001')
+   ORDER BY device_id;
+
+   ROLLBACK;
+   ```
+   </details>
+
+---
+
+## 🤖 問 AI 助教（JSONB 常見轉換錯誤）
+
+```text
+我在執行你生成的 devices 交易檔時遇到 JSON 格式錯誤（或型別錯誤），錯誤訊息如下：
+（貼上完整 ERROR 訊息與該筆 INSERT）
+請幫我檢查雙引號、數字、布林值以及 SQL 單引號有沒有哪裡錯了，並輸出修正後的完整 BEGIN ... COMMIT 交易檔（不要用 MCP 寫入）。
+```
+
+---
+
+👉 **對帳成功！前往 [步驟 4｜10 題 JSONB 實戰練功與 MCP 雙軌驗證](4_JSONB回答故事.md)**

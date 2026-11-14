@@ -12,11 +12,12 @@
 3. 每一項做完，我都要能打開視窗實際操作。
 4. 每一項都要包含：對應的故事編號、要做什麼、我要怎麼操作、應該看到什麼。
 5. 「應該看到什麼」要寫出資料庫裡的真實資料或數字。
-6. 最後一項是錯誤處理：輸入錯誤或連線失敗時，顯示中文訊息，程式不會當掉。
+6. 最後一項是錯誤處理：交易失敗或連線失敗時，顯示中文訊息，程式不會當掉。
 
 開發規則（之後實作時也要遵守）：
 - SQL 請沿用 我的查詢.sql，放在 queries.py；視窗程式放在 app.py。
 - 使用者輸入一律用 psycopg2 的 %s 參數傳遞，不可以用字串拼接 SQL。
+- 寫入新月份資料的操作必須包在 psycopg2 交易中（發生錯誤自動 rollback），且使用 ON CONFLICT DO NOTHING 確保重複執行不會多出資料。
 - 連線資訊從 .env 的 DATABASE_URL 讀取，不可以寫在程式裡。
 - App 使用 .env 的帳號連線。
 
@@ -49,4 +50,4 @@
 ```
 
 > [!TIP]
-> 測試時資料被改亂了，在 DBeaver 執行 [`store_full.sql`](../store_full.sql) 就能恢復。這會把手動做過的修改一起還原。
+> 如果測試時資料被改亂了，在 DBeaver 用 `TRUNCATE order_items, orders, customers, products, staff, stores, raw_sales RESTART IDENTITY;` 清空並重跑你在步驟 3 產生的資料交易檔就能恢復第一季初始狀態。

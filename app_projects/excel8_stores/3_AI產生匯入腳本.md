@@ -1,183 +1,146 @@
-# 步驟 3｜AI 產生匯入腳本：真實資料留在自己手上
+# 步驟 3｜AI 產生資料交易檔：用 `raw_sales` 與 `BEGIN ... COMMIT` 歸位第一季樣本
 
-> 💻 DBeaver + AI 對話框（資料庫：`store_sales`）｜ 🎯 學完你會：匯入大量 CSV，請 AI 只看樣本寫語法，並驗收匯入結果
+> 💻 AI 工具 ＋ DBeaver（資料庫：`store_sales`）｜ 🎯 學完你會：不依賴檔案匯入精靈，請 AI 產生「先寫入暫存表 `raw_sales`，再透過 `INSERT ... SELECT ... ON CONFLICT DO NOTHING` 分流進六張表」的純 SQL 交易檔，並做三方對帳與 `ROLLBACK` 演練
 
-> 📚 先修：[DDL-4 匯入 CSV](../../SQL語法教學/2_1匯入csv.md)。
+## 1. 請 AI 把第一季樣本轉成純資料交易 SQL
 
-## 🎬 情境
+請打開 [`門市月報_需求與樣本.xlsx`](./門市月報_需求與樣本.xlsx) 的 **`給AI的樣本`** 工作表（共 31 筆跨 1、2、3 月的精選交易），連同你在步驟 2 手寫的 7 張 `CREATE TABLE` 結構，複製以下提示詞貼給 AI：
 
-前四個專案，AI 都是把資料一筆一筆轉成 INSERT。這次有 782 筆，而且真實工作中的銷售資料不該整份上傳。所以這次分工不同：
+```markdown
+這是我已在 store_sales 資料庫親手建好的 7 張表結構：
+（貼上你在步驟 2 寫的 7 張 CREATE TABLE 語法）
 
-| | 誰做 | 資料有沒有交給 AI |
-|---|---|---|
-| CSV 匯入暫存表 | 你，用 DBeaver | 沒有 |
-| 寫 `INSERT ... SELECT` 語法 | AI | 只有 21 列樣本 |
-| 執行與對帳 | 你 | 沒有 |
+以下是門市第一季銷售明細 Excel【給AI的樣本】工作表（共 31 筆、22 張訂單）：
+（貼上 給AI的樣本 的 31 筆內容）
 
-## 1. 把 CSV 匯入暫存表
-
-1. 在左側 `raw_sales` 上按右鍵 → **Import Data**
-2. 選 **CSV** → **Next** → 選取 [`門市銷售明細_2024Q1_全部.csv`](../../範例資料庫/excel範例/連鎖門市月報表/門市銷售明細_2024Q1_全部.csv)
-3. 設定 **Encoding** 為 `UTF-8`、**Column delimiter** 為 `,`、**Header** 為 `top`
-4. 確認每一欄都對應到同名欄位，按 **Proceed**
-
-檢查筆數和金額：
-
-```sql
-SELECT COUNT(*) AS 筆數, SUM(小計::INT) AS 總金額
-FROM raw_sales;
+請幫我產生一份「純資料寫入的 SQL Transaction 交易檔」，嚴格遵守以下規則：
+1. 用 BEGIN; 開頭、COMMIT; 結尾，絕對不可包含 DROP TABLE 或 CREATE TABLE。
+2. 第一步：先把這 31 筆資料以純文字寫進 raw_sales 暫存表；注意「會員電話」空白者（散客）必須寫成不加引號的 NULL。
+3. 第二步：在同一個交易內，依序從 raw_sales 用 INSERT INTO ... SELECT DISTINCT ... ON CONFLICT DO NOTHING 寫入六張表：
+   - stores (衝突目標 name)
+   - staff (JOIN stores 查 store_id，衝突目標 (name, store_id))
+   - products (SELECT DISTINCT 商品名稱, 商品分類, 單價::INT，衝突目標 name)
+   - customers (WHERE 會員電話 IS NOT NULL，衝突目標 phone)
+   - orders (JOIN stores、staff，LEFT JOIN customers ON 會員電話 = phone，並將 銷售日期::DATE、時間::TIME 轉型，衝突目標 order_id)
+   - order_items (JOIN products，將 數量::INT、單價::INT 轉型，衝突目標 (order_id, product_id))
+4. 不可寫死 store_id、staff_id、product_id、customer_id 數字，全部靠 JOIN 動態對應並搭配 ON CONFLICT DO NOTHING，確保這段 SQL 重複執行也不會出錯或產生重複資料。
 ```
 
-**執行結果**
+## 2. 執行前先幫 AI 檢查這 5 件事
 
-| 筆數 | 總金額 |
-|---:|---:|
-| 782 | 97655 |
+收到 AI 產生的 SQL 後，先做一次安全掃描：
 
-`::INT` 是把文字轉成整數，因為暫存表的欄位都是 `TEXT`。
+- [ ] **交易完整嗎？** 最上面是 `BEGIN;`，最下面是 `COMMIT;`，中間沒有多餘 `DROP/CREATE`
+- [ ] **散客電話沒寫死字串嗎？** `會員電話` 空值寫成 `NULL`（不能是 `'NULL'` 或 `''`）
+- [ ] **會員表過濾了嗎？** 寫入 `customers` 時有加上 `WHERE 會員電話 IS NOT NULL`，沒有把「散客」當成會員建檔
+- [ ] **`orders` 有用 `LEFT JOIN customers` 嗎？** 如果誤用 `INNER JOIN customers`，所有散客訂單會直接蒸發不見！
+- [ ] **`staff` JOIN 時有綁定 `store_id` 嗎？** 必須寫 `r.經手店員 = st.name AND st.store_id = s.store_id`，防止不同店剛好出現同名店員時對應錯門市
 
-## 2. 請 AI 寫匯入腳本
+檢查過關後，貼入 DBeaver 全選並執行 SQL Script（Alt+X）！
 
-把 [`門市月報_需求與樣本.xlsx`](./門市月報_需求與樣本.xlsx) 的「給AI的樣本」工作表另存成 CSV 或直接貼上，連同以下提示詞交給 AI：
+## 3. 三方對帳：Excel、DBeaver、Microsoft Postgres MCP
 
-```text
-你是 PostgreSQL 教學助教。附件是銷售資料的樣本，真實資料已經在我的暫存表 raw_sales 裡，不需要你轉換資料內容。
+寫入完成後，用 Excel、SQL 與 MCP 三邊核對，確定這 31 筆一塊錢都不差：
 
-這是我親手建立的資料表，請嚴格依照它的表名和欄位名稱，不要新增或更改：
-（貼上你的七句 CREATE TABLE）
-
-請寫一份匯入腳本，把 raw_sales 的資料放進六張正式表：
-1. 用 BEGIN; 開始、COMMIT; 結束，裡面只能有 INSERT INTO ... SELECT ...，不要 CREATE、DROP、ALTER、TRUNCATE、UPDATE 或 DELETE，也不要寫死任何資料內容。
-2. 寫入順序：stores、staff、products、customers、orders、order_items。
-3. raw_sales 全部是 TEXT，寫入時請轉成正式表的型別。
-4. 會員用電話辨識，同名不同電話是不同的人。會員電話可能是 NULL 或空字串，這些是散客，不要寫入 customers，訂單的 customer_id 要是 NULL。
-5. 店員用「姓名加門市」辨識。
-6. 訂單表每張訂單只能有一筆，請去除重複。
-7. 這份腳本每個月都要重複使用，每句 INSERT 都要用 ON CONFLICT DO NOTHING，同一份資料重複執行不能增加筆數。
-
-請直接在對話中輸出 SQL 程式碼，我會自己在 DBeaver 檢查後執行。
-```
-
-## 3. 執行前先檢查
-
-| 檢查項目 | 應該看到 |
-|---|---|
-| 開頭和結尾 | `BEGIN;` 和 `COMMIT;` 都有 |
-| 有沒有多餘的動作 | 沒有 `CREATE`、`DROP`、`ALTER`、`TRUNCATE`、`UPDATE`、`DELETE` |
-| 沒有寫死資料 | 沒有 `VALUES` 和樣本裡的人名、單號 |
-| 去除重複 | `stores`、`staff`、`products`、`customers`、`orders` 都有 `DISTINCT` |
-| 散客 | 訂單用 `LEFT JOIN customers`，不是 `JOIN` |
-| 重複執行 | 六句 INSERT 都有 `ON CONFLICT` |
-
-可以和標準答案 [`store_data.sql`](./store_data.sql) 對照。
-
-> [!WARNING]
-> 訂單如果用 `JOIN customers`，散客的 154 張訂單會全部消失，而且**不會有任何錯誤訊息**。這種錯誤只有對帳才抓得到。
-
-## 4. 執行匯入腳本
-
-確認工具列是 `store_sales`，按 `Alt + X`（Mac：`Opt + X`）執行整份。如果失敗，**先執行 `ROLLBACK;`**，修好問題後再執行一次。
-
-因為這次的編號都由資料庫自動產生，不像專案 4、5 手動指定編號，所以**不需要 `setval`**。
-
-## 5. 和 Excel 對帳
-
-用 Excel 打開第一季 CSV，在空白處輸入公式：
-
-| 項目 | Excel 公式 | 答案 |
+| 對帳項目 | Excel `給AI的樣本` 公式（資料列 `2:32`） | 預期結果 |
 |---|---|---:|
-| 明細筆數 | `=COUNTA(A2:A783)` | 782 |
-| 訂單數 | `=SUMPRODUCT(1/COUNTIF(A2:A783,A2:A783))` | 490 |
-| 會員數 | `=SUMPRODUCT((H2:H783<>"")/COUNTIF(H2:H783,H2:H783&""))` | 50 |
-| 總金額 | `=SUM(M2:M783)` | 97655 |
-| 已完成金額 | `=SUMIF(O2:O783,"已完成",M2:M783)` | 80985 |
+| 明細總筆數 | `=COUNTA(A2:A32)` | **31** |
+| 全部明細小計總和 | `=SUM(M2:M32)` | **3,740** |
+| 已完成訂單總金額 | `=SUMIF(O2:O32, "已完成", M2:M32)` | **3,125** |
 
-> [!TIP]
-> 只在 Excel 檢查就好，關閉時選擇不要儲存，避免 Excel 改掉 CSV 的格式。
-
-再用 SQL 算一次：
-
+### 在 DBeaver 執行 SQL 對帳：
 ```sql
-SELECT (SELECT COUNT(*) FROM stores) AS 門市,
-       (SELECT COUNT(*) FROM staff) AS 店員,
-       (SELECT COUNT(*) FROM products) AS 商品,
-       (SELECT COUNT(*) FROM customers) AS 會員,
-       (SELECT COUNT(*) FROM orders) AS 訂單,
-       (SELECT COUNT(*) FROM order_items) AS 明細,
-       (SELECT SUM(quantity * unit_price) FROM order_items) AS 總金額;
-```
+-- 1. 核對各表筆數
+SELECT
+    (SELECT COUNT(*) FROM raw_sales) AS raw_sales筆數,
+    (SELECT COUNT(*) FROM stores) AS 門市數,
+    (SELECT COUNT(*) FROM staff) AS 店員數,
+    (SELECT COUNT(*) FROM products) AS 商品數,
+    (SELECT COUNT(*) FROM customers) AS 會員數,
+    (SELECT COUNT(*) FROM orders) AS 訂單張數,
+    (SELECT COUNT(*) FROM order_items) AS 明細筆數;
 
-**執行結果**
-
-| 門市 | 店員 | 商品 | 會員 | 訂單 | 明細 | 總金額 |
-|---:|---:|---:|---:|---:|---:|---:|
-| 5 | 12 | 18 | 50 | 490 | 782 | 97655 |
-
-已完成金額，以及散客和會員的訂單數：
-
-```sql
-SELECT SUM(oi.quantity * oi.unit_price) AS 已完成金額
+-- 2. 核對金額總數（須完全吻合 Excel 3,740 與 3,125）
+SELECT
+    COUNT(*) AS 明細筆數,
+    COUNT(DISTINCT o.order_id) AS 訂單張數,
+    SUM(oi.quantity * oi.unit_price) AS 全部明細小計總和,
+    SUM(oi.quantity * oi.unit_price) FILTER (WHERE o.status = '已完成') AS 已完成總金額
 FROM order_items oi
-JOIN orders o ON oi.order_id = o.order_id
-WHERE o.status = '已完成';
-
-SELECT COUNT(*) FILTER (WHERE customer_id IS NULL) AS 散客訂單,
-       COUNT(customer_id) AS 會員訂單
-FROM orders;
+JOIN orders o ON oi.order_id = o.order_id;
 ```
 
-**執行結果**：已完成金額 `80985`；散客訂單 `154`、會員訂單 `336`，合計 490。
+預期數字：**5 家門市、10 位店員、12 項商品、10 位會員、22 張訂單、31 筆明細、全部小計 `3,740`、已完成總金額 `3,125`**。
+
+### 用 Microsoft Postgres MCP 做唯讀核對：
+```markdown
+請使用 Microsoft Postgres MCP（僅限查詢，嚴禁 postgres_mcp_modify）連線至 store_sales 資料庫，查詢 stores、staff、products、customers、orders、order_items、raw_sales 七張表的筆數，並統計所有訂單明細總金額與 status = '已完成' 的金額，幫我確認是否與 Excel 樣本的 22 張單 / 31 筆 / 總計 3,740 / 已完成 3,125 完全一致。
+```
+
+## 4. 演練 Transaction 的錯誤回滾保護（`ROLLBACK`）
+
+試想某次轉寫某張新訂單時，訂單主表寫進去了，明細裡卻有一筆數量誤填為 `0`。在 DBeaver 跑以下示範交易看看發生什麼事：
+
+```sql
+BEGIN;
+
+-- 1. 先合法寫入一張新訂單主檔 ORD99999
+INSERT INTO orders (order_id, order_date, order_time, store_id, staff_id, customer_id, payment_method, status)
+VALUES ('ORD99999', '2024-03-31', '12:00', 1, 1, NULL, '現金', '已完成');
+
+-- 2. 緊接著明細故意寫入數量 0（違反 CHECK (quantity > 0)）
+INSERT INTO order_items (order_id, product_id, quantity, unit_price)
+VALUES ('ORD99999', 1, 0, 95);
+
+COMMIT;
+```
+
+第 2 步一錯，接著請執行 `ROLLBACK;`，再查 `SELECT * FROM orders WHERE order_id = 'ORD99999';`——結果為 0 筆！**有交易邊界保護，資料庫絕對不會出現「有訂單頭卻沒半項商品」的幽靈訂單。**
+
+## 5. 🤖 請 AI 幫你測一個多表商業交易（先在 `ROLLBACK` 保護下看效果）
+
+試著請 AI 寫一段「客人臨櫃點單並開立訂單與兩筆明細」的交易練習檔，先以 `ROLLBACK;` 結尾：
+
+```markdown
+請根據我 store_sales 資料庫的結構，寫一個「現場新增一張內含 2 項商品的會員現金訂單」PostgreSQL Transaction 練習（全程用 BEGIN; ... ROLLBACK; 包起來避免污染樣本對帳）：
+1. 找台北信義店的張志明結帳，會員為手機 '0936-805-870' 的劉欣宜，單號 'ORD88888'，日期 '2024-03-31' 15:00，狀態 '已完成'。
+2. 透過 JOIN products 名稱寫入 '經典拿鐵' 1 杯與 '法式經典可頌' 2 個（unit_price 直接引用商品售價），寫完在交易內查詢該張訂單總金額後立刻 ROLLBACK;。
+```
 
 ## ⚠️ 常見卡關
 
-| 狀況 | 原因 | 怎麼解 |
+| 現象 | 原因 | 怎麼解 |
 |---|---|---|
-| 匯入時中文變亂碼 | 編碼不對 | Encoding 改選 `UTF-8` 或 `Big5` |
-| 第一欄沒有對應到 | 檔案開頭的 BOM 字元 | 在欄位對應畫面手動對應第一欄 |
-| 訂單少於 490 | 用了 `JOIN customers`，散客被濾掉 | 改成 `LEFT JOIN`，清空六張表後重新執行 |
-| 會員變成 51 | 把「散客」也寫入了 | 加上排除空白電話的條件 |
-| `there is no unique or exclusion constraint matching the ON CONFLICT` | `ON CONFLICT` 的欄位沒有對應的 `UNIQUE` | 確認資料表有對應的限制 |
-| 結構真的修不好 | 想從乾淨狀態重來 | 執行 [`store_full.sql`](./store_full.sql)，它會**取代你手寫的表** |
+| 執行完散客的訂單不見了 | `orders` 從 `raw_sales` 寫入時用了 `INNER JOIN customers` | 改成 `LEFT JOIN customers c ON r.會員電話 = c.phone` |
+| 報錯 `invalid input syntax for type integer: "單價"` | 把標題列也塞進了 `raw_sales` | 清空 `raw_sales` 後只寫入第 2～32 列資料，不要包含第 1 列中文標題 |
+| 同樣電話但會員姓名出現重複或對錯人 | `customers` 未去重或沒檢查同電話 | 先 `ROLLBACK;` 並請 AI 使用 `ON CONFLICT (phone) DO NOTHING` |
 
 ## ✍️ 動手練
 
-**看看一筆壞資料會發生什麼事。** 先把正式表清空，再放一筆日期錯誤的資料到暫存表：
-
-```sql
-TRUNCATE order_items, orders, customers, products, staff, stores RESTART IDENTITY;
-
-INSERT INTO raw_sales (銷售單號, 銷售日期, 時間, 門市名稱, 區域, 經手店員, 商品分類, 商品名稱, 單價, 數量, 小計, 付款方式, 狀態)
-VALUES ('ORD09999', '2024-13-45', '10:00', '台北信義店', '北部', '張志明', '義式咖啡', '經典拿鐵', '95', '1', '95', '現金', '已完成');
-```
-
-接著執行匯入腳本，然後：
-
-```sql
-ROLLBACK;
-SELECT (SELECT COUNT(*) FROM stores) AS 門市, (SELECT COUNT(*) FROM orders) AS 訂單;
-```
+**1. 本次樣本裡會員數共有 10 位，其中有幾位叫「謝哲瑋」、幾位叫「劉欣宜」？資料庫怎麼區分他們？**
 
 <details>
-<summary>看結果和修復方法</summary>
+<summary>看答案</summary>
 
-**執行結果**：`date/time field value out of range: "2024-13-45"`，門市和訂單都是 **0**。
+樣本中共有 3 位不同電話的「謝哲瑋」（`0963-728-214`、`0943-645-351`、`0945-239-678`）和 2 位不同電話的「劉欣宜」（`0936-805-870`、`0915-692-794`）。因為 `customers` 以 `phone UNIQUE` 辨識唯一性，每位不同手機的主人都會獲得獨立的 `customer_id`。
 
-暫存表什麼都收，但轉換成 `DATE` 時就被抓到了，而且交易讓整份匯入都不算數。把壞資料刪掉，再執行一次匯入腳本：
+</details>
 
-```sql
-DELETE FROM raw_sales WHERE 銷售單號 = 'ORD09999';
-```
+**2. 如果把步驟 1 產生的 31 筆第一季交易檔再重複按一次 Execute SQL Script，會發生什麼事？為什麼？**
 
-再跑一次對帳查詢，應該回到 5、12、18、50、490、782、97655。
+<details>
+<summary>看答案</summary>
+
+如果在交易最前面先 `TRUNCATE raw_sales;` 再跑一次，核心的 6 張表（門市、店員、商品、會員、訂單、明細）筆數會**完全維持原樣不增加任何一筆**，因為每一張目標表都設了 `ON CONFLICT DO NOTHING`（注意：若沒先清 `raw_sales`，只有 `raw_sales` 暫存區自己會多收 31 筆，所以每月匯入批次開頭都習慣先 `TRUNCATE raw_sales;`）。
 
 </details>
 
 ## 🤖 問 AI 助教
 
-> 我執行匯入腳本時出現這個錯誤：（貼上完整錯誤訊息）。這是我的 CREATE TABLE 和腳本：（貼上）。請告訴我錯在哪裡、為什麼，由我自己修改。
+> 請解釋為什麼我們在步驟 3 先把 31 筆資料存成全 `TEXT` 的 `raw_sales`，再分成 6 句 `INSERT ... SELECT ... ON CONFLICT DO NOTHING` 寫進核心表；如果將來「4月新銷售明細」多了一位沒聽過的新店員「許淑芬」或新商品「桂花烏龍拿鐵」，這段 SQL 會自己處理好嗎？
 
 ---
 
 | 上一步 | 目錄 | 下一步 |
 |:---|:---:|---:|
-| [⬅️ 步驟 2：手寫 DDL](./2_手寫DDL.md) | [🏠 專案說明](./README.md) | [步驟 4：報表回答故事 ➡️](./4_報表回答故事.md) |
+| [⬅️ 步驟 2：手寫 DDL](./2_手寫DDL.md) | [🏠 專案導覽](./README.md) | [步驟 4：報表回答故事 ➡️](./4_報表回答故事.md) |

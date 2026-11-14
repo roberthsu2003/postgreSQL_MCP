@@ -1,22 +1,70 @@
-# 步驟 2｜手寫 DDL：親手蓋出資料表
+# 步驟 2｜手寫 DDL：親手建立資料庫、資料表與警衛規則
 
-> 💻 DBeaver（資料庫：`supplies`）｜ 🎯 學完你會：建立資料庫和資料表，並用限制條件擋下錯誤資料
+> **本步驟鐵則：完全不匯入任何現成 `.sql` 檔！**  
+> 你要看著下方的業務規格卡與欄位設計，自己在 **DBeaver 的 Query Tool** 裡從頭敲出 `CREATE DATABASE` 與 `CREATE TABLE` 並按執行。
 
-> 📚 先修：[DDL 章節](../../SQL語法教學/DDL%28定義資料語言%29.md)。語法細節請回章節複習，這裡把它用在真實的 Excel 上。
+---
 
-## 🎬 情境
+## 任務一：建立並切換到 `supplies` 資料庫
 
-上一步的欄位規格已經訂好，現在要把它變成真正的資料表。**DDL** 就是用來蓋結構的語法，這一步請全部親手打，不要請 AI 代勞。
-
-## 1. 建立資料庫
+在 DBeaver 中連線到你的 PostgreSQL（以 `postgres` 資料庫或最高權限帳號連線），打開 **SQL 編輯器**：
 
 ```sql
+-- 1. 建立獨立資料庫（執行完畢後，請在 DBeaver 左側重新整理並連進 supplies 再開新 SQL 視窗！）
 CREATE DATABASE supplies;
 ```
 
-建好後，在 DBeaver 工具列把資料庫切換成 `supplies`。如果左側沒看到，按 `F5` 重新整理。
+> [!TIP]
+> **如果你使用的是 Supabase 免費方案（不允許 `CREATE DATABASE`）**  
+> 請直接連線現有的 `postgres` 資料庫，改用獨立 Schema 隔離本專案：
+> ```sql
+> CREATE SCHEMA IF NOT EXISTS supplies;
+> SET search_path TO supplies;
+> ```
+> （若後續重新開啟 DBeaver 視窗，記得先執行 `SET search_path TO supplies;` 再執行查詢。）
 
-## 2. 建立資料表
+---
+
+## 任務二：看懂結構圖與手寫 DDL 規格卡
+
+本專案只有 1 張核心資料表 **`supplies`**，但塞滿了最重要的守門員規則：
+
+```mermaid
+erDiagram
+    SUPPLIES {
+        VARCHAR(20) item_code PK "品號（唯一身分證）"
+        VARCHAR(50) name "品名（必填）"
+        VARCHAR(50) spec "規格（可空）"
+        VARCHAR(10) category "類別（僅限4種）"
+        VARCHAR(5) unit "單位（必填）"
+        INT unit_price "單價（>=0）"
+        INT current_stock "現有庫存（預設0,>=0）"
+        INT safety_stock "安全庫存（預設0,>=0）"
+        VARCHAR(30) location "存放位置（必填）"
+        DATE last_checked "最後盤點日（可空）"
+    }
+```
+
+### 手寫規格卡（請逐欄敲出 `CREATE TABLE supplies (...)`）
+
+| 英文欄位名 | 中文含義 | 建議資料型別 | 必填 / 預設值 | 必須加上哪條限制條件（Constraint）？ |
+|---|---|---|---|---|
+| `item_code` | 品號 | `VARCHAR(20)` | 必填＋唯一 | `PRIMARY KEY` |
+| `name` | 品名 | `VARCHAR(50)` | 必填 | `NOT NULL` |
+| `spec` | 規格 | `VARCHAR(50)` | 可空白 | （無） |
+| `category` | 類別 | `VARCHAR(10)` | 必填 | `NOT NULL CHECK (category IN ('紙張', '碳粉墨水', '文具', '清潔用品'))` |
+| `unit` | 單位 | `VARCHAR(5)` | 必填 | `NOT NULL` |
+| `unit_price` | 單價 | `INT` | 必填 | `NOT NULL CHECK (unit_price >= 0)` |
+| `current_stock` | 現有庫存 | `INT` | 必填、預設 `0` | `NOT NULL DEFAULT 0 CHECK (current_stock >= 0)` |
+| `safety_stock` | 安全庫存 | `INT` | 必填、預設 `0` | `NOT NULL DEFAULT 0 CHECK (safety_stock >= 0)` |
+| `location` | 存放位置 | `VARCHAR(30)` | 必填 | `NOT NULL` |
+| `last_checked` | 最後盤點日 | `DATE` | 可空白 | （無） |
+
+> ✍️ **現在請暫停閱讀，切到 DBeaver 自己手打 `CREATE TABLE supplies (...)` 並執行！**  
+> 完成後再點開下方 `<details>` 逐字檢查你的欄位名稱與約束條件是否 100% 一致（因為步驟 3 的 AI 交易檔、步驟 4 的查詢題與步驟 5 的 PRD 都會對照這組英文欄位名）。
+
+<details>
+<summary>👀 自己寫完再打開：參考 DDL 解答（務必核對欄位名稱與限制條件）</summary>
 
 ```sql
 CREATE TABLE supplies (
@@ -33,161 +81,126 @@ CREATE TABLE supplies (
 );
 ```
 
-| 寫法 | 白話 | Excel 裡類似的功能 |
-|---|---|---|
-| `PRIMARY KEY` | 主鍵：必填，而且不能重複 | 資料驗證的「不允許重複」 |
-| `NOT NULL` | 必填 | 資料驗證的「不可空白」 |
-| `CHECK (...)` | 自訂規則 | 資料驗證的「自訂公式」 |
-| `CHECK (... IN (...))` | 只能從清單中選 | 下拉清單 |
-| `DEFAULT 0` | 沒填時自動填 0 | 無 |
-
-> [!IMPORTANT]
-> 欄位名稱請和上面**完全相同**。下一步匯入資料時，名稱不同就會失敗。
-
-## 3. 查看結構
-
-```sql
-SELECT column_name AS 欄位, data_type AS 型別, is_nullable AS 可留空
-FROM information_schema.columns
-WHERE table_name = 'supplies'
-ORDER BY ordinal_position;
-```
-
-**執行結果**
-
-| 欄位 | 型別 | 可留空 |
-|---|---|---|
-| item_code | character varying | NO |
-| name | character varying | NO |
-| spec | character varying | YES |
-| category | character varying | NO |
-| unit | character varying | NO |
-| unit_price | integer | NO |
-| current_stock | integer | NO |
-| safety_stock | integer | NO |
-| location | character varying | NO |
-| last_checked | date | YES |
-
-## 4. 測試你請的警衛
-
-先放進一筆正確的資料（`INSERT` 的細節步驟 4 會教，這裡直接貼上）：
-
-```sql
-INSERT INTO supplies VALUES ('MAT-P-A470', 'A4 70g 影印紙', 'Double A 5包/箱', '紙張', '箱', 650, 3, 5, '3F 總務庫房 B-01', '2024-03-29');
-```
-
-接著打開「有問題的資料」工作表，**先猜會被哪個規則擋下**，再一句一句執行：
-
-```sql
--- 第 1 列：品號重複
-INSERT INTO supplies VALUES ('MAT-P-A470', 'A4 70g 影印紙（重複）', 'Double A 5包/箱', '紙張', '箱', 650, 1, 5, '3F 總務庫房 B-01', '2024-04-01');
-
--- 第 2 列：品名空白
-INSERT INTO supplies VALUES ('STA-GLUE-01', NULL, '40g', '文具', '支', 30, 10, 5, '3F 總務庫房 D-02', '2024-04-01');
-
--- 第 3 列：庫存是負數
-INSERT INTO supplies VALUES ('STA-RULE-30', '30cm 直尺', NULL, '文具', '支', 20, -3, 5, '3F 總務庫房 D-02', '2024-04-01');
-
--- 第 4 列：單價是負數
-INSERT INTO supplies VALUES ('STA-ERAS-01', '橡皮擦', NULL, '文具', '個', -8, 10, 5, '3F 總務庫房 D-02', '2024-04-01');
-
--- 第 5 列：類別不在清單中
-INSERT INTO supplies VALUES ('OTH-FAN-01', '桌上型電扇', NULL, '雜項', '台', 590, 2, 1, '3F 總務庫房 D-02', '2024-04-01');
-
--- 第 6 列：單價不是數字
-INSERT INTO supplies VALUES ('STA-CUT-01', '美工刀', NULL, '文具', '支', '約30', 12, 5, '3F 總務庫房 D-02', '2024-04-01');
-
--- 第 7 列：沒有這一天
-INSERT INTO supplies VALUES ('STA-INK-01', '印泥', NULL, '文具', '個', 45, 6, 2, '3F 總務庫房 D-02', '2024/13/45');
-```
-
-**執行結果：七句全部被擋下**
-
-| 列 | 錯誤訊息 | 擋下它的是 |
-|:---:|---|---|
-| 1 | `duplicate key value violates unique constraint "supplies_pkey"` | `PRIMARY KEY` |
-| 2 | `null value in column "name" ... violates not-null constraint` | `NOT NULL` |
-| 3 | `violates check constraint "supplies_current_stock_check"` | `CHECK` |
-| 4 | `violates check constraint "supplies_unit_price_check"` | `CHECK` |
-| 5 | `violates check constraint "supplies_category_check"` | `CHECK` |
-| 6 | `invalid input syntax for type integer: "約30"` | 型別 `INT` |
-| 7 | `date/time field value out of range: "2024/13/45"` | 型別 `DATE` |
-
-現在表裡應該只有最初那一筆：
-
-```sql
-SELECT COUNT(*) FROM supplies;
-```
-
-**執行結果**：`1`
-
-## 5. 清空測試資料
-
-正式匯入前，要把測試資料清掉，否則下一步會因為品號重複而失敗。
-
-```sql
-TRUNCATE supplies;
-```
-
-`TRUNCATE` 會清空所有資料，但保留資料表結構。
-
-> [!WARNING]
-> `TRUNCATE` 沒有資源回收桶，也沒有 `Ctrl + Z`。只在確定要清空時使用。
-
-## 6. 事後修改：ALTER TABLE
-
-建好之後想多記一欄，不用重建：
-
-```sql
-ALTER TABLE supplies ADD COLUMN supplier VARCHAR(30);
-```
-
-後來決定不記了：
-
-```sql
-ALTER TABLE supplies DROP COLUMN supplier;
-```
-
-下一步需要原本的結構，所以請確定 `supplier` 已經刪掉。
-
-## ⚠️ 常見卡關
-
-| 錯誤訊息 | 原因 | 怎麼解 |
-|---|---|---|
-| `relation "supplies" already exists` | 這張表已經建過 | 要重來就先 `DROP TABLE supplies;` |
-| `relation "supplies" does not exist` | 連到錯的資料庫 | 檢查工具列是不是 `supplies` |
-| `syntax error at or near ")"` | 最後一個欄位後面多了逗號 | 刪掉 `)` 前面的逗號 |
-| `current transaction is aborted` | 交易中發生過錯誤 | 先執行 `ROLLBACK;` |
-
-## ✍️ 動手練
-
-**第 1 題**：`spec` 想放更長的文字，要怎麼把長度放寬到 100？
-
-<details>
-<summary>看答案</summary>
-
-```sql
-ALTER TABLE supplies ALTER COLUMN spec TYPE VARCHAR(100);
-ALTER TABLE supplies ALTER COLUMN spec TYPE VARCHAR(50);  -- 改回來，下一步要用
-```
-
 </details>
-
-**第 2 題**：不看講義，說出「有問題的資料」七列分別被什麼擋下。
-
-<details>
-<summary>看答案</summary>
-
-重複品號是主鍵，品名空白是 `NOT NULL`，負庫存、負單價和類別錯誤是 `CHECK`，單價文字和錯誤日期是欄位型別。
-
-</details>
-
-## 🤖 問 AI 助教
-
-> 這是我手寫的 PostgreSQL CREATE TABLE：（貼上你的 SQL）。請告訴我它和下列需求有沒有不符合的地方，但不要直接重寫：單價和庫存不能是負數、品號不能重複、類別只能有四種。我會自己在 DBeaver 修改。
 
 ---
 
-| 上一步 | 目錄 | 下一步 |
-|:---|:---:|---:|
-| [⬅️ 步驟 1：讀懂 Excel 與故事](./1_讀懂Excel與故事.md) | [🏠 專案說明](./README.md) | [步驟 3：AI 產生資料交易檔 ➡️](./3_AI產生資料交易檔.md) |
+## 任務三：測試警衛！挑戰 7 筆「有問題的資料」
+
+建好表之後，先手動寫進 **1 筆正常資料**，讓主鍵測試有東西可以碰撞：
+
+```sql
+INSERT INTO supplies
+    (item_code, name, spec, category, unit, unit_price, current_stock, safety_stock, location, last_checked)
+VALUES
+    ('MAT-P-A470', 'A4 70g 影印紙', 'Double A 5包/箱', '紙張', '箱', 650, 3, 5, '3F 總務庫房 B-01', '2024-03-29');
+```
+
+接著打開 [耗材庫存表.xlsx](耗材庫存表.xlsx) 的 **`有問題的資料`** 工作表（共 7 筆）。  
+**請先別看解答**，試著把那 7 筆寫成 `INSERT INTO supplies ...` 並在 DBeaver **一次執行一筆**，看看資料庫到底用什麼錯誤訊息把每筆壞資料擋在門外：
+
+| 測試項 | Excel 錯誤資料特徵 | 你猜會觸發哪條規則／錯誤？ |
+|---|---|---|
+| 測試 1 | `MAT-P-A470`（與剛才新增的相同） | ？ |
+| 測試 2 | `STA-GLUE-01` 品名空白（`NULL`） | ？ |
+| 測試 3 | `STA-RULE-30` 現有庫存 `-3` | ？ |
+| 測試 4 | `STA-ERAS-01` 單價 `-8` | ？ |
+| 測試 5 | `OTH-FAN-01` 類別寫成 `'雜項'` | ？ |
+| 測試 6 | `STA-CUT-01` 單價寫成 `'約30'` | ？ |
+| 測試 7 | `STA-INK-01` 最後盤點日 `'2024/13/45'` | ？ |
+
+<details>
+<summary>👀 實測完再打開：7 筆壞資料測試 SQL 與真實 PostgreSQL 攔截訊息</summary>
+
+```sql
+-- 測試 1：重複品號 → duplicate key value violates unique constraint "supplies_pkey"
+INSERT INTO supplies VALUES ('MAT-P-A470', 'A4 70g 影印紙（重複）', 'Double A 5包/箱', '紙張', '箱', 650, 1, 5, '3F 總務庫房 B-01', '2024-04-01');
+
+-- 測試 2：品名為 NULL → null value in column "name" of relation "supplies" violates not-null constraint
+INSERT INTO supplies VALUES ('STA-GLUE-01', NULL, '40g', '文具', '支', 30, 10, 5, '3F 總務庫房 D-02', '2024-04-01');
+
+-- 測試 3：庫存為負 → violates check constraint "supplies_current_stock_check"
+INSERT INTO supplies VALUES ('STA-RULE-30', '30cm 直尺', NULL, '文具', '支', 20, -3, 5, '3F 總務庫房 D-02', '2024-04-01');
+
+-- 測試 4：單價為負 → violates check constraint "supplies_unit_price_check"
+INSERT INTO supplies VALUES ('STA-ERAS-01', '橡皮擦', NULL, '文具', '個', -8, 10, 5, '3F 總務庫房 D-02', '2024-04-01');
+
+-- 測試 5：非法類別 → violates check constraint "supplies_category_check"
+INSERT INTO supplies VALUES ('OTH-FAN-01', '桌上型電扇', NULL, '雜項', '台', 590, 2, 1, '3F 總務庫房 D-02', '2024-04-01');
+
+-- 測試 6：單價不是整數 → invalid input syntax for type integer: "約30"
+INSERT INTO supplies VALUES ('STA-CUT-01', '美工刀', NULL, '文具', '支', '約30', 12, 5, '3F 總務庫房 D-02', '2024-04-01');
+
+-- 測試 7：非法日期 → date/time field value out of range: "2024/13/45"
+INSERT INTO supplies VALUES ('STA-INK-01', '印泥', NULL, '文具', '個', 45, 6, 2, '3F 總務庫房 D-02', '2024/13/45');
+```
+
+這就是為什麼資料庫不用靠人工「眼力檢查」：所有錯誤在按下執行那一秒就被擋掉，表裡依舊乾乾淨淨只有我們放進去測試的那 1 筆！
+
+</details>
+
+---
+
+## ✍️ 動手練（3 題 DDL ／ `ALTER TABLE` 演練）
+
+在清空測試資料準備進入步驟 3 之前，先練習修改與檢查結構（做完第 2 題記得復原）：
+
+1. **只填必填欄位測 `DEFAULT`**：試著寫一句 `INSERT INTO supplies`，故意**不寫** `current_stock`、`safety_stock`、`spec`、`last_checked`，只填其他 6 個必填欄位新增 `TEST-01`，查出來看看 `current_stock` 和 `safety_stock` 是不是自動變成了 `0`？
+   <details>
+   <summary>👀 點開看解答</summary>
+
+   ```sql
+   INSERT INTO supplies (item_code, name, category, unit, unit_price, location)
+   VALUES ('TEST-01', '測試便條紙', '文具', '本', 25, '3F 總務庫房 D-02');
+
+   SELECT item_code, spec, current_stock, safety_stock, last_checked
+   FROM supplies
+   WHERE item_code = 'TEST-01';
+   -- 結果：spec 和 last_checked 為 NULL，current_stock 和 safety_stock 皆為 0。
+   ```
+   </details>
+
+2. **用 `ALTER TABLE` 加欄位再復原**：假設總務想暫時多記一個「供應商電話 (`vendor_phone VARCHAR(20)`)」，請用 `ALTER TABLE supplies ADD COLUMN ...` 加上去，用 `SELECT * FROM supplies;` 看見新欄位出現後，再用 `DROP COLUMN` 刪掉它（保持與原設計一致）。
+   <details>
+   <summary>👀 點開看解答</summary>
+
+   ```sql
+   ALTER TABLE supplies ADD COLUMN vendor_phone VARCHAR(20);
+   SELECT item_code, name, vendor_phone FROM supplies LIMIT 2;
+   ALTER TABLE supplies DROP COLUMN vendor_phone;
+   ```
+   </details>
+
+3. **清空測試資料準備步驟 3**：用 `TRUNCATE TABLE supplies;` 把剛才測試的 `MAT-P-A470` 與 `TEST-01` 清空，再用 `SELECT COUNT(*) FROM supplies;` 確認目前是 `0` 筆乾淨空表！
+   <details>
+   <summary>👀 點開看解答</summary>
+
+   ```sql
+   TRUNCATE TABLE supplies;
+   SELECT COUNT(*) FROM supplies; -- 應為 0
+   ```
+   </details>
+
+---
+
+## 🤖 用 Microsoft Postgres MCP 驗收結構（Prompt）
+
+寫完 `CREATE TABLE` 後，直接叫 AI 透過 `@microsoft/postgres-mcp` 幫你檢查結構有沒有漏字、少 `CHECK` 或型別寫錯（**限唯讀檢查**）：
+
+```text
+請透過 Microsoft Postgres MCP 連線到我的 supplies 資料庫，檢查 public schema 底下 supplies 資料表的完整欄位型別、NOT NULL、DEFAULT、PRIMARY KEY 與 CHECK 限制條件。
+嚴禁修改或新增任何資料，只用唯讀方式對照以下規格檢查是否有任何遺漏或不一致：
+- item_code VARCHAR(20) PK
+- name VARCHAR(50) NOT NULL
+- spec VARCHAR(50) 可空
+- category VARCHAR(10) NOT NULL 且限制為 ('紙張', '碳粉墨水', '文具', '清潔用品')
+- unit VARCHAR(5) NOT NULL
+- unit_price INT NOT NULL CHECK (>= 0)
+- current_stock / safety_stock 皆為 INT NOT NULL DEFAULT 0 CHECK (>= 0)
+- location VARCHAR(30) NOT NULL
+- last_checked DATE 可空
+```
+
+---
+
+👉 **結構與守門員都就緒了！前往 [步驟 3｜AI 產生資料交易檔](3_AI產生資料交易檔.md)**

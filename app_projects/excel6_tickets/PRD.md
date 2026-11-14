@@ -27,7 +27,7 @@
 
 ## 4. 驗收條件
 
-以下數字以 `tickets_full.sql` 的初始資料為準。
+以下數字以你在步驟 2 親手建立三張表並執行步驟 3「AI 產生資料交易檔（完成對帳後）」的 30 件初始案件（4 位人員、4 個分類、19 件已結案）為準。若測試時把資料改亂，在 DBeaver 執行 `TRUNCATE TABLE tickets, categories, agents RESTART IDENTITY;` 後重新執行步驟 3 產生的交易檔即可恢復。
 
 ### 搜尋案件（S1）
 - 我輸入 wifi，應該看到 **6 件**，包含 T013 的 Wi-Fi。

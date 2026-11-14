@@ -1,6 +1,6 @@
 # todolist：網路商店訂單小工具（範例成品）
 
-> 一次只做一項，親自驗收通過才打勾。開始前，先在 DBeaver 執行 `shop_full.sql` 恢復初始資料。
+> 一次只做一項，親自驗收通過才打勾。開始前若資料已被改亂，請在 DBeaver 執行 `TRUNCATE TABLE order_items, orders, products, customers RESTART IDENTITY;` 後重新執行你在步驟 3 產生的交易檔，恢復初始資料。
 
 ## [ ] 1. 打開視窗，確認連得上資料庫
 

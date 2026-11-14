@@ -1,63 +1,61 @@
-# 步驟 2：讓 AI 讀資料庫結構，寫出 PRD.md
+# 步驟 5｜用 Microsoft Postgres MCP 讀結構產生 PRD
 
-這一步讓 AI 透過 MCP 讀取資料庫結構，用唯讀帳號就夠了。
+> 你已經親手建立「一對多」的 `employees` 與 `attendance` 兩張表，並用 10 題 `JOIN` 與交易實戰完全驗證通過。  
+> 現在透過課程統一安裝好的微軟官方 **`@microsoft/postgres-mcp`**，讓 AI 讀取資料庫的真實結構，結合 [打卡表.xlsx](../打卡表.xlsx) 產出 `PRD.md`。
 
-## 1. 授權唯讀帳號
+---
 
-`ai_readonly` 帳號在專案 1 已經建立過，不用重建。打開 [`00_建立唯讀帳號.sql`](./00_建立唯讀帳號.sql)，在 DBeaver 切換到 `attendance` 後執行，補上這個資料庫的權限。
+## 步驟 1：確認全域 `@microsoft/postgres-mcp` 設定（免建 `.venv`）
 
-## 2. 新增 MCP 連線
+本課程採用微軟官方 **`@microsoft/postgres-mcp`**（透過全域 `~/.gemini/config/mcp_config.json` 以 `npx -y @microsoft/postgres-mcp run` 執行，完全不用建立 Python 虛擬環境）。
 
-依照 [MCP 設定教學](../../../MCP操作資料庫/1_antigravity設定.md)，在專案的 `.agents/mcp_config.json` 的 `mcpServers` 裡新增一組連線。主機位址請換成你自己的：
+### 方法 A｜沿用已設定好的全域 MCP 並切換資料庫（推薦）
+若你已完成 [第 1 章設定](../../../raspberry_docker安裝/4_單獨安裝mcp_server.md) 或 [Supabase 設定](../../../supabase安裝/README.md)，直接請 AI 呼叫 `postgres_mcp_connect` 切換到 `attendance` 資料庫即可，免改設定檔。
+
+### 方法 B｜選用：替 `attendance` 建立 `ai_readonly` 唯讀權限
+1. 在 DBeaver 連進 `attendance` 資料庫執行 [00_建立唯讀帳號.sql](./00_建立唯讀帳號.sql)。
+2. 若想獨立一個唯讀連線，可在 `~/.gemini/config/mcp_config.json` 的 `mcpServers` 加入一組連到 `attendance` 的 Profile（使用 `ai_readonly`），並重開 Antigravity：
 
 ```json
-"postgres-attendance": {
-  "command": "uvx",
-  "args": ["--with", "mcp<2", "postgres-mcp", "--access-mode=restricted"],
-  "env": {
-    "DATABASE_URI": "postgresql://ai_readonly:專案1設定的密碼@localhost:5432/attendance"
-  }
-}
+    "attendance-readonly": {
+      "command": "npx",
+      "args": ["-y", "@microsoft/postgres-mcp", "run"],
+      "env": {
+        "POSTGRES_MCP_CONNECTION_STRING": "postgresql://ai_readonly:你的密碼@主機IP:5432/attendance"
+      }
+    }
 ```
 
-> [!WARNING]
-> 這個檔案有密碼，不要上傳到 GitHub 或傳給別人。
+---
 
-## 3. 複製以下提示詞給 AI
+## 步驟 2：確認 MCP 連得到 `attendance`
 
-把 `我的查詢.sql` 附加到對話，並貼上 Excel「需求」工作表的五則故事。
-
-```markdown
-你是協助上班族規劃個人工具的產品經理。
-
-請用 MCP 連線 postgres-attendance 讀取 employees、attendance 兩張資料表的實際結構和幾筆資料。
-只能讀取，不要嘗試新增、修改或刪除任何資料。
-
-我的使用者故事：
-（貼上五則故事與驗收條件）
-
-我已經在 DBeaver 驗證過的 SQL 在附件 我的查詢.sql。
-
-請在目前資料夾產生 PRD.md，內容包含：
-1. 這個工具要解決什麼問題、給誰用
-2. 不做的事情（這是單人使用的本機桌面工具，不做登入、不做網站）
-3. 功能清單：每個功能都標明對應的故事編號，以及 我的查詢.sql 裡的哪一句
-4. 每個功能的驗收條件：用「我做什麼，應該看到什麼」來寫，並盡量使用資料庫的真實資料當例子
-5. 用到的資料欄位：只能列出你從資料庫實際讀到的欄位
-
-寫作規則：
-- 使用繁體中文和業務語言，讓不會寫程式的人資人員看得懂
-- 不要寫視窗元件名稱、程式檔案名稱或程式語言細節
-- 如果故事有不清楚或矛盾的地方，先列出來問我，不要自己假設
+```text
+請透過 Microsoft Postgres MCP（@microsoft/postgres-mcp）連線到我的 attendance 資料庫，只用唯讀方式確認看得到 employees 和 attendance 兩張表，並查出目前的員工數與打卡筆數。
 ```
 
-## 4. 檢查 AI 的 PRD
+---
 
-- [ ] 五則故事都有對應的功能，沒有多出你沒要求的功能
-- [ ] 列出的欄位在 `employees`、`attendance` 表裡都真的存在
-- [ ] 看到「我做什麼，應該看到什麼」，就知道要怎麼驗收
-- [ ] 沒有出現你看不懂的技術名詞
+## 步驟 3：把下面這段貼給 AI，產生 `PRD.md`
 
-有問題就請 AI 修改，確認後再進行下一步。可以和[範例 PRD](../PRD.md) 對照。
+```text
+請幫我把「員工打卡查詢小工具」的 PRD（產品需求文件）寫到這個資料夾的 PRD.md。
 
-下一步：[PRD 產生 todolist](./02_PRD產生todolist.md)
+請務必先透過 Microsoft Postgres MCP（使用 postgres_mcp_connect 連線到 attendance 資料庫，搭配 postgres_mcp_db_context 與唯讀 postgres_mcp_query）直接讀取真實資料表結構與外來鍵關聯；嚴禁呼叫任何修改或寫入工具。
+
+請結合這個資料夾裡的：
+1. 打卡表.xlsx（特別是「需求」工作表的 S1～S5）
+2. 4_JOIN回答故事.md（我已經手寫驗證過 S1～S5 與 E1～E5 的查詢與結果）
+
+我的條件：
+- 我是一般上班族，會一點 SQL，想做本地桌面小工具（Python + Tkinter + psycopg2 + python-dotenv）
+- 所有驗收數字以初始狀態「6 位員工、28 筆打卡、5 筆遲到、3 筆忘打卡」為基準
+- 這個階段只寫 PRD，不要寫任何程式碼
+- 使用繁體中文，條理清楚
+```
+
+---
+
+## 下一步
+
+前往 [步驟 6｜從 PRD 產生 todolist](02_PRD產生todolist.md)。
