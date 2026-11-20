@@ -43,6 +43,8 @@
 
 請務必先透過 Microsoft Postgres MCP（使用 postgres_mcp_connect 連線到 online_shop 資料庫，搭配 postgres_mcp_db_context 與唯讀 postgres_mcp_query）直接讀取真實資料表結構、主外來鍵與雙價位欄位；嚴禁呼叫任何修改或寫入工具。
 
+若資料庫裡有我建立的 VIEW（檢視表，名稱以 v_ 開頭），請一併讀取它的欄位；PRD 裡報表類功能的資料來源請優先使用 VIEW，不要在 App 程式裡重寫相同的 JOIN。如果沒有任何 VIEW，就照原本的資料表規劃即可。
+
 請結合這個資料夾裡的：
 1. 網路商店訂單表.xlsx（特別是「需求」工作表的 S1～S5）
 2. 4_訂單查詢回答故事.md（我已經手寫驗證過 S1～S5 與 E1～E5 的查詢與結果）

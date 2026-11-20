@@ -32,6 +32,7 @@
 
 請使用 Microsoft Postgres MCP 工具連線至 store_sales 資料庫（若預設不在 store_sales，請先用 postgres_mcp_connect 切換），並用 postgres_mcp_db_context 與 postgres_mcp_query 讀取 stores、staff、products、customers、orders、order_items、raw_sales 七張資料表的實際結構與幾筆樣本資料。
 只能進行唯讀查詢，嚴禁使用 postgres_mcp_modify 新增、修改或刪除任何資料。
+若資料庫裡有我建立的 VIEW（檢視表，名稱以 v_ 開頭），請一併讀取它的欄位；PRD 裡報表類功能的資料來源請優先使用 VIEW，不要在 App 程式裡重寫相同的 JOIN。如果沒有任何 VIEW，就照原本的資料表規劃即可。
 
 我的使用者故事：
 （貼上五則故事與驗收條件）
