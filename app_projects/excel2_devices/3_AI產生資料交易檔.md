@@ -1,6 +1,15 @@
 # 步驟 3｜AI 產生資料交易檔：把 14 欄寬表打包進 JSONB Transaction
 
-> **本步驟核心：不用匯入現成 `.sql` 救援檔！**  
+## 📥 本步驟資料與交易下載
+
+- 原始 Excel：[下載 設備規格表.xlsx](./設備規格表.xlsx)，請使用本文指定的資料工作表。
+- 純資料參考交易：[下載 devices_data.sql](../_teacher_reference/devices_data.sql)，包含 `BEGIN … COMMIT`，**不會幫你建表**。
+
+先用自己的 DDL 與 Excel 請 AI 產生交易，再與參考檔核對。要執行參考檔時，先確認目標資料庫正確、已建好表並清空測試資料；下載與執行方法見 [共用操作指南](../學習與操作指南.md)。請保留自己核對通過的 `建立資料.sql`，之後還原資料會用到。
+
+> 有意觸發錯誤的測試請逐句執行，出錯後先 `ROLLBACK;` 再開始下一個實驗。正式載入資料的交易要 `COMMIT`；後面的業務模擬交易最後一律還原，保持初始資料給步驟 4。
+
+> **本步驟核心：先請 AI 產生自己的交易，再核對參考檔。**
 > 你自己貼上步驟 2 親手建好的 `CREATE TABLE devices (...)` 與 [設備規格表.xlsx](設備規格表.xlsx)，請 AI 幫你轉換成只保留非空屬性、塞進 `JSONB` 的 **`BEGIN; ... COMMIT;` 交易檔**。
 
 ---
@@ -90,7 +99,7 @@ SELECT device_type AS 類型, COUNT(*) AS 台數 FROM devices GROUP BY device_ty
    假設業務發展部要把 `NB-004` 調撥給「行銷企劃部」，同時幫 `PJ-001` 在 JSONB 規格裡加上保養日期 `"calibrated_at": "2024-04-01"`，請貼上這段 Prompt 讓 AI 寫出安全交易（測試完先 `ROLLBACK;`）：
    ```text
    請根據 devices 資料表（含 JSONB specs），寫一個 PostgreSQL 交易（不要用 MCP 寫入，只給我 SQL）：
-   1. 用 BEGIN; 開頭，最後幫我加上 SELECT 查詢受影響設備並附上 -- ROLLBACK; 讓我先測試不破壞資料。
+   1. 用 BEGIN; 開頭，最後幫我加上 SELECT 查詢受影響設備並附上可直接執行的 ROLLBACK;，確保測試結束後還原。
    2. 交易動作：
       - 將 NB-004 的 department 改為 '行銷企劃部'
       - 用 jsonb_set 替 PJ-001 的 specs 加上 '"calibrated_at": "2024-04-01"'

@@ -1,6 +1,15 @@
 # 步驟 3｜AI 產生資料交易檔：拆出四表與歷史／目前雙價位 Transaction
 
-> **本步驟核心：不用匯入現成 `.sql` 救援檔！**  
+## 📥 本步驟資料與交易下載
+
+- 原始 Excel：[下載 網路商店訂單表.xlsx](./網路商店訂單表.xlsx)，請使用本文指定的資料工作表。
+- 純資料參考交易：[下載 shop_data.sql](../_teacher_reference/shop_data.sql)，包含 `BEGIN … COMMIT`，**不會幫你建表**。
+
+先用自己的 DDL 與 Excel 請 AI 產生交易，再與參考檔核對。要執行參考檔時，先確認目標資料庫正確、已建好表並清空測試資料；下載與執行方法見 [共用操作指南](../學習與操作指南.md)。請保留自己核對通過的 `建立資料.sql`，之後還原資料會用到。
+
+> 有意觸發錯誤的測試請逐句執行，出錯後先 `ROLLBACK;` 再開始下一個實驗。正式載入資料的交易要 `COMMIT`；後面的業務模擬交易最後一律還原，保持初始資料給步驟 4。
+
+> **本步驟核心：先請 AI 產生自己的交易，再核對參考檔。**
 > 這張 Excel 有兩項設計細節要交給 AI 在產出交易檔時特別注意：**誰該是目前售價 `products.price`**、**誰又是當時成交價 `order_items.unit_price`**，以及**沒有訂單的新會員「張大同」和沒賣出的新商品「輕量登山背包」絕對不能遺漏**！
 
 ---
@@ -24,6 +33,11 @@
    - 商品「輕量登山背包」（戶外休閒，售價 1580）必須放進 products。
    - 會員「張大同」（高雄市，datong@example.com）必須放進 customers。
 4. 寫入順序：customers（5 筆）→ products（7 筆）→ SELECT setval(...) 到 5 與 7 → orders（1001～1010 共 10 筆）→ order_items（16 筆）。
+
+本課為了讓後續指定編號的練習能互相對照，請使用以下編號，不可自行重新排序：
+customers：1=hua@example.com（陳小華）、2=ming@example.com（林志明）、3=ting@example.com（黃雅婷）、4=mei@example.com（周美玲）、5=datong@example.com（張大同）。
+products：1=保溫鋼杯、2=快充行動電源、3=人體工學滑鼠墊、4=陶瓷咖啡杯、5=無線藍牙耳機、6=筆記本組合、7=輕量登山背包。
+實務系統的編號通常由資料庫產生；這裡是教學樣本的固定對照。
 ```
 
 ---
@@ -77,6 +91,13 @@ SELECT
    INSERT INTO order_items VALUES (1098, 2, 0, 890);
    ```
    遇到 `violates check constraint "order_items_quantity_check"` 後執行 `ROLLBACK;`，再查 `SELECT * FROM orders WHERE order_id = 1098;` —— **整張 `1098` 訂單與第一筆明細都不會留下，完美避免「有頭無尾」的半殘訂單！**
+
+   先在同一個 SQL 編輯器執行下列還原與查驗，再做第 2 題：
+
+   ```sql
+   ROLLBACK;
+   SELECT * FROM orders WHERE order_id = 1098;
+   ```
 
 2. **請 AI 幫你寫「用 `SELECT` 自動帶入目前售價建單」交易 Prompt**：  
    不要自己手動抄商品金額！讓 AI 用 `INSERT INTO order_items ... SELECT ... FROM products` 直接把目前的售價複製當成交單價，測試完用 `ROLLBACK;` 復原：

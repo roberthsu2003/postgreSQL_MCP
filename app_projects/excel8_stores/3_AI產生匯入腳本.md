@@ -1,5 +1,14 @@
 # 步驟 3｜AI 產生資料交易檔：用 `raw_sales` 與 `BEGIN ... COMMIT` 歸位第一季樣本
 
+## 📥 本步驟資料與交易下載
+
+- 原始 Excel：[下載 門市月報_需求與樣本.xlsx](./門市月報_需求與樣本.xlsx)，請使用本文指定的資料工作表。
+- 純資料參考交易：[下載 store_data.sql](../_teacher_reference/store_data.sql)，包含 `BEGIN … COMMIT`，**不會幫你建表**。
+
+先用自己的 DDL 與 Excel 請 AI 產生交易，再與參考檔核對。要執行參考檔時，先確認目標資料庫正確、已建好表並清空測試資料；下載與執行方法見 [共用操作指南](../學習與操作指南.md)。請保留自己核對通過的 `建立資料.sql`，之後還原資料會用到。
+
+> 有意觸發錯誤的測試請逐句執行，出錯後先 `ROLLBACK;` 再開始下一個實驗。正式載入資料的交易要 `COMMIT`；後面的業務模擬交易最後一律還原，保持初始資料給步驟 4。
+
 > 💻 AI 工具 ＋ DBeaver（資料庫：`store_sales`）｜ 🎯 學完你會：不依賴檔案匯入精靈，請 AI 產生「先寫入暫存表 `raw_sales`，再透過 `INSERT ... SELECT ... ON CONFLICT DO NOTHING` 分流進六張表」的純 SQL 交易檔，並做三方對帳與 `ROLLBACK` 演練
 
 ## 1. 請 AI 把第一季樣本轉成純資料交易 SQL
@@ -14,8 +23,8 @@
 （貼上 給AI的樣本 的 31 筆內容）
 
 請幫我產生一份「純資料寫入的 SQL Transaction 交易檔」，嚴格遵守以下規則：
-1. 用 BEGIN; 開頭、COMMIT; 結尾，絕對不可包含 DROP TABLE 或 CREATE TABLE。
-2. 第一步：先把這 31 筆資料以純文字寫進 raw_sales 暫存表；注意「會員電話」空白者（散客）必須寫成不加引號的 NULL。
+1. 用 BEGIN; 開頭、COMMIT; 結尾，絕對不可包含 DROP TABLE 或 CREATE TABLE。只允許清空本批次暫存區 raw_sales，不能清空六張正式表。
+2. 第一步：在交易內先 TRUNCATE raw_sales;，再把這 31 筆資料以純文字寫進 raw_sales；注意「會員電話」空白者（散客）必須寫成不加引號的 NULL。
 3. 第二步：在同一個交易內，依序從 raw_sales 用 INSERT INTO ... SELECT DISTINCT ... ON CONFLICT DO NOTHING 寫入六張表：
    - stores (衝突目標 name)
    - staff (JOIN stores 查 store_id，衝突目標 (name, store_id))
@@ -37,6 +46,8 @@
 - [ ] **`staff` JOIN 時有綁定 `store_id` 嗎？** 必須寫 `r.經手店員 = st.name AND st.store_id = s.store_id`，防止不同店剛好出現同名店員時對應錯門市
 
 檢查過關後，貼入 DBeaver 全選並執行 SQL Script（Alt+X）！
+
+> 本課使用 `ON CONFLICT DO NOTHING` 來略過同鍵資料，不會自動更正舊資料。若同一訂單號的金額、會員或狀態與既有資料不同，必須先查明差異，不能把「沒有報錯」當成已更新成功。核對 `raw_sales` 的小計與 `數量::INT * 單價::INT` 是否一致，也能及早發現轉檔錯誤。
 
 ## 3. 三方對帳：Excel、DBeaver、Microsoft Postgres MCP
 
@@ -86,16 +97,23 @@ BEGIN;
 
 -- 1. 先合法寫入一張新訂單主檔 ORD99999
 INSERT INTO orders (order_id, order_date, order_time, store_id, staff_id, customer_id, payment_method, status)
-VALUES ('ORD99999', '2024-03-31', '12:00', 1, 1, NULL, '現金', '已完成');
+SELECT 'ORD99999', DATE '2024-03-31', TIME '12:00', s.store_id, st.staff_id, NULL, '現金', '已完成'
+FROM stores s JOIN staff st ON st.store_id = s.store_id
+WHERE s.name = '台北信義店' AND st.name = '張志明';
 
 -- 2. 緊接著明細故意寫入數量 0（違反 CHECK (quantity > 0)）
 INSERT INTO order_items (order_id, product_id, quantity, unit_price)
-VALUES ('ORD99999', 1, 0, 95);
+SELECT 'ORD99999', product_id, 0, price FROM products WHERE name = '經典拿鐵';
 
-COMMIT;
+-- 此處預期已報錯，接著單獨執行下方的 ROLLBACK。
 ```
 
-第 2 步一錯，接著請執行 `ROLLBACK;`，再查 `SELECT * FROM orders WHERE order_id = 'ORD99999';`——結果為 0 筆！**有交易邊界保護，資料庫絕對不會出現「有訂單頭卻沒半項商品」的幽靈訂單。**
+```sql
+ROLLBACK;
+SELECT * FROM orders WHERE order_id = 'ORD99999';
+```
+
+第 2 步的 CHECK 錯誤使整筆交易失敗，還原後查詢為 0 筆，第一步的訂單頭也被撤銷。這個保護以「實際寫入並觸發錯誤」為前提：若 SELECT 查不到商品，會寫入 0 筆而不是報錯，所以仍要核對每一步的受影響筆數。
 
 ## 5. 🤖 請 AI 幫你測一個多表商業交易（先在 `ROLLBACK` 保護下看效果）
 

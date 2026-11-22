@@ -1,5 +1,7 @@
 # 實戰 1｜行政耗材庫存表（從一張表認識 DDL、交易與 DML）
 
+> 第一次做先讀 [共用操作指南](../學習與操作指南.md)。步驟 1～4 是資料庫實作，E 題可在補完進階語法後再做；步驟 5～8 是桌面 App 延伸，執行方式見 [App 實作指南](../桌面App實作指南.md)。
+
 > **對應 Excel**：[耗材庫存表.xlsx](耗材庫存表.xlsx)（總務／行政部門常見的辦公室耗材盤點表）
 >
 > **核心理念**：先不學多表 JOIN，先把「單一資料表」的四件大事做紮實：**親手寫 DDL 建表** → **請 AI 建立 Transaction 交易檔** → **手寫 DML 回答故事並用 Microsoft Postgres MCP 雙軌驗證** → **做出桌面庫存小工具**。
@@ -8,7 +10,7 @@
 
 ## 本專案實作三大鐵則
 
-1. **全程不匯入現成檔案**：沒有備份 `.sql` 可以一鍵還原，也沒有匯入精靈可以點。你要看著需求與規格，自己打開 DBeaver Query Tool 親手寫 `CREATE TABLE`。
+1. **先手寫建表，再核對交易**：先不使用現成建表檔或匯入精靈。你要看著需求與規格，自己打開 DBeaver Query Tool 親手寫 `CREATE TABLE`。
 2. **用 AI 建立 Transaction（交易）**：自己建好空資料表後，把你的 `CREATE TABLE` 和 `耗材庫存表.xlsx` 交給 AI，請 AI 產出標準 `BEGIN; ... COMMIT;` 交易檔，經你檢查後親自執行並核對金額。
 3. **10 題 DML ＋ Microsoft Postgres MCP 交叉驗證**：步驟 4 準備了 **5 則核心故事 ＋ 5 題進階練功（共 10 題）**，每題都能先在 DBeaver 手寫練習，再用 `@microsoft/postgres-mcp` 查詢 Prompt 請 AI 做唯讀交叉比對。
 

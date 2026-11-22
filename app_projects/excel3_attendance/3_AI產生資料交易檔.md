@@ -1,6 +1,15 @@
 # 步驟 3｜AI 產生資料交易檔：把總表拆成兩份並寫進 Transaction
 
-> **本步驟核心：不用匯入現成 `.sql` 救援檔！**  
+## 📥 本步驟資料與交易下載
+
+- 原始 Excel：[下載 打卡表.xlsx](./打卡表.xlsx)，請使用本文指定的資料工作表。
+- 純資料參考交易：[下載 attendance_data.sql](../_teacher_reference/attendance_data.sql)，包含 `BEGIN … COMMIT`，**不會幫你建表**。
+
+先用自己的 DDL 與 Excel 請 AI 產生交易，再與參考檔核對。要執行參考檔時，先確認目標資料庫正確、已建好表並清空測試資料；下載與執行方法見 [共用操作指南](../學習與操作指南.md)。請保留自己核對通過的 `建立資料.sql`，之後還原資料會用到。
+
+> 有意觸發錯誤的測試請逐句執行，出錯後先 `ROLLBACK;` 再開始下一個實驗。正式載入資料的交易要 `COMMIT`；後面的業務模擬交易最後一律還原，保持初始資料給步驟 4。
+
+> **本步驟核心：先請 AI 產生自己的交易，再核對參考檔。**
 > 你自己貼上步驟 2 親手寫好的兩句 `CREATE TABLE` 與 [打卡表.xlsx](打卡表.xlsx)，請 AI 先發現並詢問 `E05` 周美玲的部門矛盾，再產生**「先寫父表 `employees`、再寫子表 `attendance`」**的標準 **`BEGIN; ... COMMIT;` 交易檔**。
 
 ---
@@ -80,6 +89,13 @@ SELECT
    INSERT INTO attendance VALUES ('E99', '2024-03-11', '08:55', '18:00');
    ```
    遇到外來鍵錯誤後執行 `ROLLBACK;`，再查 `SELECT emp_id, name FROM employees WHERE emp_id = 'E04';`，確認姓名仍是 **`張大同`**！
+
+   先在同一個 SQL 編輯器執行下列還原與查驗，再做第 2 題：
+
+   ```sql
+   ROLLBACK;
+   SELECT emp_id, name FROM employees WHERE emp_id = 'E04';
+   ```
 
 2. **請 AI 設計「新人報到 ＋ 首日打卡」交易 Prompt**：  
    假設新進人員 `E08` `趙文豪`（`行銷企劃部`、`數位行銷專員`）今天報到並立刻留下一筆 `2024-03-11` `08:52` 上班卡（尚未下班，`clock_out` 為 `NULL`）。請把下面這段 Prompt 貼給 AI 寫出交易並用 `ROLLBACK;` 測試：

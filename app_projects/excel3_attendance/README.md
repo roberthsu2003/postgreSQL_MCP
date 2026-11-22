@@ -1,5 +1,7 @@
 # 實戰 3｜打卡表：把一張總表拆成兩張表（`employees` × `attendance`）
 
+> 第一次做先讀 [共用操作指南](../學習與操作指南.md)。步驟 1～4 是資料庫實作，E 題可在補完進階語法後再做；步驟 5～8 是桌面 App 延伸，執行方式見 [App 實作指南](../桌面App實作指南.md)。
+
 > **對應 Excel**：[打卡表.xlsx](打卡表.xlsx)（人資部門每週彙整的員工出缺勤紀錄表）
 >
 > **核心理念**：單一 Excel 總表裡每天都在重複填姓名、部門、職稱，導致員工調部門改不完（甚至已經出現 `E05` 周美玲同時寫著「業務發展部」和「業務部」的矛盾）。這一次我們要親手拆成 **員工主表** 與 **打卡明細表**，用外來鍵（Foreign Key）鎖住關聯！
@@ -8,7 +10,7 @@
 
 ## 本專案實作三大鐵則
 
-1. **全程不匯入現成檔案**：沒有 `.sql` 救援檔可以按，看著規格與 ER 圖自己在 DBeaver 敲出 `CREATE TABLE employees` 與 `CREATE TABLE attendance`。
+1. **先手寫建表，再核對交易**：先不使用現成建表檔，看著規格與 ER 圖自己在 DBeaver 敲出 `CREATE TABLE employees` 與 `CREATE TABLE attendance`。
 2. **用 AI 建立 Transaction（交易）**：貼上你寫好的兩句 `CREATE TABLE` 和 `打卡表.xlsx`，讓 AI 讀取總表後**去重（先父表 `employees` 再子表 `attendance`）**產出純 SQL `BEGIN; ... COMMIT;` 交易檔並對帳。
 3. **10 題 JOIN / 彙總 DML ＋ Microsoft Postgres MCP 雙軌驗證**：親手寫 `JOIN`、`LEFT JOIN ... IS NULL`、條件放 `ON`、`GROUP BY`、工時計算與補登打卡沙盒，每題皆附 `@microsoft/postgres-mcp` 查詢驗證 Prompt。
 

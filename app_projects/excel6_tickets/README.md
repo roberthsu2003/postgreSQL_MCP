@@ -1,5 +1,7 @@
 # 實戰 6｜客服案件紀錄：搜尋文字、統計工作量與雙重結案規則
 
+> 第一次做先讀 [共用操作指南](../學習與操作指南.md)。步驟 1～4 是資料庫實作，E 題可在補完進階語法後再做；步驟 5～8 是桌面 App 延伸，執行方式見 [App 實作指南](../桌面App實作指南.md)。
+
 > **對應 Excel**：[客服案件紀錄.xlsx](客服案件紀錄.xlsx)（客服主管彙整的客戶問題通報與結案進度表）
 >
 > **核心理念**：同一種網路斷線問題，客服在 Excel 裡有的寫 `WiFi`、有的寫 `wifi`、有的寫 `WIFI` 甚至 `Wi-Fi`；還常出現「狀態填已結案卻忘了填結案日」或「結案日比報修日還早」。這一次我們親手寫兩條連動 **`CHECK` 規則**把結案紀律交給資料庫，再用 **`ILIKE`**、**`FILTER`**、**`HAVING`**、**`TO_CHAR`** 做出主管級統計報表！
@@ -8,7 +10,7 @@
 
 ## 本專案實作三大鐵則
 
-1. **全程不匯入現成檔案**：沒有備份 `.sql` 可以點，自己看 ER 圖與雙重結案邏輯，在 DBeaver Query Tool 親手建出三張表（`agents`、`categories`、`tickets`）。
+1. **先手寫建表，再核對交易**：先不使用現成建表檔，自己看 ER 圖與雙重結案邏輯，在 DBeaver Query Tool 親手建出三張表（`agents`、`categories`、`tickets`）。
 2. **用 AI 建立 Transaction（交易）**：貼上三句建表 DDL 與 `客服案件紀錄.xlsx`，特別交代 AI **原封不動保留 `WiFi`/`Wi-Fi` 大小寫與空白日期轉 `NULL`**，加上 `setval()` 產出 `BEGIN; ... COMMIT;` 交易檔並完成三方對帳。
 3. **10 題模糊搜尋與工作量統計 DML ＋ Microsoft Postgres MCP 雙軌驗證**：練習 `ILIKE`、萬用字元 `_`、`FILTER`、`HAVING`、`TO_CHAR`、平均處理天數與錯誤結案日期攔截沙盒，每題皆附 `@microsoft/postgres-mcp` 查詢驗證 Prompt。
 

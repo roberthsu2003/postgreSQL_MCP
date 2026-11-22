@@ -1,5 +1,7 @@
 # 實戰 5｜網路商店訂單：多對多與歷史價格（`orders` × `order_items` × `ON DELETE CASCADE`）
 
+> 第一次做先讀 [共用操作指南](../學習與操作指南.md)。步驟 1～4 是資料庫實作，E 題可在補完進階語法後再做；步驟 5～8 是桌面 App 延伸，執行方式見 [App 實作指南](../桌面App實作指南.md)。
+
 > **對應 Excel**：[網路商店訂單表.xlsx](網路商店訂單表.xlsx)（業務／客服團隊的日常訂單總表）
 >
 > **核心理念**：一張訂單可以買很多商品，一項商品也會出現在不同訂單——這就是資料庫最經典的**多對多關聯**！同時你會在 Excel 裡親眼看到「保溫鋼杯前後出現過 `450` 和 `490` 兩個價格」：這不是打錯字，而是**歷史成交單價 vs 目前商品售價**必須分開儲存的真實業務需求！
@@ -8,7 +10,7 @@
 
 ## 本專案實作三大鐵則
 
-1. **全程不匯入現成檔案**：看著多對多 ER 圖與欄位規格，自己打開 DBeaver Query Tool 親手敲出四張表的 `CREATE TABLE`（含 `ON DELETE CASCADE` 連動刪除規則）。
+1. **先手寫建表，再核對交易**：看著多對多 ER 圖與欄位規格，自己打開 DBeaver Query Tool 親手敲出四張表的 `CREATE TABLE`（含 `ON DELETE CASCADE` 連動刪除規則）。
 2. **用 AI 建立 Transaction（交易）**：貼上四句建表 DDL 與 `網路商店訂單表.xlsx`，請 AI 區分 `products.price`（目前售價）與 `order_items.unit_price`（當時成交價），加上 **`setval()`** 產出純 SQL `BEGIN; ... COMMIT;` 交易檔。
 3. **10 題訂單與定價 DML ＋ Microsoft Postgres MCP 雙軌驗證**：練習 S1～S5 核心訂單交易與 E1～E5 進階營收/價差/RFM/下單沙盒，每題皆附 `@microsoft/postgres-mcp` 查詢驗證 Prompt。
 

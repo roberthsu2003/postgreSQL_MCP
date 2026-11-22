@@ -1,5 +1,11 @@
 # 步驟 5｜用 Microsoft Postgres MCP 讀結構產生 PRD
 
+## 先還原 App 驗收基準
+
+步驟 4 的操作會保留部分修改，**即使全部做對，也要先還原再做本步驟**。依 [共用操作指南的還原表](../../學習與操作指南.md#做完-dml進入-app-前先還原)，只清空本專案的練習表，重新執行步驟 3 儲存的 `建立資料.sql`，再跑一次步驟 3 的對帳查詢。門市專案此時只載入第一季，先不要加 4 月。
+
+通過初始對帳後，才請 MCP 讀取資料並產生 PRD。沿用題目中的主鍵、狀態與初始數字，不要把 DML 練習後的數字混進 App 第一次驗收。下一階段請 AI 準備環境、開發功能與協助驗收的 Prompt 見 [桌面 App 實作指南](../../桌面App實作指南.md)。
+
 > 你已經親手建立 `devices`（含 `JSONB` 欄位），並完成了 10 題 JSONB 查詢／修改與交易測試。  
 > 現在透過課程統一安裝的微軟官方 **`@microsoft/postgres-mcp`**，請 AI 讀取真實資料庫結構，結合 [設備規格表.xlsx](../設備規格表.xlsx) 寫出 `PRD.md`。
 
@@ -32,7 +38,7 @@
 ## 步驟 2：確認 MCP 連得到 `devices`
 
 ```text
-請透過 Microsoft Postgres MCP（@microsoft/postgres-mcp）連線到我的 devices 資料庫，只用唯讀方式確認看得到 devices 資料表，並告訴我目前共有幾台設備（若已執行過 S4 與 S5 應為 17 台；若重跑過初始交易檔應為 16 台）。
+請透過 Microsoft Postgres MCP（@microsoft/postgres-mcp）連線到我的 devices 資料庫，只用唯讀方式確認看得到 devices 資料表，並告訴我目前共有幾台設備（已還原，應為 16 台）。
 ```
 
 ---

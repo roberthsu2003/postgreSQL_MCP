@@ -1,5 +1,14 @@
 # 步驟 3｜AI 產生資料交易檔：用 `BEGIN ... COMMIT` 轉入真實資料
 
+## 📥 本步驟資料與交易下載
+
+- 原始 Excel：[下載 教育訓練報名表.xlsx](./教育訓練報名表.xlsx)，請使用本文指定的資料工作表。
+- 純資料參考交易：[下載 training_data.sql](../_teacher_reference/training_data.sql)，包含 `BEGIN … COMMIT`，**不會幫你建表**。
+
+先用自己的 DDL 與 Excel 請 AI 產生交易，再與參考檔核對。要執行參考檔時，先確認目標資料庫正確、已建好表並清空測試資料；下載與執行方法見 [共用操作指南](../學習與操作指南.md)。請保留自己核對通過的 `建立資料.sql`，之後還原資料會用到。
+
+> 有意觸發錯誤的測試請逐句執行，出錯後先 `ROLLBACK;` 再開始下一個實驗。正式載入資料的交易要 `COMMIT`；後面的業務模擬交易最後一律還原，保持初始資料給步驟 4。
+
 > 💻 AI 工具 ＋ DBeaver（資料庫：`training`）｜ 🎯 學完你會：把雙名單 Excel 交給 AI 轉成受 Transaction（交易）保護的純 `INSERT` SQL，並做三方對帳與 `ROLLBACK` 保護演練
 
 ## 1. 請 AI 把 Excel 轉成純資料交易 SQL
@@ -26,6 +35,10 @@
 5. 若 guests 指定了明確的 guest_id，寫入 guests 後請記得執行 SELECT setval(pg_get_serial_sequence('guests', 'guest_id'), MAX(guest_id)) FROM guests; 更新序列。
 6. 出席欄位轉換規則：「是」轉為 true、「否」轉為 false、空白轉為不加引號的 NULL。
 7. 輸出成乾淨可直接複製到 DBeaver 執行的單一 SQL 區塊。
+
+本課為了讓後續指定編號的練習能互相對照，請使用以下編號，不可自行重新排序：
+guests：1=wenhua@example.com（趙文華）、2=jiarong@example.com（孫佳蓉）、3=jianhong@example.com（周建宏）、4=xiaohua@example.com（陳小華）、5=shufen@example.com（吳淑芬）。請明確指定這五個 guest_id，並用 setval 對齊到 5。
+實務系統的編號通常由資料庫產生；這裡是教學樣本的固定對照。
 ```
 
 ## 2. 執行前先幫 AI 檢查這 5 件事

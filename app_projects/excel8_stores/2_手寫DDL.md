@@ -9,16 +9,16 @@
 
 ## 1. 看懂相依順序與欄位規格，親手挑戰寫出 DDL
 
-這個專案要建 **7 張表**。前 4 張主表彼此獨立，接著才能建依賴門市的 `staff`、依賴三張主表的 `orders`，以及依賴訂單與商品的 `order_items`；`raw_sales` 暫存表則可隨時獨立建立：
+這個專案要建 **7 張表**。先建彼此獨立的 `stores`、`products`、`customers`，再建依賴門市的 `staff`，接著建 `orders` 與 `order_items`；`raw_sales` 暫存區可隨時獨立建立。它是一般資料表，用來暫放一批原始資料，並不是連線關閉就會消失的 `TEMP TABLE`。
 
 ```mermaid
 flowchart LR
-    S[1. stores 門市] --> ST[5. staff 店員]
-    S --> O[6. orders 訂單]
+    S[1. stores 門市] --> ST[4. staff 店員]
+    S --> O[5. orders 訂單]
     ST --> O
-    C[4. customers 會員] -. 可NULL .-> O
-    O --> OI[7. order_items 明細]
-    P[3. products 商品] --> OI
+    C[3. customers 會員] -. 可NULL .-> O
+    O --> OI[6. order_items 明細]
+    P[2. products 商品] --> OI
     RAW[raw_sales 暫存表<br/>全 TEXT 無外來鍵]
 ```
 
@@ -77,7 +77,7 @@ erDiagram
 | `staff` | `staff_id SERIAL`, `name VARCHAR(20)`, `store_id INT` | `staff_id PK`；`name NOT NULL`；`store_id NOT NULL REFERENCES stores(store_id)`；`UNIQUE (name, store_id)` |
 | `products` | `product_id SERIAL`, `name VARCHAR(50)`, `category VARCHAR(20)`, `price INT` | `product_id PK`；`name NOT NULL UNIQUE`；`category NOT NULL`；`price NOT NULL CHECK (price >= 0)` |
 | `customers` | `customer_id SERIAL`, `name VARCHAR(20)`, `phone VARCHAR(20)` | `customer_id PK`；`name NOT NULL`；`phone NOT NULL UNIQUE` |
-| `orders` | `order_id VARCHAR(20)`, `order_date DATE`, `order_time TIME`, `store_id INT`, `staff_id INT`, `customer_id INT`, `payment_method VARCHAR(20)`, `status VARCHAR(10)` | `order_id PK`；`store_id` 參照 `stores`、`staff_id` 參照 `staff`；`customer_id` 參照 `customers`（**允許 `NULL`**）；`payment_method CHECK IN ('現金', '信用卡', 'LINE Pay', '街口支付')`；`status CHECK IN ('已完成', '已退款', '已取消')` |
+| `orders` | `order_id VARCHAR(20)`, `order_date DATE`, `order_time TIME`, `store_id INT`, `staff_id INT`, `customer_id INT`, `payment_method VARCHAR(20)`, `status VARCHAR(10)` | `order_id PK`；除 `customer_id` 外全部 `NOT NULL`；`store_id` 參照 `stores`、`staff_id` 參照 `staff`；`customer_id` 參照 `customers`（**允許 `NULL`**）；`payment_method CHECK IN ('現金', '信用卡', 'LINE Pay', '街口支付')`；`status CHECK IN ('已完成', '已退款', '已取消')` |
 | `order_items` | `order_id VARCHAR(20)`, `product_id INT`, `quantity INT`, `unit_price INT` | `order_id` 參照 `orders`、`product_id` 參照 `products`；`quantity NOT NULL CHECK (quantity > 0)`；`unit_price NOT NULL CHECK (unit_price >= 0)`；`PRIMARY KEY (order_id, product_id)` |
 | `raw_sales` | 15 個中文 `TEXT` 欄：`銷售單號`, `銷售日期`, `時間`, `門市名稱`, `區域`, `經手店員`, `會員姓名`, `會員電話`, `商品分類`, `商品名稱`, `單價`, `數量`, `小計`, `付款方式`, `狀態` | 全部設為 `TEXT`（無約束，當暫存緩衝區使用） |
 

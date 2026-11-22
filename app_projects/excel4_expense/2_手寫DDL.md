@@ -185,7 +185,7 @@ DELETE FROM departments WHERE dept_id = 1;
 
 ## ✍️ 動手練（3 題 DDL ／ 自動編號實戰）
 
-1. **測試 `DEFAULT '待審核'` 與可空欄位 `description`**：只填入必填 7 欄（不填 `description` 與 `status`），看看報銷單 `EXP-TEST-01` 寫進去後，`status` 是否自動變成 `'待審核'`、`description` 是否是 `NULL`？
+1. **測試 `DEFAULT '待審核'` 與可空欄位 `description`**：只填入必填的 6 欄（不填 `description` 與 `status`），看看報銷單 `EXP-TEST-01` 寫進去後，`status` 是否自動變成 `'待審核'`、`description` 是否是 `NULL`？
    <details>
    <summary>👀 點開看解答</summary>
 

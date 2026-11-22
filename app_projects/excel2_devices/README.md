@@ -1,5 +1,7 @@
 # 實戰 2｜IT 設備規格表（用 JSONB 收納每種設備截然不同的規格）
 
+> 第一次做先讀 [共用操作指南](../學習與操作指南.md)。步驟 1～4 是資料庫實作，E 題可在補完進階語法後再做；步驟 5～8 是桌面 App 延伸，執行方式見 [App 實作指南](../桌面App實作指南.md)。
+
 > **對應 Excel**：[設備規格表.xlsx](設備規格表.xlsx)（資訊部門常見的資產規格清冊）
 >
 > **核心理念**：筆電要記 CPU／記憶體、投影機要記流明／解析度、印表機要記雙面列印／紙張大小。傳統做法會把 Excel 越拉越寬、滿是空白。這一次我們要用 PostgreSQL 的 **`JSONB`** 欄位，讓每筆設備只存屬於自己的規格！
@@ -8,7 +10,7 @@
 
 ## 本專案實作三大鐵則
 
-1. **全程不匯入現成檔案**：看著需求與規格，自己打開 DBeaver 親手敲出 `CREATE DATABASE devices;` 與 `CREATE TABLE devices (...)`。
+1. **先手寫建表，再核對交易**：看著需求與規格，自己打開 DBeaver 親手敲出 `CREATE DATABASE devices;` 與 `CREATE TABLE devices (...)`。
 2. **用 AI 建立 Transaction（交易）**：貼上自己的建表語法與 `設備規格表.xlsx`，請 AI 幫你把 14 欄寬表轉成只取非空規格、自動塞進 `JSONB` 的 `BEGIN; ... COMMIT;` 交易檔。
 3. **10 題 JSONB 實戰 ＋ Microsoft Postgres MCP 雙軌驗證**：親手寫 `specs->>'...'` 轉型、布林篩選、`jsonb_set` 升級與交易沙盒，每題皆附 `@microsoft/postgres-mcp` 查詢驗證 Prompt。
 

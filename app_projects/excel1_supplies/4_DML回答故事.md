@@ -401,8 +401,8 @@ SELECT SUM(unit_price * current_stock) AS 復原後總金額 FROM supplies; -- �
 
 | 狀態 | `MAT-P-A480` 庫存 | `文具` 類單價異動 | 倉庫總金額 |
 |---|---|---|---|
-| 沙盒交易中（COMMIT 前） | 7 箱（原 8） | 10 項文具單價皆 `+2` | **66586** |
-| 執行 `ROLLBACK;` 後 | **8 箱** | **全部復原** | **66450** |
+| 沙盒交易中（ROLLBACK 前） | 11 箱（原 12） | 10 項文具單價皆 `+2` | **66586** |
+| 執行 `ROLLBACK;` 後 | **12 箱** | **全部復原** | **66450** |
 
 </details>
 
@@ -410,7 +410,7 @@ SELECT SUM(unit_price * current_stock) AS 復原後總金額 FROM supplies; -- �
   ```text
   請透過 Microsoft Postgres MCP 連線到我的 supplies 資料庫，只用唯讀查詢（嚴禁執行任何 UPDATE/DELETE/modify 工具）：
   我剛才在 DBeaver 用 BEGIN ... ROLLBACK 做了「A4 80g 影印紙扣 1 ＋ 文具單價漲 2 元」的沙盒模擬並且已經 ROLLBACK。請幫我查證：
-  1. MAT-P-A480 目前庫存是否依然是 8（沒有被誤扣）？
+  1. MAT-P-A480 目前庫存是否依然是 12（沒有被誤扣）？
   2. 文具類藍色原子筆（STA-PEN-B05）單價是否依然是 12（沒有被調漲）？
   3. 倉庫目前的總金額是否依然完整維持在 66450？
   另外請順便告訴我，如果這種雙 UPDATE 交易不小心忘了寫 WHERE category = '文具' 會發生什麼後果？

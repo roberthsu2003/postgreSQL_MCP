@@ -1,4 +1,4 @@
-# 步驟 3：把 PRD.md 拆成 todolist.md，然後一項一項做
+# 步驟 6：把 PRD.md 拆成 todolist.md，然後一項一項做
 
 ## 1. 複製以下提示詞給 AI
 
@@ -50,3 +50,6 @@
 
 > [!TIP]
 > 如果測試時資料被改亂了，在 DBeaver 用 `TRUNCATE guest_enrollments, employee_enrollments, guests, employees, courses RESTART IDENTITY;` 清空並重跑步驟 3 產生的資料交易檔就能回到初始狀態。
+
+
+👉 開始寫程式前，依 [步驟 7～8｜桌面 App 實作指南](../../桌面App實作指南.md) 使用其中的 Prompt，請 AI 準備環境、確認連線，再逐項開發並由你操作驗收。

@@ -1,6 +1,15 @@
 # 步驟 3｜AI 產生資料交易檔：保留原文與 `setval` 的三表交易檔
 
-> **本步驟核心：不用匯入現成 `.sql` 救援檔！**  
+## 📥 本步驟資料與交易下載
+
+- 原始 Excel：[下載 客服案件紀錄.xlsx](./客服案件紀錄.xlsx)，請使用本文指定的資料工作表。
+- 純資料參考交易：[下載 tickets_data.sql](../_teacher_reference/tickets_data.sql)，包含 `BEGIN … COMMIT`，**不會幫你建表**。
+
+先用自己的 DDL 與 Excel 請 AI 產生交易，再與參考檔核對。要執行參考檔時，先確認目標資料庫正確、已建好表並清空測試資料；下載與執行方法見 [共用操作指南](../學習與操作指南.md)。請保留自己核對通過的 `建立資料.sql`，之後還原資料會用到。
+
+> 有意觸發錯誤的測試請逐句執行，出錯後先 `ROLLBACK;` 再開始下一個實驗。正式載入資料的交易要 `COMMIT`；後面的業務模擬交易最後一律還原，保持初始資料給步驟 4。
+
+> **本步驟核心：先請 AI 產生自己的交易，再核對參考檔。**
 > 這份 Excel 裡的 `問題描述` 刻意同時存在 `WiFi`、`wifi`、`WIFI`、`Wi-Fi` 四種寫法——務必要求 AI **原封不動保留原始字樣（不要幫你自作聰明統一格式！）**，這樣步驟 4 才能練到真實職場的模糊搜尋技巧！
 
 ---
@@ -20,6 +29,11 @@
 2. 寫入順序必須先寫 agents（4 位人員，agent_id 1～4）與 categories（4 個分類，category_id 1～4），接著立即加上 SELECT setval(pg_get_serial_sequence('agents', 'agent_id'), 4); 與 SELECT setval(pg_get_serial_sequence('categories', 'category_id'), 4);，最後再寫 30 件 tickets。
 3. tickets.description 必須完全保留 Excel 裡的原始寫法（包括 WiFi / wifi / WIFI / Wi-Fi 的大小寫與連字號差異），絕對不要自動統一改寫！
 4. 「結案日期（closed_on）」空白的格子必須轉成 NULL（不加引號）。
+
+本課為了讓後續指定編號的練習能互相對照，請使用以下編號，不可自行重新排序：
+agents：1=陳怡君（101）、2=王志豪（102）、3=林佳穎（103）、4=張育誠（104）。
+categories：1=網路連線、2=帳號權限、3=硬體設備、4=軟體操作。
+實務系統的編號通常由資料庫產生；這裡是教學樣本的固定對照。
 ```
 
 ---
@@ -72,6 +86,13 @@ SELECT status AS 狀態, COUNT(*) AS 件數 FROM tickets GROUP BY status ORDER B
    INSERT INTO tickets VALUES ('T-TMP-2', '2024-04-01', '順發貿易', 1, '已結案漏填日', 1, '已結案', NULL);
    ```
    收到 `violates check constraint "tickets_check"` 後執行 `ROLLBACK;`，再查 `SELECT COUNT(*) FROM tickets;` —— **`T-TMP-1` 也不會殘留，案件總數依然是 `30` 件！**
+
+   先在同一個 SQL 編輯器執行下列還原與查驗，再做第 2 題：
+
+   ```sql
+   ROLLBACK;
+   SELECT COUNT(*) AS 還原後案件數 FROM tickets;
+   ```
 
 2. **請 AI 幫你寫「批次改派人員 ＋ 結案」業務交易 Prompt**：  
    假設張育誠負荷太重，要把他手上還沒結案的 `T018` 改派給 `林佳穎（agent_id = 3）`，同時將已經處理完成的 `T020` 安全結案（日期 `'2024-03-29'`）。請貼這段 Prompt 讓 AI 產出交易並在 DBeaver 用 `ROLLBACK;` 試跑：

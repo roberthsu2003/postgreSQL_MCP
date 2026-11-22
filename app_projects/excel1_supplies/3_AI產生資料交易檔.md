@@ -1,6 +1,15 @@
 # 步驟 3｜AI 產生資料交易檔：把 Excel 寫進 `BEGIN ... COMMIT` 交易
 
-> **本步驟核心：不用匯入現成 `.sql`、也不用 CSV 匯入精靈！**  
+## 📥 本步驟資料與交易下載
+
+- 原始 Excel：[下載 耗材庫存表.xlsx](./耗材庫存表.xlsx)，請使用本文指定的資料工作表。
+- 純資料參考交易：[下載 supplies_data.sql](../_teacher_reference/supplies_data.sql)，包含 `BEGIN … COMMIT`，**不會幫你建表**。
+
+先用自己的 DDL 與 Excel 請 AI 產生交易，再與參考檔核對。要執行參考檔時，先確認目標資料庫正確、已建好表並清空測試資料；下載與執行方法見 [共用操作指南](../學習與操作指南.md)。請保留自己核對通過的 `建立資料.sql`，之後還原資料會用到。
+
+> 有意觸發錯誤的測試請逐句執行，出錯後先 `ROLLBACK;` 再開始下一個實驗。正式載入資料的交易要 `COMMIT`；後面的業務模擬交易最後一律還原，保持初始資料給步驟 4。
+
+> **本步驟核心：先請 AI 產生自己的交易，再核對參考檔，不使用 CSV 匯入精靈。**
 > 資料表是你自己在步驟 2 手寫的，現在要**由你親自把自己的 `CREATE TABLE` ＋ `耗材庫存表.xlsx` 交給 AI**，請 AI 產出標準的 **SQL Transaction 交易檔**，經你檢查無誤後在 DBeaver 執行。
 
 ---
@@ -42,7 +51,7 @@
 4. **數字沒引號**：`unit_price`、`current_stock`、`safety_stock` 不加單引號（例如 `650, 3, 5`）。
 5. **類別字完全一致**：只有 `'紙張'`、`'碳粉墨水'`、`'文具'`、`'清潔用品'` 四種，沒有被 AI 擅自翻譯或改字。
 
-檢查沒問題後，請在 DBeaver 打開新 SQL 編輯器，另存為 `建立資料.sql`，貼進去按「執行 SQL 腳本」（`Alt+X` / `Cmd+Enter` 選取全部）。
+檢查沒問題後，請在 DBeaver 打開新 SQL 編輯器，另存為 `建立資料.sql`，貼進去按「執行 SQL 腳本」（選單 SQL Editor → Execute SQL Script）。
 
 ---
 
@@ -104,7 +113,7 @@ FROM supplies;
    假設今天總務要一次處理三件事：同事領走 `2 箱` A4 80g 影印紙（`MAT-P-A480`）、同時領走 `3 包` A4 資料夾（`STA-FOLD-A4`），而且要把透明膠帶（`STA-TAPE-18`）的 `last_checked` 更新成今天（`CURRENT_DATE`）。請試著用下面這段 Prompt 讓 AI 產出交易 SQL，在 DBeaver 執行後先查出更新後結果，再用 `ROLLBACK;` 復原以免影響步驟 4 的初始數字！
    ```text
    請根據 supplies 資料表結構，幫我撰寫一個 PostgreSQL Transaction（不要用 MCP 寫入，只給我 SQL）：
-   1. 用 BEGIN 開頭，但最後先不要自動寫 COMMIT;，改在最後加上查詢三項品號的 SELECT 與一句註解掉的 -- ROLLBACK; 方便我在 DBeaver 測試確認沒問題後才自行決定 COMMIT 或 ROLLBACK。
+   1. 用 BEGIN 開頭，但最後先不要自動寫 COMMIT;，改在最後加上查詢三項品號的 SELECT 與一句可直接執行的 ROLLBACK;，確保測試結束後還原，不影響步驟 4。
    2. 交易內容：
       - MAT-P-A480 扣庫存 2，並加上防護條件確保扣完不會失敗或清楚呈現原本數量檢查
       - STA-FOLD-A4 扣庫存 3

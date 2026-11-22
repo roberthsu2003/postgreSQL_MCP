@@ -50,6 +50,8 @@
 | 5 | [JOIN](./JOIN.md) | SQL 版的 VLOOKUP：五種 JOIN |
 | 6 | [JSONB](./16json.md) | 飲料客製化、`->` 和 `->>` |
 
+📥 **外來鍵課程下載**：[範例資料交易檔](./範例資料/7_0_foreign_key_setup.sql) · [完整實測腳本](./範例資料/7_0_foreign_key_demo.sql)。使用 `cafe_db`，先匯入資料再執行實測；詳細步驟見 [外來鍵講義](./7_0FOREIGN_KEY.md#-課前準備與範例下載)。
+
 ---
 
 ## 💡 思維躍升：從單一工作表到多張表

@@ -4,6 +4,29 @@
 
 > 💡 從這一課開始會用到多張表。想先搞懂「為什麼要拆表」，可以先讀 [從 Excel 到關聯式資料庫](../範例資料庫/從Excel到關聯資料庫_正規化.md)，再回來。
 
+## 📥 課前準備與範例下載
+
+本課的 `fk_` 表是**本課專用練習表**，不在前幾課，也不在 `cafe_shop.sql` 裡。請先選一種準備方式：
+
+| 方式 | 做法 | 適合誰 |
+|---|---|---|
+| 直接匯入 | 下載 [外來鍵範例資料交易檔](./範例資料/7_0_foreign_key_setup.sql)，一次建立第 1～3 節的 10 張練習表與資料 | 想先觀察外來鍵效果 |
+| 親手建立 | 不匯入交易檔，依第 1～3 節的「手動建表與資料」區塊逐段建立 | 想練習建表語法 |
+
+1. 在 DBeaver 切換到 `cafe_db`，用 `SELECT current_database();` 確認。還沒建立資料庫，先看 [建立資料庫](./1建立資料庫.md)。
+2. 點上方 SQL 連結；在 GitHub 檔案頁右上角按 **Download raw file** 下載，或開啟 **Raw** 後另存成 `.sql`（UTF-8）。
+3. 在 DBeaver 開啟下載檔，確認連線到 `cafe_db`，使用 **SQL Editor → Execute SQL Script** 執行整份檔案，最後重新整理資料表清單。
+4. 匯入結果會列出各表筆數。**已匯入的同學略過所有「手動建表與資料」，直接執行「觀察／實測」區塊。**
+
+> [!WARNING]
+> 交易檔以 `BEGIN … COMMIT` 包住建表與寫入，整批成功才保留。重新匯入會清除並重建檔案內列出的 10 張 `fk_` 練習表，恢復起始資料；不會重建實作題的 `fk_categories`、`fk_products`。請在練習資料庫使用。
+>
+> 若匯入途中報錯，先執行 `ROLLBACK;`，排除原因後再執行整份交易檔；不要從失敗的位置只接著執行後半段。
+
+**想一次觀察全部規則？** 先匯入資料，再下載 [外來鍵完整實測腳本](./範例資料/7_0_foreign_key_demo.sql)。它會顯示成功結果，並把預期錯誤轉成訊息，最後 `ROLLBACK` 還原實驗資料。腳本中的 `DO`／`EXCEPTION` 是為了整份執行不中斷，本課不用背。
+
+> 本文的錯誤範例請**逐句執行**。建議使用自動提交（Auto-commit）；若使用手動提交，錯誤後先執行 `ROLLBACK;` 再繼續。不要把預期報錯的語句和其他操作一起包進 `BEGIN … COMMIT`，否則交易會進入失敗狀態。
+
 ## 🎬 情境
 
 Excel 訂單表裡寫著「門市：台北忠孝店」，可是公司根本沒有這家店。是打錯字？還是倒閉了？沒人知道。
@@ -12,7 +35,7 @@ Excel 訂單表裡寫著「門市：台北忠孝店」，可是公司根本沒�
 
 ```mermaid
 erDiagram
-    fk_stores ||--o{ fk_staff : "一家門市有多位員工"
+    fk_stores |o--o{ fk_staff : "員工可暫未分派門市"
     fk_stores {
         int store_id PK "主鍵"
         varchar name
@@ -32,7 +55,9 @@ erDiagram
 
 ## 1. 建立外來鍵
 
-**一定要先建父表，再建子表。** 要刪除時順序相反。
+**一定要先建父表，再建子表。** 要刪除資料表時順序相反。
+
+### 手動建表與資料（已匯入者略過）
 
 ```sql
 CREATE TABLE fk_stores (
@@ -50,6 +75,15 @@ INSERT INTO fk_stores (name) VALUES ('台北信義店'), ('台中逢甲店');
 INSERT INTO fk_staff (name, store_id) VALUES ('張志明', 1), ('陳美玲', 1), ('許淑芬', 2);
 ```
 
+### 觀察：哪些員工參考了哪家門市？
+
+```sql
+SELECT * FROM fk_stores ORDER BY store_id;
+SELECT * FROM fk_staff ORDER BY staff_id;
+```
+
+門市有 2 筆；員工有 3 筆。張志明、陳美玲的 `store_id` 是 1，許淑芬的是 2。
+
 ## 2. 它幫你擋下了什麼
 
 **擋住「幽靈門市」**：門市 99 不存在。
@@ -60,6 +94,8 @@ INSERT INTO fk_staff (name, store_id) VALUES ('幽靈員工', 99);
 
 > 🛑 **資料庫回應**：`insert or update on table "fk_staff" violates foreign key constraint "fk_staff_store_id_fkey"`
 
+> `SERIAL` 的序號即使新增失敗或交易還原，也可能已被取用；後續編號跳號是正常現象，不代表有員工資料遺失。
+
 **擋住「誤刪門市」**：門市 1 還有員工。
 
 ```sql
@@ -68,19 +104,58 @@ DELETE FROM fk_stores WHERE store_id = 1;
 
 > 🛑 **資料庫回應**：`update or delete on table "fk_stores" violates foreign key constraint "fk_staff_store_id_fkey" on table "fk_staff"`
 
+### 修改也會檢查：不能把員工改掛到不存在的門市
+
+```sql
+UPDATE fk_staff SET store_id = 99 WHERE staff_id = 1;
+```
+
+> 🛑 **預期結果**：同樣觸發 `fk_staff_store_id_fkey` 外來鍵錯誤，原本的門市編號仍是 1。
+
+### 外來鍵可以是 NULL 嗎？
+
+可以，除非欄位另有 `NOT NULL`。目前 `fk_staff.store_id` 允許空值，代表尚未分派門市：
+
+```sql
+BEGIN;
+UPDATE fk_staff SET store_id = NULL WHERE staff_id = 1;
+SELECT staff_id, name, store_id FROM fk_staff WHERE staff_id = 1;
+ROLLBACK;
+```
+
+**預期結果**：張志明的 `store_id` 顯示 `NULL`，還原後恢復為 1。外來鍵只保證「有填編號時，編號必須存在」，不代表一定要填；必填要另外加 `NOT NULL`。
+
+### 合法刪除：先處理子資料，再刪父資料
+
+```sql
+BEGIN;
+DELETE FROM fk_staff WHERE store_id = 1;
+DELETE FROM fk_stores WHERE store_id = 1;
+SELECT COUNT(*) AS 門市剩餘筆數 FROM fk_stores WHERE store_id = 1;
+ROLLBACK;
+```
+
+**預期結果**：筆數為 0；`ROLLBACK` 後門市 1 與兩位員工都恢復。這是刪除順序的示範，實務上仍應先確認員工應轉店或保留。
+
 ## 3. 父表資料被刪時，子表怎麼辦？
 
 建立外來鍵時，可以用 `ON DELETE` 指定規則：
 
 | 規則 | 父資料被刪時，子資料… | 生活比喻 | 適用情境 |
 |---|---|---|---|
-| `NO ACTION`（預設） | **不准刪**，報錯 | 還有員工的店不能關 | 門市與訂單、客戶與訂單 |
-| `RESTRICT` | 不准刪，幾乎同上 | 同上 | 同上 |
+| `NO ACTION`（預設） | 還有子資料參考時，**不准刪** | 還有員工的店不能關 | 門市與訂單、客戶與訂單 |
+| `RESTRICT` | 還有子資料參考時，不准刪 | 同上 | 同上 |
 | `SET NULL` | 外來鍵變成空值，資料留著 | 部門裁撤，員工先變無部門 | 部門與員工、會員與歷史訂單 |
-| `CASCADE` | **一起刪掉** | 訂單作廢，明細一起作廢 | 訂單與訂單明細 |
-| `SET DEFAULT` | 變成預設值 | 改掛到預設部門 | 較少用 |
+| `CASCADE` | **一起刪掉** | 刪除訂單，明細一起刪除 | 訂單與訂單明細 |
+| `SET DEFAULT` | 外來鍵改成預設值，預設值仍須符合限制 | 改掛到預設部門 | 有「待分派」部門的情境 |
 
-### 實測 SET NULL：會員註銷，訂單要留著報稅
+本課未設定延後檢查，所以 `NO ACTION` 與 `RESTRICT` 在這些例子都會擋下刪除。進階差異是：`NO ACTION` 配合可延後的限制時能延後檢查，`RESTRICT` 的刪除檢查不能延後。參考 [PostgreSQL 外來鍵說明](https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK)。
+
+> 只有「仍被參考」的父資料會被擋；沒有子資料參考的父資料可以刪除。以下成功的刪除實驗都用 `ROLLBACK` 還原，可重複執行。
+
+### 實測 SET NULL：會員刪除，訂單紀錄保留
+
+**手動建表與資料（已匯入者略過）**
 
 ```sql
 CREATE TABLE fk_members (
@@ -96,9 +171,16 @@ CREATE TABLE fk_member_orders (
 
 INSERT INTO fk_members VALUES (1, '林家豪');
 INSERT INTO fk_member_orders VALUES (888, 1, 350);
+```
 
+**實測（所有同學執行）**：先查再刪，比較刪除前後。
+
+```sql
+BEGIN;
+SELECT * FROM fk_member_orders;  -- member_id 原本是 1
 DELETE FROM fk_members WHERE member_id = 1;
 SELECT * FROM fk_member_orders;
+ROLLBACK;
 ```
 
 **執行結果**
@@ -107,9 +189,11 @@ SELECT * FROM fk_member_orders;
 |---:|---:|---:|
 | 888 | *NULL* | 350 |
 
-會員不見了，訂單還在，`member_id` 變成空值。
+刪除後會員不見了，訂單還在，`member_id` 變成空值；`ROLLBACK` 後恢復原狀。此欄位不能加 `NOT NULL`，否則刪除時會因無法填入空值而失敗。這裡只示範解除關聯，完整的個資處理與保存政策仍需另行設計。
 
-### 實測 CASCADE：訂單作廢，明細跟著走
+### 實測 CASCADE：刪除訂單，明細跟著走
+
+**手動建表與資料（已匯入者略過）**
 
 ```sql
 CREATE TABLE fk_orders (
@@ -124,9 +208,16 @@ CREATE TABLE fk_order_items (
 
 INSERT INTO fk_orders VALUES (101);
 INSERT INTO fk_order_items VALUES (1, 101, '美式咖啡'), (2, 101, '可頌');
+```
 
+**實測（所有同學執行）**
+
+```sql
+BEGIN;
+SELECT COUNT(*) AS 刪除前明細筆數 FROM fk_order_items;  -- 2
 DELETE FROM fk_orders WHERE order_id = 101;
 SELECT COUNT(*) AS 剩餘明細筆數 FROM fk_order_items;
+ROLLBACK;
 ```
 
 **執行結果**
@@ -138,9 +229,89 @@ SELECT COUNT(*) AS 剩餘明細筆數 FROM fk_order_items;
 > [!WARNING]
 > `CASCADE` 很方便也很危險。誤刪一筆父資料，可能連帶刪掉上千筆子資料。**只用在「子資料離開父資料就沒有意義」的情況**。
 
+### 實測 RESTRICT：有員工的部門不能刪
+
+**手動建表與資料（已匯入者略過）**
+
+```sql
+CREATE TABLE fk_restrict_departments (
+    dept_id INT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL
+);
+CREATE TABLE fk_restrict_staff (
+    staff_id INT PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    dept_id INT REFERENCES fk_restrict_departments(dept_id) ON DELETE RESTRICT
+);
+INSERT INTO fk_restrict_departments VALUES (1, '業務部');
+INSERT INTO fk_restrict_staff VALUES (1, '王小明', 1);
+```
+
+**實測（逐句執行）**
+
+```sql
+DELETE FROM fk_restrict_departments WHERE dept_id = 1;
+```
+
+> 🛑 **預期結果**：觸發 `fk_restrict_staff_dept_id_fkey` 外來鍵錯誤。部門與員工都保留。
+
+### 實測 SET DEFAULT：改掛到「待分派」部門
+
+**手動建表與資料（已匯入者略過）**
+
+```sql
+CREATE TABLE fk_default_departments (
+    dept_id INT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL
+);
+CREATE TABLE fk_default_staff (
+    staff_id INT PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    dept_id INT DEFAULT 0 REFERENCES fk_default_departments(dept_id) ON DELETE SET DEFAULT
+);
+INSERT INTO fk_default_departments VALUES (0, '待分派'), (1, '行銷部');
+INSERT INTO fk_default_staff VALUES (1, '李小華', 1);
+```
+
+**實測（所有同學執行）**
+
+```sql
+BEGIN;
+SELECT * FROM fk_default_staff;  -- dept_id 原本是 1
+DELETE FROM fk_default_departments WHERE dept_id = 1;
+SELECT * FROM fk_default_staff;
+ROLLBACK;
+```
+
+**執行結果（還原之前）**
+
+| staff_id | name | dept_id |
+|---:|---|---:|
+| 1 | 李小華 | 0 |
+
+**預設值不是免檢查通行證。** 父表必須有編號 0；若只設定 `DEFAULT 0` 卻沒有「待分派」資料，刪除仍會失敗。可以用以下交易測試，錯誤後請執行最後的 `ROLLBACK`：
+
+```sql
+BEGIN;
+DELETE FROM fk_default_departments WHERE dept_id = 0;  -- 此時沒人參考 0，可刪
+DELETE FROM fk_default_departments WHERE dept_id = 1;  -- 預期外來鍵錯誤
+```
+
+```sql
+ROLLBACK;
+```
+
 ## 4. 在真實資料上驗證
 
-先確認已匯入對應的範例庫（各自建立同名資料庫，再執行同名 `.sql` 檔）。
+這一節是**延伸練習**，不使用 `cafe_db` 的 `fk_` 表。三份 SQL 都已包含 `BEGIN … COMMIT`；請各自建立同名的練習資料庫，再切換連線、匯入對應檔案。操作方式見 [範例庫匯入說明](../範例資料庫/中文範例資料庫/README.md)。
+
+| 練習 | 切換到資料庫 | 下載完整結構與資料 |
+|---|---|---|
+| 門市訂單 | `cafe_shop` | [cafe_shop.sql](../範例資料庫/中文範例資料庫/cafe_shop.sql) |
+| 員工報帳 | `expense_tracker` | [expense_tracker.sql](../範例資料庫/中文範例資料庫/expense_tracker.sql) |
+| 資產借用 | `assets_inventory` | [assets_inventory.sql](../範例資料庫/中文範例資料庫/assets_inventory.sql) |
+
+> `cafe_shop.sql` 與 `assets_inventory.sql` 會刪表重建，請使用獨立練習資料庫。以下三個故意報錯的語句應分別執行；手動提交模式下，每次錯誤後先 `ROLLBACK`。
 
 **門市（`cafe_shop`）：不存在的門市不能開單**
 
@@ -153,12 +324,21 @@ VALUES ('2024-03-31', '10:00', 999, 1, '現金', '已完成');
 
 **會計（`expense_tracker`）：不存在的員工不能報帳**
 
+先確認類別 1 存在、員工 E99 不存在，並填入必填的發票號碼，才能測到外來鍵：
+
 ```sql
-INSERT INTO expense_claims (claim_id, claim_date, emp_id, category_id, amount, status)
-VALUES ('EXP-TEST', '2024-03-31', 'E99', 1, 500, '待審核');
+SELECT category_id, name FROM expense_categories WHERE category_id = 1;
+SELECT emp_id FROM expense_employees WHERE emp_id = 'E99';
 ```
 
-> 🛑 **資料庫回應**：`null value in column "invoice_no" of relation "expense_claims" violates not-null constraint`
+**預期結果**：類別查到 1 筆，員工查到 0 筆。
+
+```sql
+INSERT INTO expense_claims (claim_id, claim_date, emp_id, category_id, invoice_no, amount, status)
+VALUES ('EXP-TEST', '2024-03-31', 'E99', 1, 'TEST-00000001', 500, '待審核');
+```
+
+> 🛑 **資料庫回應**：`insert or update on table "expense_claims" violates foreign key constraint "expense_claims_emp_id_fkey"`
 
 **總務（`assets_inventory`）：有借用紀錄的筆電不能直接刪**
 
@@ -175,8 +355,12 @@ DELETE FROM assets WHERE asset_id = 'IT-NB-202401';
 | `insert or update ... violates foreign key` | 父表沒有這個值 | 先新增父資料，或修正編號 |
 | `update or delete ... violates foreign key` | 還有子資料參考它 | 先處理子資料 |
 | `relation "xxx" does not exist`（建表時） | 建表順序錯 | 先建父表 |
-| `cannot drop table ... other objects depend on it` | 先刪了父表 | 先刪子表，或用 `DROP TABLE ... CASCADE` |
+| `cannot drop table ... other objects depend on it` | 先刪了父表 | 先刪子表；`DROP TABLE ... CASCADE` 會連相依物件一起移除，初學時先不要用 |
 | `there is no unique constraint matching given keys` | 參考的欄位不是主鍵或 UNIQUE | 外來鍵要指向主鍵或 UNIQUE 欄位 |
+| `relation "fk_xxx" already exists` | 匯入後又執行手動建表 | 選一種準備方式；要重來就重新匯入交易檔 |
+| `current transaction is aborted` | 交易中有語句失敗 | 先執行 `ROLLBACK;` 再繼續 |
+| `SET NULL` 刪除時出現 `not-null` 錯誤 | 子表外來鍵欄位不允許空值 | 重新評估規則，或讓該欄位允許 NULL |
+| `SET DEFAULT` 刪除時仍報外來鍵錯誤 | 預設編號在父表不存在 | 先建立預設的父資料 |
 
 ## ✍️ 動手練
 
@@ -197,7 +381,7 @@ DELETE FROM assets WHERE asset_id = 'IT-NB-202401';
 
 </details>
 
-**實作題**：在 `cafe_db` 建立 `fk_categories`（分類）和 `fk_products`（商品），讓商品參考分類，並禁止刪除還有商品的分類。
+**實作題**：從延伸範例庫切回 `cafe_db`。在 `cafe_db` 建立 `fk_categories`（分類）和 `fk_products`（商品），讓商品參考分類，並禁止刪除還有商品的分類。
 
 <details>
 <summary>看答案</summary>
@@ -215,7 +399,34 @@ CREATE TABLE fk_products (
 );
 ```
 
-不寫 `ON DELETE` 就是預設的 `NO ACTION`，會禁止刪除。
+不寫 `ON DELETE` 就是預設的 `NO ACTION`，會禁止刪除仍被商品參考的分類。
+
+建表完成後，補上測試資料，實際驗證。以下交易最後會還原，可重複測試；不要重複執行上面的建表語句。
+
+```sql
+BEGIN;
+INSERT INTO fk_categories (name) VALUES ('外來鍵練習分類') RETURNING category_id;
+INSERT INTO fk_products (name, category_id)
+SELECT '外來鍵練習商品', category_id FROM fk_categories WHERE name = '外來鍵練習分類';
+SAVEPOINT before_delete;
+```
+
+單獨執行刪除，預期出現 `fk_products_category_id_fkey` 外來鍵錯誤：
+
+```sql
+DELETE FROM fk_categories WHERE name = '外來鍵練習分類';
+```
+
+錯誤後先退回儲存點，再查兩筆資料仍在，最後還原測試資料：
+
+```sql
+ROLLBACK TO SAVEPOINT before_delete;
+SELECT * FROM fk_categories WHERE name = '外來鍵練習分類';
+SELECT * FROM fk_products WHERE name = '外來鍵練習商品';
+ROLLBACK;
+```
+
+預期兩個查詢各有 1 筆。`SAVEPOINT` 讓交易內發生預期錯誤後，仍能繼續查詢；直接整筆 `ROLLBACK` 也可以，但剛新增的測試資料就會一起消失。
 
 </details>
 

@@ -1,5 +1,7 @@
 # 實戰 4｜差旅報銷單：一張工作表拆成四張表（多表 JOIN × `SERIAL` × 審核流）
 
+> 第一次做先讀 [共用操作指南](../學習與操作指南.md)。步驟 1～4 是資料庫實作，E 題可在補完進階語法後再做；步驟 5～8 是桌面 App 延伸，執行方式見 [App 實作指南](../桌面App實作指南.md)。
+
 > **對應 Excel**：[差旅報銷單.xlsx](差旅報銷單.xlsx)（會計／出納每月彙整的報銷總表）
 >
 > **核心理念**：一張 Excel 裡混雜了部門主管、費用類別、員工名單和報銷金額，發票號碼全靠人眼比對，誰核准、誰待撥款更是一團亂。這一次我們親手把 1 張表正規化拆成 **4 張表（`departments`、`categories`、`employees`、`claims`）**，搞懂 `SERIAL` 跳號與 `setval()`、用 `UNIQUE` 防同一發票重複報帳，再用 4 表 `JOIN` 串出完整審核流程！
@@ -8,7 +10,7 @@
 
 ## 本專案實作三大鐵則
 
-1. **全程不匯入現成檔案**：沒有備份 `.sql` 可以執行，看著 4 表 ER 關聯圖與欄位規格，自己在 DBeaver Query Tool 依「先父後子」順序手寫四句 `CREATE TABLE`。
+1. **先手寫建表，再核對交易**：先不使用現成建表檔，看著 4 表 ER 關聯圖與欄位規格，自己在 DBeaver Query Tool 依「先父後子」順序手寫四句 `CREATE TABLE`。
 2. **用 AI 建立 Transaction（交易）**：貼上你寫好的四句 `CREATE TABLE` 和 `差旅報銷單.xlsx`，讓 AI 產出包含 **`setval(pg_get_serial_sequence(...))`** 對齊自動編號的 `BEGIN; ... COMMIT;` 交易檔並完成三方對帳。
 3. **10 題多表 JOIN / 審核流 DML ＋ Microsoft Postgres MCP 雙軌驗證**：親手寫出 4 表 `JOIN`、防重複審核 `UPDATE ... AND status='待審核'`、`FILTER` 部門交叉表與批次撥款沙盒，每題皆附 `@microsoft/postgres-mcp` 查詢驗證 Prompt。
 

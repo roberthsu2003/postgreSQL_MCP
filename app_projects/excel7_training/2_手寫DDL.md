@@ -233,7 +233,7 @@ TRUNCATE guest_enrollments, employee_enrollments, guests, employees, courses RES
 <details>
 <summary>看答案</summary>
 
-`guests.guest_id` 的計數器 (`SERIAL`) 不會歸零，下一筆新來賓會從 `2` 開始跳號，而不是重新從 `1` 開始。
+`guests.guest_id` 的計數器 (`SERIAL`) 不會歸零。若依序做過前面的種子新增與重複信箱測試，1 和 2 都已取用，下一次自動配號通常會是 `3`；若重複測試過，還可能更大。重點是不會保證重新從 `1` 開始。
 
 </details>
 
