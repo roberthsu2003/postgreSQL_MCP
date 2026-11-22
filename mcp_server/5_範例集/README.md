@@ -1,5 +1,7 @@
 # 單元 5：企業各部門 MCP Server 範例集
 
+> **自學主線**：先使用 [單元 5 的建置與驗收 Prompt](../自學與驗收指南.md#unit-5)。以下原理、程式與設定檔供選讀對照；每完成一個階段，以指南的過關標準驗收。
+
 > 把課程中**所有的範例資料庫**都做成 MCP Server。每個範例都是一個「部門」的 AI 助理，可以直接使用（支援本機 `stdio` 與遠端 `http + Token` 雙模式；YouBike 未附資料，僅供閱讀），也可以當作請 AI 寫程式的參考。　[← 回第 6 章](../README.md)
 
 ## 範例一覽
@@ -108,16 +110,21 @@ uv pip install -r requirements.txt
 
 ### 2. 準備資料庫
 
+每個範例使用獨立練習資料庫，避免同名的商品、訂單或分類表互相覆蓋。先建立目標資料庫，再只匯入對應檔案。
+
 | 範例 | 資料庫 | 準備方式 |
 |---|---|---|
-| 客服助理、教務處助理、館員助理 | `practice` | 匯入[中文範例資料庫](../../範例資料庫/中文範例資料庫/README.md)的 `cafe_shop.sql`、`shop.sql`、`school.sql`、`library.sql` |
-| 門市營運分析 | `practice` | 匯入範例庫的 [`cafe_shop.sql`](../../範例資料庫/中文範例資料庫/cafe_shop.sql) |
-| 客服助理、電商助理 | `practice` | 匯入範例庫的 [`shop.sql`](../../範例資料庫/中文範例資料庫/shop.sql) |
+| 客服助理、商店營運助理 | `mcp_shop` | [shop.sql](../../範例資料庫/中文範例資料庫/shop.sql) |
+| 教務處助理 | `mcp_school` | [school.sql](../../範例資料庫/中文範例資料庫/school.sql) |
+| 館員助理 | `mcp_library` | [library.sql](../../範例資料庫/中文範例資料庫/library.sql)；若做過單元2，額外的練習資料會影響統計，請在專用練習庫重匯原始檔再核對 |
+| 門市營運查詢 | `mcp_cafe` | [cafe_shop.sql](../../範例資料庫/中文範例資料庫/cafe_shop.sql) |
+| 股市查詢 | `mcp_stock` | [stock_market.sql](../../範例資料庫/中文範例資料庫/stock_market.sql) |
+| YouBike | 自備 | 尚未附資料，先選讀，不要求完成連線驗收 |
 
 ### 3. 用 Inspector 測試
 
 ```bash
-export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/practice"
+export DATABASE_URI="postgresql://postgres:你的密碼@樹莓派IP:5432/mcp_shop"
 uv run mcp dev shop_service.py
 ```
 
@@ -143,26 +150,26 @@ uv run mcp dev shop_service.py
   "mcpServers": {
     "shop-service": {
       "command": "uv",
-      "args": ["run", "--with", "mcp[cli]", "--with", "psycopg2-binary",
+      "args": ["run", "--with", "mcp[cli]>=2.3.0,<3", "--with", "psycopg2-binary",
                "/完整路徑/mcp_server/5_範例集/shop_service.py"],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
+        "DATABASE_URI": "postgresql://postgres:yourpassword@樹莓派IP:5432/mcp_shop"
       }
     },
     "school-office": {
       "command": "uv",
-      "args": ["run", "--with", "mcp[cli]", "--with", "psycopg2-binary",
+      "args": ["run", "--with", "mcp[cli]>=2.3.0,<3", "--with", "psycopg2-binary",
                "/完整路徑/mcp_server/5_範例集/school_office.py"],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice"
+        "DATABASE_URI": "postgresql://postgres:yourpassword@樹莓派IP:5432/mcp_school"
       }
     },
     "library-desk": {
       "command": "uv",
-      "args": ["run", "--with", "mcp[cli]", "--with", "psycopg2-binary",
+      "args": ["run", "--with", "mcp[cli]>=2.3.0,<3", "--with", "psycopg2-binary",
                "/完整路徑/mcp_server/5_範例集/library_desk.py"],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/practice",
+        "DATABASE_URI": "postgresql://postgres:yourpassword@樹莓派IP:5432/mcp_library",
         "MCP_USER": "王館員"
       }
     }
@@ -180,14 +187,14 @@ uv run mcp dev shop_service.py
 cp tokens.example.json tokens.json
 
 # 2. 啟動(macOS / Linux)
-export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/practice"
+export DATABASE_URI="postgresql://postgres:你的密碼@樹莓派IP:5432/mcp_school"
 MCP_TRANSPORT=http MCP_PORT=8001 uv run school_office.py
 ```
 
 Windows PowerShell：
 
 ```powershell
-$env:DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/practice"
+$env:DATABASE_URI="postgresql://postgres:你的密碼@樹莓派IP:5432/mcp_school"
 $env:MCP_TRANSPORT="http"; $env:MCP_PORT="8001"
 uv run school_office.py
 ```
@@ -210,7 +217,7 @@ uv run school_office.py
 
 | 環境變數 | 預設值 | 說明 |
 |---|---|---|
-| `DATABASE_URI` | `postgresql://postgres:yourpassword@localhost:5432/practice` | 資料庫連線字串 |
+| `DATABASE_URI` | 本課必須依範例明確設定 | 資料庫連線字串，不能所有範例共用同一庫 |
 | `MCP_TRANSPORT` | `stdio` | `stdio` 本機、`http` 遠端 |
 | `MCP_HOST` | `127.0.0.1` | 遠端模式；讓其它電腦連線時改成 `0.0.0.0` |
 | `MCP_PORT` | `8000` | 遠端模式的埠號 |

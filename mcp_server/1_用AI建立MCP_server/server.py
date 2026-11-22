@@ -59,6 +59,8 @@ def search_products(keyword: str) -> list[dict]:
 @mcp.tool()
 def get_store_sales(store_name: str, start_date: date, end_date: date) -> list[dict]:
     """查詢某家門市在一段期間內每天的訂單數和營業額，只計算已完成的訂單。日期格式為 YYYY-MM-DD"""
+    if start_date > end_date:
+        raise ValueError("開始日期不得晚於結束日期")
     sql = """
         SELECT o.order_date AS 日期,
                COUNT(DISTINCT o.order_id) AS 訂單數,
@@ -83,6 +85,10 @@ def top_products(
     order_by: Literal["銷量", "營業額"] = "銷量",
 ) -> list[dict]:
     """查詢一段期間內賣得最好的商品排行，可以依銷量或營業額排序，只計算已完成的訂單。日期格式為 YYYY-MM-DD"""
+    if start_date > end_date:
+        raise ValueError("開始日期不得晚於結束日期")
+    if not 1 <= limit <= 50:
+        raise ValueError("筆數必須介於 1 到 50")
     # 欄位名稱不能用 %s 傳遞，所以用 Literal 限定只能是這兩個值，避免 SQL Injection
     sql = f"""
         SELECT p.name AS 商品名稱,

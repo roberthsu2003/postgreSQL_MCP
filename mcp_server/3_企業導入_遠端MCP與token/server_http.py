@@ -32,7 +32,7 @@ from starlette.responses import JSONResponse
 # 資料庫連線字串(從環境變數讀取,密碼不要寫死在程式中)
 DATABASE_URI = os.environ.get(
     "DATABASE_URI",
-    "postgresql://postgres:yourpassword@localhost:5432/practice",
+    "postgresql://postgres:yourpassword@localhost:5432/mcp_shop",
 )
 
 # token 清單:{"token": "使用者名稱"},放在 tokens.json,不可以放進 git
@@ -68,7 +68,8 @@ class TokenCheck:
 
         headers = dict(scope["headers"])
         auth = headers.get(b"authorization", b"").decode()
-        token = auth.removeprefix("Bearer ").strip()
+        scheme, _, token = auth.partition(" ")
+        token = token.strip() if scheme.lower() == "bearer" else ""
 
         if token not in TOKENS:
             print(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] 拒絕連線:token 錯誤或沒有提供")
@@ -133,6 +134,8 @@ def sales_summary(
 ) -> list[dict]:
     """統計一段期間內「已完成」訂單的銷售數量與營業額,可以依分類、商品或月份分組。日期格式為 YYYY-MM-DD"""
     audit("sales_summary", start_date=str(start_date), end_date=str(end_date), group_by=group_by)
+    if start_date > end_date:
+        raise ValueError("開始日期不得晚於結束日期")
     # 分組欄位不能用 %s 傳遞,所以用 Literal 限定只能是這三種,再對應到寫好的 SQL,避免 SQL injection
     group_column = {
         "分類": "c.name",
@@ -173,7 +176,8 @@ def low_stock_products(threshold: int = 10) -> list[dict]:
 def top_customers(year: int = 2025, limit: int = 10) -> list[dict]:
     """某一年消費金額最高的會員排行(只計算已完成訂單),最多回傳 50 筆"""
     audit("top_customers", year=year, limit=limit)
-    limit = min(limit, 50)  # 限制最多 50 筆,避免一次取回太多個資
+    if not 1 <= limit <= 50:
+        raise ValueError("筆數必須介於 1 到 50")
     sql = """
         SELECT cu.name AS 會員姓名, cu.city AS 縣市,
                COUNT(DISTINCT o.order_id) AS 訂單數,

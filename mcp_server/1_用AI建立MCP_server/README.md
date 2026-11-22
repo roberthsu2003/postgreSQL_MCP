@@ -1,6 +1,31 @@
 # 單元 1：用 AI 建立自己的 MCP Server
 
-> **本單元目標**：結合前面學到的 SQL 和請 AI 寫程式的經驗，在 **Antigravity** 中建立一個查詢門市營運資料（`cafe_shop`）的自訂 MCP Server，並透過專案級設定掛載。
+> **自學主線**：先使用 [單元 1 的建置與驗收 Prompt](../自學與驗收指南.md#unit-1)。以下原理、程式與設定檔供選讀對照；每完成一個階段，以指南的過關標準驗收。
+
+## 先看懂本單元的英文
+
+英文名稱保留不改，先用中文用途對照，再看操作。共同名詞與錯誤訊息見 [英文對照表](../英文名詞與欄位對照.md)。
+
+| 英文原名 | 中文意思與用途 |
+|---|---|
+| `products / categories / stores / orders / order_items` | 商品／商品分類／門市／訂單／訂單明細，這五個是資料表名稱 |
+| `product_id` | 商品編號；連接商品與明細 |
+| `category_id` | 分類編號；找出商品屬於哪類 |
+| `store_id` | 門市編號；找出訂單在哪家店成立 |
+| `order_id` | 訂單編號；同一訂單可以有多筆商品明細 |
+| `name` | 名稱：商品表是商品名稱、分類表是分類名稱、門市表是門市名稱 |
+| `price` | 商品目前售價 |
+| `order_date` | 訂單日期 |
+| `status` | 訂單狀態；本單元業績只計「已完成」 |
+| `quantity` | 這筆明細買幾件 |
+| `unit_price` | 這筆訂單當時每件的成交單價，不是目前售價 |
+| `keyword` | 關鍵字，例如「拿鐵」 |
+| `store_name` | 要查的門市名稱，例如「台北信義店」 |
+| `start_date / end_date` | 開始日期／結束日期，例如2024-03-01到2024-03-07 |
+| `limit` | 最多回傳幾筆，例如3代表前3筆 |
+| `order_by` | 按什麼排序；本課只能選「銷量」或「營業額」 |
+
+> **本單元目標**：結合前面學到的 SQL 和請 AI 寫程式的經驗，在 **Antigravity** 中建立一個查詢門市營運資料（來源 `cafe_shop.sql`，練習庫 `mcp_cafe`）的自訂 MCP Server，並透過專案級設定掛載。
 > 你的角色是**需求設計者**和**驗收者**。
 
 ## 目錄
@@ -79,7 +104,7 @@ flowchart LR
 
 | 項目 | 說明 |
 |---|---|
-| 範例資料庫 | 建立資料庫 `cafe_shop` 並匯入 👉 [cafe_shop.sql](../../範例資料庫/中文範例資料庫/cafe_shop.sql) |
+| 範例資料庫 | 建立資料庫 `mcp_cafe` 並匯入 👉 [cafe_shop.sql](../../範例資料庫/中文範例資料庫/cafe_shop.sql) |
 | uv | 幫你準備 Python 和所需套件的工具，電腦上沒有 Python 時也會自動下載 👉 [安裝說明](https://docs.astral.sh/uv/getting-started/installation/) |
 | Antigravity | 本課程統一使用的 AI 助手，支援專案級 MCP、終端機與 AI 輔助開發 |
 
@@ -133,6 +158,7 @@ AI 要知道資料表有哪些欄位才能寫出正確的 SQL。取得方式（�
 - 查詢結果用 RealDictCursor 回傳 list[dict],日期轉成字串
 - 每個工具都要寫清楚的繁體中文 docstring,說明用途和參數格式
 - 程式加上繁體中文註解,讓不會寫程式的人也看得懂
+- 限制 limit 為 1～50，開始日期不得晚於結束日期，錯誤訊息用繁體中文
 - 同時產生 requirements.txt
 
 ## 資料表結構
@@ -270,8 +296,8 @@ uv run mcp dev server.py              # 啟動測試工具
 ```
 
 > **啟動前一定要先設定環境變數**，否則會出現 `KeyError: 'DATABASE_URI'`：
-> - macOS / Linux：`export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/cafe_shop"`
-> - Windows PowerShell：`$env:DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/cafe_shop"`
+> - macOS / Linux：`export DATABASE_URI="postgresql://postgres:你的密碼@樹莓派IP:5432/mcp_cafe"`
+> - Windows PowerShell：`$env:DATABASE_URI="postgresql://postgres:你的密碼@樹莓派IP:5432/mcp_cafe"`
 
 瀏覽器會開啟 Inspector：
 
@@ -305,13 +331,13 @@ uv run mcp dev server.py              # 啟動測試工具
       "args": [
         "run",
         "--with",
-        "mcp[cli]",
+        "mcp[cli]>=2.3.0,<3",
         "--with",
         "psycopg2-binary",
         "/完整路徑/mcp_server/1_用AI建立MCP_server/server.py"
       ],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:yourpassword@localhost:5432/cafe_shop"
+        "DATABASE_URI": "postgresql://postgres:yourpassword@樹莓派IP:5432/mcp_cafe"
       }
     }
   }
@@ -381,7 +407,7 @@ uv run mcp dev server.py              # 啟動測試工具
 
 1. 新增工具 `monthly_sales(store_name)`：某門市每個月的營業額
 2. 新增工具 `compare_stores(store_a, store_b, start_date, end_date)`：比較兩家門市一段期間的業績
-3. 為 `top_products` 的 `limit` 加上上限（最多 50 筆）
+3. 驗證 `top_products` 的 `limit` 上下限（1、50成功；0、51拒絕）
 
 ### 練習三：從零開始
 

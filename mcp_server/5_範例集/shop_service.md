@@ -1,10 +1,29 @@
 # 範例 1：🛒 網路商店客服助理
 
+> **目標資料庫：`mcp_shop`**。準備與驗收請先看 [單元 5 自學 Prompt](../自學與驗收指南.md#unit-5)，不要把多個案例匯入同一個資料庫。
+
 程式：[shop_service.py](./shop_service.py)　資料庫：[shop.sql](../../範例資料庫/中文範例資料庫/README.md#-網路商店-shop)　[← 回範例集](./README.md)
 
 ## 情境
 
 客服人員接到會員來電：「我上個月買的東西還沒到」。以前要開好幾個系統查詢，現在直接問 Claude。
+
+## 英文欄位、工具與參數先對照
+
+保留原名稱，中文用來理解用途；共同名詞見 [英文對照表](../英文名詞與欄位對照.md)。
+
+| 英文原名 | 中文意思與用途 |
+|---|---|
+| `customers / orders / order_items / products` | 會員／訂單／訂單明細／商品資料表 |
+| `customer_id / order_id / product_id` | 會員編號／訂單編號／商品編號 |
+| `name / city / joined_on` | 會員姓名／縣市／加入日期；products.name則是商品名稱 |
+| `email` | 電子郵件信箱；輸出遮罩後內容，不顯示完整地址 |
+| `order_date / status / payment_method` | 訂單日期／狀態／付款方式 |
+| `shipping_fee` | 訂單運費；和商品金額分開 |
+| `quantity / unit_price` | 購買數量／當時成交單價 |
+| `keyword / limit` | 搜尋關鍵字／最多回傳幾筆 |
+| `search_customers / customer_orders` | 找會員／查某會員訂單 |
+| `order_detail / orders_by_status` | 查一張訂單的商品明細／依狀態列訂單 |
 
 ## 工具
 

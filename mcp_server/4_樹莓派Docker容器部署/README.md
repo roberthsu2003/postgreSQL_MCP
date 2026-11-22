@@ -1,6 +1,29 @@
-# 單元 4：正式上線：部署至 Raspberry Pi Docker 雙容器
+# 單元 4：區網部署：Raspberry Pi Docker 雙容器
 
-> **本單元目標**：把前一單元做好的遠端 Token 版 MCP Server 打包成 Docker 容器，放進 **Raspberry Pi（樹莓派）** 與 PostgreSQL 組成**雙容器架構**，實現 24 小時常駐、資料庫密碼不外洩的企業共用環境。
+> **自學主線**：先使用 [單元 4 的建置與驗收 Prompt](../自學與驗收指南.md#unit-4)。以下原理、程式與設定檔供選讀對照；每完成一個階段，以指南的過關標準驗收。
+
+## 先看懂本單元的英文
+
+英文名稱保留不改，先用中文用途對照，再看操作。共同名詞與錯誤訊息見 [英文對照表](../英文名詞與欄位對照.md)。
+
+| 英文原名 | 中文意思與用途 |
+|---|---|
+| `services` | 這份設定要管理的服務清單 |
+| `postgres / mcp-server` | 本課的資料庫服務名稱／MCP服務名稱；服務名稱用於容器互相連線 |
+| `image / build` | 使用哪個映像檔／從哪個資料夾打包映像檔 |
+| `container_name` | 給容器取的名稱；不是資料庫名稱 |
+| `environment` | 給服務啟動時讀取的環境變數 |
+| `ports` | 主機埠與容器埠的對應；8000:8000表示主機8000連到容器8000 |
+| `volumes` | 資料卷或檔案掛載；資料庫資料和tokens.json的用途不同 |
+| `networks / mcp-net` | 服務加入的網路／本課取的網路名稱 |
+| `depends_on` | 服務的相依關係；只列服務不保證資料庫已可查詢 |
+| `restart / unless-stopped` | 重新啟動策略／除非手動停止，否則自動恢復執行 |
+| `Dockerfile` | 描述如何打包MCP程式的檔案 |
+| `FROM / WORKDIR / COPY / RUN / EXPOSE / CMD` | 基底映像檔／工作目錄／複製檔案／建置時執行／宣告埠／啟動命令 |
+
+商店的資料表欄位沿用 [單元3的欄位說明](../3_企業導入_遠端MCP與token/README.md#先看懂本單元的英文)，部署時不改欄名。
+
+> **本單元目標**：把前一單元做好的遠端 Token 版 MCP Server 打包成 Docker 容器，放進 **Raspberry Pi（樹莓派）** 與 PostgreSQL 組成**雙容器架構**，實現 24 小時常駐、資料庫密碼不外洩的區網共用練習環境；正式企業上線仍需完成單元 3 列出的 HTTPS、權限及稽核保存。
 
 參考設定檔：[Dockerfile](./Dockerfile)、[docker-compose.yml](./docker-compose.yml)
 
@@ -10,7 +33,7 @@
 
 在[單元 1](../1_用AI建立MCP_server/README.md) 與[單元 2](../2_寫入型MCP_server/README.md) 中，我們在**自己的電腦**上執行 MCP Server（個人開發階段）；在[單元 3](../3_企業導入_遠端MCP與token/README.md) 中，我們加上了 HTTP 與 Token 門禁，但如果伺服器還是開在自己的筆電終端機裡，**筆電一闔上，全公司就斷線了**。
 
-將自訂 MCP Server 放進 **Raspberry Pi 的 Docker** 與 PostgreSQL 一起運行，就完成了真正的企業級部署：
+將自訂 MCP Server 放進 **Raspberry Pi 的 Docker** 與 PostgreSQL 一起運行，就能練習將服務從筆電搬到常駐主機：
 
 ```mermaid
 graph LR
@@ -51,7 +74,7 @@ graph LR
 ## 2. 事前準備
 
 1. 已完成[第 1 章：在樹莓派使用 Docker Compose 管理伺服器容器](../../raspberry_docker安裝/5_docker_compose雙容器.md)，樹莓派上已有 `~/postgres-compose` 目錄與運作中的 PostgreSQL。
-2. 樹莓派的 PostgreSQL 已建立 `practice` 資料庫並匯入 [shop.sql](../../範例資料庫/中文範例資料庫/README.md#-網路商店-shop)。
+2. 樹莓派的 PostgreSQL 已建立 `mcp_shop` 資料庫並匯入 [shop.sql](../../範例資料庫/中文範例資料庫/README.md#-網路商店-shop)。
 
 ---
 
@@ -148,7 +171,7 @@ cd ~/postgres-compose
 nano docker-compose.yml
 ```
 
-完整內容如下（請將兩處 `yourpassword` 改為你的資料庫密碼）：
+下方是參考結構，**不要整份覆蓋既有設定**。先備份並比對實際 PostgreSQL 版本、資料卷及服務名稱，只加入 MCP 服務與必要網路設定；密碼由本機設定取得。
 
 ```yaml
 services:
@@ -175,7 +198,7 @@ services:
       - postgres
     environment:
       # 注意：主機位址直接填容器服務名稱 postgres，走 Docker 內部高速網路直連！
-      DATABASE_URI: postgresql://postgres:yourpassword@postgres:5432/practice
+      DATABASE_URI: postgresql://postgres:yourpassword@postgres:5432/mcp_shop
       MCP_HOST: 0.0.0.0
       MCP_PORT: 8000
     ports:
@@ -197,7 +220,7 @@ networks:
 > [!IMPORTANT]
 > **兩大架構關鍵設計：**
 > 1. **`@postgres:5432` 內網直連**：因為兩個容器都在 `mcp-net` 網路內，Docker 內建 DNS 會自動把主機名稱 `postgres` 解析為資料庫容器的內部 IP，不用填樹莓派的外部 IP！
-> 2. **Volume 掛載 `tokens.json`**：將 `./my-mcp-server/tokens.json` 掛載到容器內的 `/app/tokens.json`。當有新進員工或員工離職時，只要在樹莓派修改 `tokens.json` 並執行 `docker compose restart mcp-server`，3 秒鐘即刻生效，完全不必重新 `build` 映像檔！
+> 2. **Volume 掛載 `tokens.json`**：將 `./my-mcp-server/tokens.json` 掛載到容器內的 `/app/tokens.json`。當有新進員工或員工離職時，只要在樹莓派修改 `tokens.json` 並執行 `docker compose restart mcp-server`，重啟完成後生效，請再做連線與撤銷測試，完全不必重新 `build` 映像檔！
 
 ---
 
@@ -214,6 +237,8 @@ docker compose up -d --build
 ```bash
 docker compose ps
 ```
+
+容器 `Up` 只代表程序執行中，不代表已能查庫；還要從個人電腦用 Token 呼叫工具核對結果。
 
 預期會看到 `my-postgres`（`5432` 埠）與 `my-mcp-server`（`8000` 埠）同時在背景穩定運行！
 

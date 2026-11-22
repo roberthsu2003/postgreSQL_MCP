@@ -1,10 +1,28 @@
 # 範例 3：📚 圖書館館員助理
 
+> **目標資料庫：`mcp_library`**。準備與驗收請先看 [單元 5 自學 Prompt](../自學與驗收指南.md#unit-5)，不要把多個案例匯入同一個資料庫。
+
 程式：[library_desk.py](./library_desk.py)　資料庫：[library.sql](../../範例資料庫/中文範例資料庫/README.md#-圖書館借閱-library)　[← 回範例集](./README.md)
 
 ## 情境
 
 讀者在櫃台問：「這本書還有沒有？」館員每週還要整理逾期名單、打電話催還，月底要做熱門書排行。
+
+## 英文欄位、工具與參數先對照
+
+保留原名稱，中文用來理解用途；共同名詞見 [英文對照表](../英文名詞與欄位對照.md)。
+
+| 英文原名 | 中文意思與用途 |
+|---|---|
+| `books / authors / publishers / members / loans` | 書籍／作者／出版社／會員／借閱紀錄資料表 |
+| `book_id / author_id / publisher_id / member_id / loan_id` | 書籍／作者／出版社／會員／借閱的編號，各自識別不同對象 |
+| `title / name / category / copies` | 書名／姓名或名稱（依資料表）／書籍分類／館藏總冊數 |
+| `member_type` | 會員類型：一般、學生、銀髮 |
+| `loan_date / due_date / return_date` | 借出日／到期日／歸還日，歸還日為NULL表示未還 |
+| `keyword / year / limit` | 搜尋關鍵字／查詢年度／最多回傳幾筆 |
+| `only_unreturned` | 是否只列未還；true＝只看未還，false＝連已還的一起看 |
+| `search_books / overdue_loans` | 找書籍／列出逾期未還 |
+| `member_loans / popular_books` | 會員借閱紀錄／熱門書籍排行 |
 
 ## 工具
 

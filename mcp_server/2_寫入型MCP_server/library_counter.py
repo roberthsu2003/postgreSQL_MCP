@@ -25,7 +25,7 @@ from mcp.types import ToolAnnotations
 
 DATABASE_URI = os.environ.get(
     "DATABASE_URI",
-    "postgresql://postgres:yourpassword@localhost:5432/practice",
+    "postgresql://postgres:yourpassword@localhost:5432/mcp_library",
 )
 USER = os.environ.get("MCP_USER", "本機館員")
 
@@ -133,8 +133,8 @@ def borrow_book(member_id: int, book_id: int) -> dict:
     try:
         with conn:  # 交易:全部成功才 commit,任何錯誤都 rollback
             with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                # 1. 會員是否存在
-                cur.execute("SELECT name, member_type FROM members WHERE member_id = %s", (member_id,))
+                # 1. 鎖住會員資料，避免同一會員同時借不同書時超過上限
+                cur.execute("SELECT name, member_type FROM members WHERE member_id = %s FOR UPDATE", (member_id,))
                 member = cur.fetchone()
                 if not member:
                     raise Refused(f"找不到會員編號 {member_id}")

@@ -1,5 +1,7 @@
 # 範例 5：📈 股市大盤查詢
 
+> **目標資料庫：`mcp_stock`**。準備與驗收請先看 [單元 5 自學 Prompt](../自學與驗收指南.md#unit-5)，不要把多個案例匯入同一個資料庫。
+
 程式：[stock.py](./stock.py)　資料來源：[範例資料庫：股市大盤歷史資料庫](../../範例資料庫/中文範例資料庫/stock_market.sql)　[← 回範例集](./README.md)
 
 ## 情境
@@ -11,9 +13,24 @@
 先在 DBeaver 執行範例資料庫的腳本，把大盤資料存進 `市場`、`股市` 兩張資料表：
 
 ```bash
-# 匯入範例資料庫/中文範例資料庫/stock_market.sql 至 practice 資料庫
-export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/practice"
+# 匯入範例資料庫/中文範例資料庫/stock_market.sql 至 mcp_stock 資料庫
+export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/mcp_stock"
 ```
+
+## 英文欄位、工具與參數先對照
+
+保留原名稱，中文用來理解用途；共同名詞見 [英文對照表](../英文名詞與欄位對照.md)。
+
+| 英文原名 | 中文意思與用途 |
+|---|---|
+| `市場 / 股市` | 原資料庫的資料表名稱；沿用既有中文表名，不另外改名 |
+| `name / country` | 市場代號／國家；這裡name不是會員姓名 |
+| `stock_id / date` | 股市資料編號／交易日期 |
+| `adj_close / high / low / volume` | 調整後收盤指數／最高指數／最低指數／成交量 |
+| `market` | 要查的市場，可填代號^TWII或國家台灣 |
+| `start_date / end_date / interval` | 開始日／結束日／依日、週或月彙總 |
+| `list_markets / price_history` | 列出市場及資料範圍／查一段期間的歷史指數 |
+| `yearly_summary / compare_markets` | 各年表現彙總／比較同期間不同市場 |
 
 ## 工具
 

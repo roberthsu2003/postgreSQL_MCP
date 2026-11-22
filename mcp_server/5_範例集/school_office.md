@@ -1,10 +1,28 @@
 # 範例 2：🎓 教務處助理
 
+> **目標資料庫：`mcp_school`**。準備與驗收請先看 [單元 5 自學 Prompt](../自學與驗收指南.md#unit-5)，不要把多個案例匯入同一個資料庫。
+
 程式：[school_office.py](./school_office.py)　資料庫：[school.sql](../../範例資料庫/中文範例資料庫/README.md#-學校選課-school)　[← 回範例集](./README.md)
 
 ## 情境
 
 期中考後，導師想知道班上誰需要輔導；教務處要統計每門課的成績分布。不用再匯出 Excel 自己算。
+
+## 英文欄位、工具與參數先對照
+
+保留原名稱，中文用來理解用途；共同名詞見 [英文對照表](../英文名詞與欄位對照.md)。
+
+| 英文原名 | 中文意思與用途 |
+|---|---|
+| `students / departments / teachers / courses / enrollments` | 學生／學系／老師／課程／修課紀錄資料表 |
+| `student_id / dept_id / teacher_id / course_id` | 學號／學系編號／老師編號／課程編號 |
+| `name` | 名稱；分別是學生姓名、學系名、老師姓名或課名，要看資料表 |
+| `enroll_year` | 學生入學年度 |
+| `semester` | 學期，例如113-1；不是日期或西元年 |
+| `credits / score` | 課程學分／學生該科成績，score為NULL表示尚未給分 |
+| `keyword / min_failed` | 搜尋關鍵字／至少幾科不及格才列入輔導 |
+| `search_students / student_transcript` | 找學生／查成績單，成績單輸入student_id |
+| `course_stats / students_need_help` | 課程統計／找需要輔導的學生 |
 
 ## 工具
 

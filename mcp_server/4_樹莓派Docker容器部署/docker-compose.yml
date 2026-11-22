@@ -22,7 +22,7 @@ services:
       - postgres
     environment:
       # 注意：主機位址直接填容器服務名稱 postgres，走 Docker 內部高速網路直連！
-      DATABASE_URI: postgresql://postgres:yourpassword@postgres:5432/practice
+      DATABASE_URI: postgresql://postgres:yourpassword@postgres:5432/mcp_shop
       MCP_HOST: 0.0.0.0
       MCP_PORT: 8000
     ports:

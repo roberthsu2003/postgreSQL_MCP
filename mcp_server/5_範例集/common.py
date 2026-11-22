@@ -26,10 +26,7 @@ import psycopg2.extras
 HERE = Path(__file__).parent
 
 # 資料庫連線字串(從環境變數讀取,密碼不要寫死在程式中)
-DATABASE_URI = os.environ.get(
-    "DATABASE_URI",
-    "postgresql://postgres:yourpassword@localhost:5432/practice",
-)
+DATABASE_URI = os.environ["DATABASE_URI"]
 
 # 記錄「這次連線是誰」;本機模式沒有 token,就用 MCP_USER 或「本機使用者」
 current_user = contextvars.ContextVar("current_user", default=os.environ.get("MCP_USER", "本機使用者"))
@@ -96,7 +93,9 @@ class TokenCheck:
             return await JSONResponse({"error": "not found"}, status_code=404)(scope, receive, send)
 
         headers = dict(scope["headers"])
-        token = headers.get(b"authorization", b"").decode().removeprefix("Bearer ").strip()
+        auth = headers.get(b"authorization", b"").decode()
+        scheme, _, token = auth.partition(" ")
+        token = token.strip() if scheme.lower() == "bearer" else ""
 
         if token not in self.tokens:
             print(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] 拒絕連線:token 錯誤或沒有提供", file=sys.stderr)

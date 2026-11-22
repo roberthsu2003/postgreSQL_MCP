@@ -1,5 +1,32 @@
 # 單元 3：企業導入：遠端 MCP Server 與 Token 門禁
 
+> **自學主線**：先使用 [單元 3 的建置與驗收 Prompt](../自學與驗收指南.md#unit-3)。以下原理、程式與設定檔供選讀對照；每完成一個階段，以指南的過關標準驗收。
+
+## 先看懂本單元的英文
+
+英文名稱保留不改，先用中文用途對照，再看操作。共同名詞與錯誤訊息見 [英文對照表](../英文名詞與欄位對照.md)。
+
+| 英文原名 | 中文意思與用途 |
+|---|---|
+| `products / categories / customers / orders / order_items` | 商品／分類／會員／訂單／訂單明細，資料表名稱 |
+| `product_id / category_id` | 商品編號／分類編號，用來連接商品與分類 |
+| `customer_id` | 商店會員編號；本案例用customer，不是圖書館的member |
+| `order_id` | 訂單編號；計訂單數時同一編號只能算一次 |
+| `name` | 名稱，要看是商品、分類還是會員資料表 |
+| `price / stock` | 商品目前售價／目前庫存數量 |
+| `city` | 會員所在縣市 |
+| `order_date / status` | 訂單日期／狀態；銷售統計只計已完成 |
+| `quantity / unit_price` | 成交數量／當時成交單價；相乘是明細小計 |
+| `keyword` | 搜尋商品或分類的關鍵字 |
+| `start_date / end_date` | 開始日期／結束日期 |
+| `group_by` | 要依分類、商品或月份分組，不是商品編號 |
+| `threshold` | 庫存門檻，例如10代表查庫存小於等於10的商品 |
+| `year / limit` | 查詢年度／最多回傳筆數 |
+| `search_products` | 搜尋商品、價格與庫存 |
+| `sales_summary` | 銷售彙總；依指定期間及分組方式統計 |
+| `low_stock_products` | 列出低庫存商品 |
+| `top_customers` | 會員消費排行；不是會員所有個資清單 |
+
 > **本單元目標**：將原本只在本機執行的 MCP Server 升級為 **Streamable HTTP 遠端服務**，讓多位員工在 Antigravity（或 Claude Desktop）**帶著自己的 Token** 連線，並即時記錄每個人查了什麼。　[← 回第 6 章](../README.md)
 
 ## 目錄
@@ -87,7 +114,7 @@ def audit(tool, **params):
 
 ### 4.1 準備資料庫
 
-建立 `practice` 資料庫並匯入 `shop.sql` 👉 [匯入方式](../../範例資料庫/中文範例資料庫/README.md#匯入方式)
+建立 `mcp_shop` 資料庫並匯入 `shop.sql` 👉 [匯入方式](../../範例資料庫/中文範例資料庫/README.md#匯入方式)
 
 ### 4.2 安裝套件
 
@@ -120,11 +147,11 @@ python3 -c "import secrets; print(secrets.token_urlsafe(32))"
 
 ```bash
 # macOS / Linux
-export DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/practice"
+export DATABASE_URI="postgresql://postgres:你的密碼@樹莓派IP:5432/mcp_shop"
 uv run server_http.py
 
 # Windows PowerShell
-$env:DATABASE_URI="postgresql://postgres:你的密碼@localhost:5432/practice"
+$env:DATABASE_URI="postgresql://postgres:你的密碼@樹莓派IP:5432/mcp_shop"
 uv run server_http.py
 ```
 
@@ -429,6 +456,6 @@ flowchart LR
 目前我們是在自己的電腦開一個終端機視窗模擬「公司伺服器」，一旦關掉視窗或闔上筆電就會斷線。
 在下一單元，我們要把這支 `server_http.py` **打包成 Docker 容器放進 Raspberry Pi**，與 PostgreSQL 組成 24 小時常駐的雙容器伺服器！
 
-👉 **[單元 4：正式上線：部署至 Raspberry Pi Docker 雙容器](../4_樹莓派Docker容器部署/README.md)**
+👉 **[單元 4：區網部署：Raspberry Pi Docker 雙容器](../4_樹莓派Docker容器部署/README.md)**
 
 👉 **[單元 5：企業各部門範例集](../5_範例集/README.md)**：5 個部門的 AI 助理，每個都可以用本機或遠端 + Token 執行
