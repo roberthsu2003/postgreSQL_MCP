@@ -29,6 +29,9 @@
 
 ## 2. 請 AI 準備開發環境
 
+> [!NOTE]
+> **先分清楚兩件事**：前面步驟 1～6 使用的 `@microsoft/postgres-mcp` 透過 `npx` 直接執行，**不需要建立 Python 虛擬環境**；只有現在步驟 7 要在自己電腦上啟動 Python Tkinter 桌面視窗小工具（`app.py`），才需要依 `requirements.txt` 安裝 `psycopg2-binary` 與 `python-dotenv`。
+
 ```text
 請協助我準備這個專案的桌面 App 開發環境。
 
