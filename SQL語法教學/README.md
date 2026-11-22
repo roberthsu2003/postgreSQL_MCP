@@ -47,7 +47,7 @@
 | 2 | [查詢資料](./6取得資料.md) | `SELECT`、`WHERE`、`ORDER BY`、`LIMIT` |
 | 3 | [修改與刪除](./5修改和刪除.md) | `UPDATE`、`DELETE`、保命三步驟與交易 |
 | 4 | [外來鍵](./7_0FOREIGN_KEY.md) | 父子表、`ON DELETE` 怎麼選 |
-| 5 | [JOIN](./JOIN.md) | SQL 版的 VLOOKUP：五種 JOIN |
+| 5 | [JOIN](./JOIN.md) | SQL 版的 XLOOKUP：五種 JOIN |
 | 6 | [JSONB](./16json.md) | 飲料客製化、`->` 和 `->>` |
 
 📥 **外來鍵課程下載**：[範例資料交易檔](./範例資料/7_0_foreign_key_setup.sql) · [完整實測腳本](./範例資料/7_0_foreign_key_demo.sql)。使用 `cafe_db`，先匯入資料再執行實測；詳細步驟見 [外來鍵講義](./7_0FOREIGN_KEY.md#-課前準備與範例下載)。

@@ -1,10 +1,10 @@
-# DML-5｜JOIN：SQL 版的 VLOOKUP
+# DML-5｜JOIN：SQL 版的 XLOOKUP
 
 > 💻 DBeaver（`cafe_db`、`cafe_shop`，練習第 4、5 題用 `expense_tracker`、`assets_inventory`）｜ 🎯 學完你會：INNER、LEFT、RIGHT、FULL、CROSS JOIN，以及何時用哪一種
 
 ## 🎬 情境
 
-訂單表只記門市**編號**，王經理卻想看門市**名稱**。在 Excel 你會用 `VLOOKUP`，在 SQL 就是 `JOIN`：**用共同的欄位，把兩張表左右拼起來。**
+訂單表只記門市**編號**，王經理卻想看門市**名稱**。在 Excel 你會用 `XLOOKUP`，在 SQL 就是 `JOIN`：**用共同的欄位，把兩張表左右拼起來。**
 
 本課先用一個超小的例子看懂差別，再做真題。
 
@@ -86,7 +86,7 @@ ORDER BY m.item_id;
 | 卡布奇諾 | *NULL* |
 | 焦糖瑪奇朵 | *NULL* |
 
-對不到的地方會顯示 `NULL`，就像 VLOOKUP 的 `#N/A`。實務上最常用的就是 `INNER` 和 `LEFT`。
+對不到的地方會顯示 `NULL`，就像 XLOOKUP 的 `#N/A`。實務上最常用的就是 `INNER` 和 `LEFT`。
 
 ## 4. 找「沒有對應」的資料：LEFT JOIN + IS NULL
 
@@ -177,7 +177,7 @@ ORDER BY m.item_id;
 | JOIN | 保留什麼 | 白話 | 常見用途 |
 |---|---|---|---|
 | `INNER` | 兩邊都有的 | 配對成功才留 | 訂單配門市名稱 |
-| `LEFT` | 左表全部 | VLOOKUP | 列出所有門市，含沒訂單的 |
+| `LEFT` | 左表全部 | XLOOKUP | 列出所有門市，含沒訂單的 |
 | `RIGHT` | 右表全部 | 反向 LEFT | 少用 |
 | `FULL OUTER` | 兩邊全部 | 對帳 | 比對兩份名單差異 |
 | `CROSS` | 所有組合 | 排列組合 | 產生規格表 |
@@ -383,7 +383,7 @@ ORDER BY l.expected_return_date;
 
 ## 🤖 問 AI 助教
 
-> 我寫了這段 JOIN，結果筆數比預期多很多，請幫我找原因，用「VLOOKUP」的概念解釋。請不要幫我執行：（貼上你的 SQL）
+> 我寫了這段 JOIN，結果筆數比預期多很多，請幫我找原因，用「XLOOKUP」的概念解釋。請不要幫我執行：（貼上你的 SQL）
 
 ---
 
