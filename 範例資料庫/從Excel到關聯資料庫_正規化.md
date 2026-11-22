@@ -13,7 +13,7 @@
 
 我們為本單元準備了兩份對照的實體 Excel 與 CSV 檔案：
 1. 📄 **[未正規化_網路商店單一工作表.xlsx](./excel範例/未正規化_網路商店單一工作表.xlsx)**（亦提供 [CSV 格式](./excel範例/未正規化_網路商店單一工作表.csv)）
-2. 📊 **[正規化_網路商店多工作表.xlsx](./excel範例/正規化_網路商店多工作表.xlsx)**（含 `customers`、`products`、`orders`、`order_items` 四個 Sheet，並內建 `VLOOKUP` 公式）
+2. 📊 **[正規化_網路商店多工作表.xlsx](./excel範例/正規化_網路商店多工作表.xlsx)**（含 `customers`、`products`、`orders`、`order_items` 四個 Sheet，並內建 `XLOOKUP` 公式）
 
 ---
 
@@ -106,14 +106,14 @@ erDiagram
 
 ---
 
-## 4. Excel 的 `VLOOKUP` vs SQL 的 `JOIN`
+## 4. Excel 的 `XLOOKUP` vs SQL 的 `JOIN`
 
 當資料拆成多個工作表後，要看「某筆訂單是誰買的、買了什麼商品」，該怎麼做？
 
 ### 在 Excel 中：使用跨工作表公式
-在 `orders` 工作表裡，我們利用 `VLOOKUP` 查會員名稱：
+在 `orders` 工作表裡，我們利用 `XLOOKUP` 查會員名稱：
 ```excel
-=VLOOKUP(customer_id, 'customers(會員)'!A:B, 2, FALSE)
+=XLOOKUP(customer_id, 'customers(會員)'!A:A, 'customers(會員)'!B:B)
 ```
 
 ### 在 SQL 中：使用 `JOIN` 關聯查詢
@@ -133,7 +133,7 @@ JOIN products ON order_items.product_id = products.product_id;
 ```
 
 > [!IMPORTANT]
-> **小計要用訂單當時的成交單價，不能用商品目前的售價。** 商品調價後，舊訂單的金額不應該改變，所以 `order_items` 要保留自己的 `unit_price`。這不是重複資料：目前售價和當時成交價是兩件不同的事。`正規化_網路商店多工作表.xlsx` 的單價是用 `VLOOKUP` 查商品表，只是為了示範跨工作表查詢。想親眼看差別，請做[實戰專案 5：網路商店訂單](../app_projects/excel5_shop/README.md)。
+> **小計要用訂單當時的成交單價，不能用商品目前的售價。** 商品調價後，舊訂單的金額不應該改變，所以 `order_items` 要保留自己的 `unit_price`。這不是重複資料：目前售價和當時成交價是兩件不同的事。`正規化_網路商店多工作表.xlsx` 的單價是用 `XLOOKUP` 查商品表，只是為了示範跨工作表查詢。想親眼看差別，請做[實戰專案 5：網路商店訂單](../app_projects/excel5_shop/README.md)。
 
 ---
 
