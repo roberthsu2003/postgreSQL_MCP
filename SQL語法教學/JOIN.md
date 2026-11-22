@@ -1,6 +1,6 @@
 # DML-5｜JOIN：SQL 版的 VLOOKUP
 
-> 💻 DBeaver（`cafe_db` 加 `cafe_shop`）｜ 🎯 學完你會：INNER、LEFT、RIGHT、FULL、CROSS JOIN，以及何時用哪一種
+> 💻 DBeaver（`cafe_db`、`cafe_shop`，練習第 4、5 題用 `expense_tracker`、`assets_inventory`）｜ 🎯 學完你會：INNER、LEFT、RIGHT、FULL、CROSS JOIN，以及何時用哪一種
 
 ## 🎬 情境
 
@@ -329,6 +329,9 @@ WHERE o.order_id IS NULL;
 | 新來的 |
 
 </details>
+
+> [!NOTE]
+> **第 4、5 題請切換資料庫**：以下兩題使用 [DML-4 外來鍵匯入步驟](./7_0FOREIGN_KEY.md#-首次匯入-expense_tracker-與-assets_inventory3-步驟) 準備好的 `expense_tracker` 與 `assets_inventory`（若當時直接匯入在 `cafe_db`，切換到 `cafe_db` 即可）。尚未匯入的同學請下載 [expense_tracker.sql](../範例資料庫/中文範例資料庫/expense_tracker.sql) 與 [assets_inventory.sql](../範例資料庫/中文範例資料庫/assets_inventory.sql) 執行匯入。
 
 **第 4 題（`expense_tracker`，會計）**：列出所有「待審核」報銷單的部門、員工、費用類別和金額。
 

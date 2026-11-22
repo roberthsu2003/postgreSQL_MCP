@@ -134,7 +134,15 @@ SELECT name FROM customers WHERE customer_id NOT IN (SELECT customer_id FROM ord
 
 ## 4. 各職務的練習
 
-每一題都已實測可執行。先自己寫，或請 AI 寫，再對答案。
+每一題都已實測可執行。先自己寫，或請 AI 寫，再對答案。執行前請先在工具列切換到對應的資料庫：
+
+| 職務 | 資料庫名稱 | 下載 SQL 交易檔 | 匯入位置說明 |
+|---|---|---|---|
+| ☕ 店長 | `cafe_shop` | [cafe_shop.sql](../範例資料庫/中文範例資料庫/cafe_shop.sql) | [DML 導讀](./DML%28資料操作語言%29.md#️-開工前準備匯入-cafe_shop) 已匯入 |
+| 💼 會計 | `expense_tracker` | [expense_tracker.sql](../範例資料庫/中文範例資料庫/expense_tracker.sql) | [DML-4 外來鍵](./7_0FOREIGN_KEY.md#-首次匯入-expense_tracker-與-assets_inventory3-步驟) 已匯入 |
+| 👥 人資 | `hr_attendance` | [hr_attendance.sql](../範例資料庫/中文範例資料庫/hr_attendance.sql) | [進階-4 聚合與分組](./10聚合函式.md#7-換個部門也一樣) 已匯入 |
+| 🏢 總務 | `assets_inventory` | [assets_inventory.sql](../範例資料庫/中文範例資料庫/assets_inventory.sql) | [DML-4 外來鍵](./7_0FOREIGN_KEY.md#-首次匯入-expense_tracker-與-assets_inventory3-步驟) 已匯入 |
+| 🛒 業務 | `practice`（或 `shop`） | [shop.sql](../範例資料庫/中文範例資料庫/shop.sql) | 第 2、3 章已匯入在 `practice`；若尚未匯入，請新建 `practice` 資料庫執行 `shop.sql`（**勿匯入 `cafe_shop`，會覆蓋同名表**） |
 
 ### ☕ 店長（`cafe_shop`）：跨月營收並排
 
@@ -258,7 +266,7 @@ ORDER BY 至少補貨量 DESC;
 
 </details>
 
-### 🛒 業務（`shop`）：RFM 客戶分析
+### 🛒 業務（`practice` / `shop.sql`）：RFM 客戶分析
 
 <details>
 <summary>看答案</summary>

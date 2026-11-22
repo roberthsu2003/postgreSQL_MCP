@@ -194,6 +194,10 @@ WHERE 門市 = '台北信義店' AND 月份 = '2024-12-01';
 -- 8. 其他部門也用得上
 -- ---------------------------------------------------------------------
 
+-- ======================================================
+-- 以下請在 DBeaver 工具列切換到資料庫：expense_tracker
+-- ======================================================
+
 -- 會計（expense_tracker）：待處理報銷總表
 CREATE VIEW v_pending_claims AS
 SELECT x.claim_id AS 單號, x.claim_date AS 日期, e.name AS 申請人,
@@ -204,6 +208,10 @@ JOIN expense_categories c ON x.category_id = c.category_id
 WHERE x.status IN ('待審核', '待撥款');
 
 SELECT * FROM v_pending_claims ORDER BY 日期;
+
+-- ======================================================
+-- 以下請在 DBeaver 工具列切換到資料庫：assets_inventory
+-- ======================================================
 
 -- 總務（assets_inventory）：需要補貨的品項
 CREATE VIEW v_low_stock AS

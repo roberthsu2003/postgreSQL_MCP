@@ -1,6 +1,6 @@
 # 進階-11｜檢視表 VIEW：把常用查詢存成一張「虛擬表」
 
-> 💻 DBeaver（`cafe_shop`，第 6 節用 `cafe_perf`）｜ 📄 練習腳本：[`18檢視表VIEW.sql`](./18檢視表VIEW.sql) ｜ 🎯 學完你會：建立與修改 VIEW、用 VIEW 藏起敏感欄位再交給 AI，並分辨一般 VIEW 和物化檢視表
+> 💻 DBeaver（`cafe_shop`，第 6 節用 `cafe_perf`，第 8 節用 `expense_tracker`、`assets_inventory`）｜ 📄 練習腳本：[`18檢視表VIEW.sql`](./18檢視表VIEW.sql) ｜ 🎯 學完你會：建立與修改 VIEW、用 VIEW 藏起敏感欄位再交給 AI，並分辨一般 VIEW 和物化檢視表
 
 ## 🎬 情境
 
@@ -423,6 +423,9 @@ WHERE 門市 = '台北信義店' AND 月份 = '2024-12-01';
 **判斷口訣：這個查詢下週還會用、別人也會用 → 存成 VIEW。**
 
 ## 8. 其他部門也用得上
+
+> [!NOTE]
+> 以下兩題請先在工具列切換到 `expense_tracker` 與 `assets_inventory`（或當時集中匯入的 `cafe_db`）。尚未匯入的同學請下載 [expense_tracker.sql](../範例資料庫/中文範例資料庫/expense_tracker.sql) 與 [assets_inventory.sql](../範例資料庫/中文範例資料庫/assets_inventory.sql)，並參考 [DML-4 外來鍵匯入步驟](./7_0FOREIGN_KEY.md#-首次匯入-expense_tracker-與-assets_inventory3-步驟)。
 
 **會計（`expense_tracker`）：待處理報銷總表**
 
