@@ -303,15 +303,26 @@ ROLLBACK;
 
 ## 4. 在真實資料上驗證
 
-這一節是**延伸練習**，不使用 `cafe_db` 的 `fk_` 表。三份 SQL 都已包含 `BEGIN … COMMIT`；請各自建立同名的練習資料庫，再切換連線、匯入對應檔案。操作方式見 [範例庫匯入說明](../範例資料庫/中文範例資料庫/README.md)。
+這一節我們離開 `cafe_db` 的 `fk_` 練習表，改到三個真實職場範例庫來測試外來鍵。其中 `cafe_shop` 你在 [DML 導讀](./DML%28資料操作語言%29.md#️-開工前準備匯入-cafe_shop) 已經建好；另外兩個（`expense_tracker`、`assets_inventory`）是**第一次登場**，後面的 `JOIN`、聚合與子查詢課程也會繼續用到，現在一起準備好：
 
-| 練習 | 切換到資料庫 | 下載完整結構與資料 |
-|---|---|---|
-| 門市訂單 | `cafe_shop` | [cafe_shop.sql](../範例資料庫/中文範例資料庫/cafe_shop.sql) |
-| 員工報帳 | `expense_tracker` | [expense_tracker.sql](../範例資料庫/中文範例資料庫/expense_tracker.sql) |
-| 資產借用 | `assets_inventory` | [assets_inventory.sql](../範例資料庫/中文範例資料庫/assets_inventory.sql) |
+| 練習情境 | 資料庫名稱 | 下載 SQL 交易檔 | 狀態 |
+|---|---|---|---|
+| 門市訂單 | `cafe_shop` | [cafe_shop.sql](../範例資料庫/中文範例資料庫/cafe_shop.sql) | ✅ DML 導讀已匯入，直接切換即可 |
+| 員工報帳（會計） | `expense_tracker` | [expense_tracker.sql](../範例資料庫/中文範例資料庫/expense_tracker.sql) | 🆕 首次使用，請依下方步驟建立並匯入 |
+| 資產借用（總務） | `assets_inventory` | [assets_inventory.sql](../範例資料庫/中文範例資料庫/assets_inventory.sql) | 🆕 首次使用，請依下方步驟建立並匯入 |
 
-> `cafe_shop.sql` 與 `assets_inventory.sql` 會刪表重建，請使用獨立練習資料庫。以下三個故意報錯的語句應分別執行；手動提交模式下，每次錯誤後先 `ROLLBACK`。
+### 📥 首次匯入 `expense_tracker` 與 `assets_inventory`（3 步驟）
+
+1. **下載檔案**：點擊上表的 [expense_tracker.sql](../範例資料庫/中文範例資料庫/expense_tracker.sql) 與 [assets_inventory.sql](../範例資料庫/中文範例資料庫/assets_inventory.sql)，在 GitHub 右上角按 **Download raw file** 下載（與本課開頭下載 `7_0_foreign_key_setup.sql` 方式相同）。
+2. **建立資料庫**：在 DBeaver 左側 **Databases** 按右鍵 → **Create New Database**，分別建立 `expense_tracker` 與 `assets_inventory` 兩個資料庫（或在 SQL 編輯器分別執行 `CREATE DATABASE expense_tracker;` 與 `CREATE DATABASE assets_inventory;`，再按 `F5` 重新整理）。
+3. **切換並執行腳本**：
+   - 在 DBeaver 開啟 `expense_tracker.sql`，確認上方工具列已切換到 **`expense_tracker`** 資料庫，按 `Alt + X`（Mac：`Opt + X`）或 **SQL Editor → Execute SQL Script** 執行整份檔案。
+   - 開啟 `assets_inventory.sql`，確認上方工具列已切換到 **`assets_inventory`** 資料庫，同樣執行整份檔案。
+
+> [!TIP]
+> **不想多建兩個資料庫？** `expense_tracker.sql` 的表名都有 `expense_` 前綴（`expense_departments`、`expense_employees`、`expense_categories`、`expense_claims`），`assets_inventory.sql` 的表名都有 `asset` 前綴（`asset_categories`、`assets`、`asset_borrow_logs`、`asset_purchase_requests`），和 `cafe_db` 的表完全不會撞名！如果課堂時間有限，也可以**直接連線在 `cafe_db` 執行這兩份 `.sql` 檔**，下面的練習語句在 `cafe_db` 就能直接跑。
+
+> 以下三個故意報錯的語句請**切換到對應資料庫後分別執行**；手動提交模式下，每次錯誤後先執行 `ROLLBACK;`。
 
 **門市（`cafe_shop`）：不存在的門市不能開單**
 
